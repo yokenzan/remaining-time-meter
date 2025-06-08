@@ -1,0 +1,27 @@
+{
+  "name": "seekbar-like-timer",
+  "version": "1.0.0",
+  "description": "プレゼンテーション用タイムキーパー",
+  "main": "src/main/main.js",
+  "author": "Yosuke",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "dist": "electron-builder --win",
+    "pack": "electron-builder --dir"
+  },
+  "devDependencies": {
+    "electron": "^36.4.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.yokenzan.seekbar-like-timekeeper",
+    "productName": "シークバー的タイムキーパー",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
