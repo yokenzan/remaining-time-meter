@@ -36,12 +36,6 @@ jobs:
         cd tauri-timer
         npm install
         
-    - name: Ensure dist directory exists
-      run: |
-        cd tauri-timer
-        if (!(Test-Path -Path "dist")) { New-Item -ItemType Directory -Name "dist" }
-        if (!(Test-Path -Path "dist\index.html")) { Copy-Item -Path "..\dist\*" -Destination "dist" -Recurse -Force }
-        
     - name: Build Tauri application
       run: |
         cd tauri-timer
