@@ -1,0 +1,36 @@
+name: Build WPF Timer
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore wpf-timer/SeekbarTimer.csproj
+      
+    - name: Build WPF application
+      run: dotnet build wpf-timer/SeekbarTimer.csproj --configuration Release --no-restore
+      
+    - name: Publish self-contained executable
+      run: dotnet publish wpf-timer/SeekbarTimer.csproj --configuration Release --output ./publish --self-contained true --runtime win-x64 --verbosity normal /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+      
+    - name: Upload WPF artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: wpf-seekbar-timer
+        path: ./publish/SeekbarTimer.exe
+        retention-days: 7
