@@ -1,0 +1,38 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devUrl": "../dist",
+    "frontendDist": "../dist"
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "identifier": "com.yokenzan.seekbar-timer",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  },
+  "productName": "シークバー的タイムキーパー",
+  "version": "1.0.0",
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "シークバー的タイムキーパー",
+        "width": 400,
+        "height": 100,
+        "resizable": false,
+        "alwaysOnTop": true,
+        "decorations": false,
+        "transparent": true,
+        "skipTaskbar": true
+      }
+    ]
+  }
+}
