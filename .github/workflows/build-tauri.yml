@@ -40,9 +40,9 @@ jobs:
       run: |
         cd tauri-timer
         echo "Current directory contents:"
-        ls -la
+        dir
         echo "Dist directory contents:"
-        ls -la dist/
+        dir dist
         
     - name: Build Tauri application
       run: |
