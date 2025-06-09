@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "シークバー的タイムキーパー",
+  "productName": "Seekbar Timer",
   "version": "1.0.0",
   "identifier": "com.yokenzan.seekbar-timer",
   "build": {
@@ -10,7 +10,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "シークバー的タイムキーパー",
+        "title": "Seekbar Timer",
         "width": 50,
         "height": 1080,
         "x": 1870,
