@@ -110,6 +110,15 @@ namespace ProgressBarTimerKeeper
 
         private void UpdateBarColor()
         {
+            // 一時停止中は darkslateblue に設定
+            if (_isPaused)
+            {
+                ProgressBar.Fill = new SolidColorBrush(Colors.DarkSlateBlue);
+                ProgressBar.BeginAnimation(OpacityProperty, null);
+                ProgressBar.Opacity = 1.0;
+                return;
+            }
+
             double progress = (double)(_totalSeconds - _remainingSeconds) / _totalSeconds;
 
             if (progress >= 0.8)
@@ -165,6 +174,7 @@ namespace ProgressBarTimerKeeper
         {
             _isPaused = !_isPaused;
             PauseResumeButton.Content = _isPaused ? "再開" : "一時停止";
+            UpdateBarColor(); // 一時停止状態の変更時に色を更新
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
