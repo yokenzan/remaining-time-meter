@@ -45,4 +45,4 @@ namespace SeekbarTimer
             this.Hide();
         }
     }
-} 
+}

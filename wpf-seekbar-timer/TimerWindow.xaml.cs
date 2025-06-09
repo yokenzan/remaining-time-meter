@@ -1,7 +1,7 @@
 using System.Windows;
-using System.Windows.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 
 namespace SeekbarTimer
 {
@@ -97,7 +97,7 @@ namespace SeekbarTimer
         private void UpdateProgressBar()
         {
             double progress = (double)(_totalSeconds - _remainingSeconds) / _totalSeconds;
-            
+
             if (_position == "上端" || _position == "下端")
             {
                 ProgressBar.Width = Width * progress;
@@ -111,7 +111,7 @@ namespace SeekbarTimer
         private void UpdateBarColor()
         {
             double progress = (double)(_totalSeconds - _remainingSeconds) / _totalSeconds;
-            
+
             if (progress >= 0.8)
             {
                 ProgressBar.Fill = new SolidColorBrush(Colors.Red);
@@ -181,4 +181,4 @@ namespace SeekbarTimer
             this.Close();
         }
     }
-} 
+}
