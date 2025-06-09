@@ -51,6 +51,10 @@ const (
 
 	// Layer window attributes
 	LWA_ALPHA = 0x00000002
+	
+	// PeekMessage flags
+	PM_REMOVE = 0x0001
+	PM_NOREMOVE = 0x0000
 )
 
 var (
@@ -62,6 +66,7 @@ var (
 	procCreateWindow    = user32.NewProc("CreateWindowExW")
 	procDefWindowProc   = user32.NewProc("DefWindowProcW")
 	procGetMessage      = user32.NewProc("GetMessageW")
+	procPeekMessage     = user32.NewProc("PeekMessageW")
 	procTranslateMessage = user32.NewProc("TranslateMessage")
 	procDispatchMessage = user32.NewProc("DispatchMessageW")
 	procPostQuitMessage = user32.NewProc("PostQuitMessage")
@@ -79,6 +84,9 @@ var (
 	procTrackPopupMenu = user32.NewProc("TrackPopupMenu")
 	procGetCursorPos   = user32.NewProc("GetCursorPos")
 	procDestroyMenu    = user32.NewProc("DestroyMenu")
+	procBeginPaint     = user32.NewProc("BeginPaint")
+	procEndPaint       = user32.NewProc("EndPaint")
+	procValidateRect   = user32.NewProc("ValidateRect")
 
 	procCreateSolidBrush = gdi32.NewProc("CreateSolidBrush")
 	procFillRect        = user32.NewProc("FillRect")
@@ -86,6 +94,7 @@ var (
 	procDeleteObject    = gdi32.NewProc("DeleteObject")
 
 	procGetModuleHandle = kernel32.NewProc("GetModuleHandleW")
+	procSleep          = kernel32.NewProc("Sleep")
 )
 
 type WNDCLASS struct {
@@ -202,15 +211,20 @@ func main() {
 	// ウィンドウの透明度を設定（80%不透明）
 	procSetLayeredWindowAttributes.Call(hwnd, 0, 200, LWA_ALPHA)
 	
-	// メッセージループ
+	// 改善されたメッセージループ
 	var msg MSG
 	for {
-		ret, _, _ := procGetMessage.Call(uintptr(unsafe.Pointer(&msg)), 0, 0, 0)
-		if ret == 0 { // WM_QUIT
-			break
+		// ノンブロッキングでメッセージをチェック
+		ret, _, _ := procPeekMessage.Call(uintptr(unsafe.Pointer(&msg)), 0, 0, 0, PM_REMOVE)
+		if ret != 0 {
+			if msg.Message == 0x0012 { // WM_QUIT
+				break
+			}
+			procTranslateMessage.Call(uintptr(unsafe.Pointer(&msg)))
+			procDispatchMessage.Call(uintptr(unsafe.Pointer(&msg)))
 		}
-		procTranslateMessage.Call(uintptr(unsafe.Pointer(&msg)))
-		procDispatchMessage.Call(uintptr(unsafe.Pointer(&msg)))
+		// CPUを節約するため少し待機
+		procSleep.Call(10)
 	}
 }
 
@@ -235,7 +249,12 @@ func windowProc(hwnd uintptr, msg uint32, wParam uintptr, lParam uintptr) uintpt
 		return 0
 		
 	case WM_PAINT:
-		drawSeekbar(hwnd)
+		var ps PAINTSTRUCT
+		hdc, _, _ := procBeginPaint.Call(hwnd, uintptr(unsafe.Pointer(&ps)))
+		if hdc != 0 {
+			drawSeekbarDC(hdc)
+			procEndPaint.Call(hwnd, uintptr(unsafe.Pointer(&ps)))
+		}
 		return 0
 		
 	case WM_LBUTTONUP:
@@ -282,10 +301,7 @@ func windowProc(hwnd uintptr, msg uint32, wParam uintptr, lParam uintptr) uintpt
 	return ret
 }
 
-func drawSeekbar(hwnd uintptr) {
-	hdc, _, _ := procGetDC.Call(hwnd)
-	defer procReleaseDC.Call(hwnd, hdc)
-	
+func drawSeekbarDC(hdc uintptr) {
 	// 画面サイズを取得
 	screenWidth, _, _ := procGetSystemMetrics.Call(0)
 	
@@ -297,17 +313,17 @@ func drawSeekbar(hwnd uintptr) {
 	
 	progressWidth := int32(float64(screenWidth) * progress)
 	
-	// 背景（グレー）
-	backgroundBrush, _, _ := procCreateSolidBrush.Call(0x404040) // ダークグレー
+	// 背景（ダークグレー）
+	backgroundBrush, _, _ := procCreateSolidBrush.Call(0x404040)
 	rect := RECT{0, 0, int32(screenWidth), SEEKBAR_HEIGHT}
 	procFillRect.Call(hdc, uintptr(unsafe.Pointer(&rect)), backgroundBrush)
 	procDeleteObject.Call(backgroundBrush)
 	
-	// プログレスバー（グラデーション風）
+	// プログレスバー（色の変化）
 	if progressWidth > 0 {
 		var color uint32
 		if progress < 0.5 {
-			color = 0x00FF00 // 緑
+			color = 0x00FF00 // 緑 (BGR形式)
 		} else if progress < 0.8 {
 			color = 0x00FFFF // 黄
 		} else {
@@ -318,6 +334,15 @@ func drawSeekbar(hwnd uintptr) {
 		progressRect := RECT{0, 0, progressWidth, SEEKBAR_HEIGHT}
 		procFillRect.Call(hdc, uintptr(unsafe.Pointer(&progressRect)), progressBrush)
 		procDeleteObject.Call(progressBrush)
+	}
+}
+
+// 後方互換のための関数
+func drawSeekbar(hwnd uintptr) {
+	hdc, _, _ := procGetDC.Call(hwnd)
+	if hdc != 0 {
+		drawSeekbarDC(hdc)
+		procReleaseDC.Call(hwnd, hdc)
 	}
 }
 
