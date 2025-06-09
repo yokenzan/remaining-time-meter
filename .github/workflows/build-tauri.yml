@@ -47,5 +47,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: tauri-seekbar-timer-windows
-        path: tauri-timer/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/*
+        path: tauri-timer/src-tauri/target/release/bundle/*
         retention-days: 7
