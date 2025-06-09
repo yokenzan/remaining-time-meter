@@ -36,6 +36,14 @@ jobs:
         cd tauri-timer
         npm install
         
+    - name: Verify dist directory
+      run: |
+        cd tauri-timer
+        echo "Current directory contents:"
+        ls -la
+        echo "Dist directory contents:"
+        ls -la dist/
+        
     - name: Build Tauri application
       run: |
         cd tauri-timer
