@@ -1,14 +1,14 @@
-# Seekbar Timer
+# ProgressBar TimerKeeper
 
 プレゼンテーション用のタイムキーパーアプリケーション
 
 ## 概要
 
-プレゼン中の残り時間を視覚的に把握できるシークバー型タイマーです。画面端に細長く表示され、プレゼン資料の邪魔になりません。
+プレゼン中の残り時間を視覚的に把握できるプログレスバー型タイマーです。画面端に細長く表示され、プレゼン資料の邪魔になりません。
 
 ## 主要機能
 
-- **縦方向シークバー**: 時間経過で下から上へ進捗表示
+- **縦方向プログレスバー**: 時間経過で下から上へ進捗表示
 - **4つの配置位置**: 右端・左端・上端・下端から選択可能
 - **細長いデザイン**: 通常20px幅、ホバー時に拡大してコントロール表示
 - **視覚的な警告**: 60%経過でオレンジ、80%経過で赤色（点滅）
@@ -19,7 +19,7 @@
 ## 実装版
 
 ### WPF版 (Windows専用)
-📁 `wpf-seekbar-timer/`
+📁 `wpf-progressbar-timerkeeper/`
 
 - **技術**: .NET 8.0 + WPF
 - **対象OS**: Windows 10/11
@@ -32,7 +32,7 @@ GitHub Releasesから実行ファイルをダウンロードできます：
 
 #### ローカルビルド
 ```bash
-cd wpf-seekbar-timer
+cd wpf-progressbar-timerkeeper
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
 ```
 
