@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
-namespace SeekbarTimer
+namespace ProgressBarTimerKeeper
 {
     public partial class MainWindow : Window
     {

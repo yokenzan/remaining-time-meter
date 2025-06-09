@@ -1,7 +1,7 @@
 {
-  "name": "seekbar-like-timer",
+  "name": "progressbar-timerkeeper",
   "version": "1.0.0",
-  "description": "プレゼンテーション用のタイムキーパーアプリケーションです。画面端にシークバー状に表示され、時間経過を視覚的に把握できます。",
+  "description": "プレゼンテーション用のタイムキーパーアプリケーションです。画面端にプログレスバー状に表示され、時間経過を視覚的に把握できます。",
   "main": "index.js",
   "directories": {
     "doc": "docs"

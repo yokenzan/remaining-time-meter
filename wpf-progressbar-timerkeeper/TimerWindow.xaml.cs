@@ -3,7 +3,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
-namespace SeekbarTimer
+namespace ProgressBarTimerKeeper
 {
     public partial class TimerWindow : Window
     {

@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace SeekbarTimer
+namespace ProgressBarTimerKeeper
 {
     public partial class App : Application
     {

@@ -1,4 +1,4 @@
-name: Build WPF Seekbar Timer
+name: Build WPF ProgressBar TimerKeeper
 
 on:
   push:
@@ -20,28 +20,28 @@ jobs:
         dotnet-version: 8.0.x
         
     - name: Restore dependencies
-      run: dotnet restore wpf-seekbar-timer/SeekbarTimer.csproj
+      run: dotnet restore wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj
       
     - name: Build
-      run: dotnet build wpf-seekbar-timer/SeekbarTimer.csproj --no-restore --configuration Release
+      run: dotnet build wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj --no-restore --configuration Release
       
     - name: Publish Windows x64
-      run: dotnet publish wpf-seekbar-timer/SeekbarTimer.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./publish/win-x64
+      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./publish/win-x64
       
     - name: Publish Windows x86
-      run: dotnet publish wpf-seekbar-timer/SeekbarTimer.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./publish/win-x86
+      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./publish/win-x86
       
     - name: Upload Windows x64 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: SeekbarTimer-win-x64
-        path: ./publish/win-x64/SeekbarTimer.exe
+        name: ProgressBarTimerKeeper-win-x64
+        path: ./publish/win-x64/ProgressBarTimerKeeper.exe
         
     - name: Upload Windows x86 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: SeekbarTimer-win-x86
-        path: ./publish/win-x86/SeekbarTimer.exe
+        name: ProgressBarTimerKeeper-win-x86
+        path: ./publish/win-x86/ProgressBarTimerKeeper.exe
 
   release:
     needs: build
@@ -57,29 +57,29 @@ jobs:
         dotnet-version: 8.0.x
         
     - name: Publish Windows x64
-      run: dotnet publish wpf-seekbar-timer/SeekbarTimer.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./release/win-x64
+      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./release/win-x64
       
     - name: Publish Windows x86
-      run: dotnet publish wpf-seekbar-timer/SeekbarTimer.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./release/win-x86
+      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./release/win-x86
       
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          ./release/win-x64/SeekbarTimer.exe
-          ./release/win-x86/SeekbarTimer.exe
-        name: Seekbar Timer ${{ github.ref_name }}
+          ./release/win-x64/ProgressBarTimerKeeper.exe
+          ./release/win-x86/ProgressBarTimerKeeper.exe
+        name: ProgressBar TimerKeeper ${{ github.ref_name }}
         body: |
-          ## Seekbar Timer - WPF版
+          ## ProgressBar TimerKeeper - WPF版
           
           プレゼンテーション用のタイムキーパーアプリケーションです。
           
           ### ダウンロード
-          - **SeekbarTimer.exe (x64)** - 64bit Windows用
-          - **SeekbarTimer.exe (x86)** - 32bit Windows用
+          - **ProgressBarTimerKeeper.exe (x64)** - 64bit Windows用
+          - **ProgressBarTimerKeeper.exe (x86)** - 32bit Windows用
           
           ### 機能
-          - 縦方向シークバー表示
+          - 縦方向プログレスバー表示
           - 4つの配置位置（右端・左端・上端・下端）
           - 視覚的な警告（60%でオレンジ、80%で赤色点滅）
           - Always on top表示

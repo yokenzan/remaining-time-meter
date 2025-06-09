@@ -1,10 +1,10 @@
-# Seekbar Timer - WPF版
+# ProgressBar TimerKeeper - WPF版
 
 プレゼンテーション用のタイムキーパーアプリケーションです。
 
 ## 機能
 
-- **縦方向シークバー**: 時間経過で下から上へ進捗表示
+- **縦方向プログレスバー**: 時間経過で下から上へ進捗表示
 - **4つの配置位置**: 右端・左端・上端・下端から選択可能
 - **細長いデザイン**: 通常20px幅、ホバー時に拡大してコントロール表示
 - **視覚的な警告**: 
@@ -59,7 +59,7 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 
 ## ファイル構成
 
-- `SeekbarTimer.csproj` - プロジェクトファイル
+- `ProgressBarTimerKeeper.csproj` - プロジェクトファイル
 - `App.xaml` / `App.xaml.cs` - アプリケーションエントリポイント
 - `MainWindow.xaml` / `MainWindow.xaml.cs` - メイン設定ウィンドウ
 - `TimerWindow.xaml` / `TimerWindow.xaml.cs` - タイマー表示ウィンドウ
