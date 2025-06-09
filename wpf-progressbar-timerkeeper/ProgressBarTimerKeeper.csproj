@@ -7,6 +7,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ApplicationIcon>tv_timekeeper.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="tv_timekeeper.png" />
+    <Resource Include="tv_timekeeper.ico" />
+  </ItemGroup>
 
 </Project> 
