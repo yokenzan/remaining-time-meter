@@ -1,28 +1,21 @@
 {
   "name": "seekbar-like-timer",
   "version": "1.0.0",
-  "description": "プレゼンテーション用タイムキーパー",
-  "main": "src/main/main.js",
-  "author": "Yosuke",
+  "description": "プレゼンテーション用のタイムキーパーアプリケーションです。画面端にシークバー状に表示され、時間経過を視覚的に把握できます。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
   "scripts": {
-    "start": "electron .",
-    "build": "electron-builder",
-    "dist": "electron-builder --win",
-    "pack": "electron-builder --dir"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-    "electron": "^36.4.0",
-    "electron-builder": "^26.0.12"
-  },
-  "build": {
-    "appId": "com.yokenzan.seekbar-like-timekeeper",
-    "productName": "シークバー的タイムキーパー",
-    "directories": {
-      "output": "dist"
-    },
-    "win": {
-      "target": "nsis"
-    },
-    "publish": null
+    "@tauri-apps/cli": "^1.0.0"
   }
 }

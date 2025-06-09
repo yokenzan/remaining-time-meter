@@ -1,36 +1,99 @@
-name: Build WPF Timer
+name: Build WPF Seekbar Timer
 
 on:
   push:
-    branches: [ master ]
+    branches: [ wpf-implementation ]
+    tags: [ 'v*' ]
   pull_request:
-    branches: [ master ]
-  workflow_dispatch:
+    branches: [ wpf-implementation ]
 
 jobs:
   build:
     runs-on: windows-latest
-
+    
     steps:
     - uses: actions/checkout@v4
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
         
     - name: Restore dependencies
-      run: dotnet restore wpf-timer/SeekbarTimer.csproj
+      run: dotnet restore wpf-seekbar-timer/SeekbarTimer.csproj
       
-    - name: Build WPF application
-      run: dotnet build wpf-timer/SeekbarTimer.csproj --configuration Release --no-restore
+    - name: Build
+      run: dotnet build wpf-seekbar-timer/SeekbarTimer.csproj --no-restore --configuration Release
       
-    - name: Publish self-contained executable
-      run: dotnet publish wpf-timer/SeekbarTimer.csproj --configuration Release --output ./publish --self-contained true --runtime win-x64 --verbosity normal /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true
+    - name: Publish Windows x64
+      run: dotnet publish wpf-seekbar-timer/SeekbarTimer.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./publish/win-x64
       
-    - name: Upload WPF artifacts
+    - name: Publish Windows x86
+      run: dotnet publish wpf-seekbar-timer/SeekbarTimer.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./publish/win-x86
+      
+    - name: Upload Windows x64 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: wpf-seekbar-timer
-        path: ./publish/SeekbarTimer.exe
-        retention-days: 7
+        name: SeekbarTimer-win-x64
+        path: ./publish/win-x64/SeekbarTimer.exe
+        
+    - name: Upload Windows x86 artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: SeekbarTimer-win-x86
+        path: ./publish/win-x86/SeekbarTimer.exe
+
+  release:
+    needs: build
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+        
+    - name: Publish Windows x64
+      run: dotnet publish wpf-seekbar-timer/SeekbarTimer.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./release/win-x64
+      
+    - name: Publish Windows x86
+      run: dotnet publish wpf-seekbar-timer/SeekbarTimer.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./release/win-x86
+      
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./release/win-x64/SeekbarTimer.exe
+          ./release/win-x86/SeekbarTimer.exe
+        name: Seekbar Timer ${{ github.ref_name }}
+        body: |
+          ## Seekbar Timer - WPF版
+          
+          プレゼンテーション用のタイムキーパーアプリケーションです。
+          
+          ### ダウンロード
+          - **SeekbarTimer.exe (x64)** - 64bit Windows用
+          - **SeekbarTimer.exe (x86)** - 32bit Windows用
+          
+          ### 機能
+          - 縦方向シークバー表示
+          - 4つの配置位置（右端・左端・上端・下端）
+          - 視覚的な警告（60%でオレンジ、80%で赤色点滅）
+          - Always on top表示
+          - ホバー時のコントロールパネル
+          
+          ### 使い方
+          1. ダウンロードしたexeファイルを実行
+          2. 時間と配置位置を設定
+          3. 「開始」ボタンでタイマー開始
+          
+          ### 動作環境
+          - Windows 10/11
+          - .NET Framework不要（自己完結型）
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
