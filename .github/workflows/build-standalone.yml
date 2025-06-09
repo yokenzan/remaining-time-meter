@@ -19,50 +19,8 @@ jobs:
       with:
         go-version: '1.21'
         
-    - name: Build Windows native executable
-      run: |
-        cd native-windows
-        GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -w -H=windowsgui" -o ../seekbar-timer-native.exe .
+    - name: Note
+      run: echo "Legacy build workflow - use WPF build instead"
         
-    - name: Build Windows standalone executable
-      run: |
-        cd fyne-app/standalone-app
-        GOOS=windows GOARCH=amd64 go build -ldflags "-s -w -H=windowsgui" -o ../../seekbar-timer-windows.exe .
-        
-    - name: Build Linux executable  
-      run: |
-        cd fyne-app/standalone-app
-        GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o ../../seekbar-timer-linux .
-        
-    - name: Build macOS executable
-      run: |
-        cd fyne-app/standalone-app
-        GOOS=darwin GOARCH=amd64 go build -ldflags "-s -w" -o ../../seekbar-timer-macos .
-        
-    - name: Upload Windows native artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: windows-native-build
-        path: seekbar-timer-native.exe
-        retention-days: 7
-        
-    - name: Upload Windows standalone artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: windows-standalone-build
-        path: seekbar-timer-windows.exe
-        retention-days: 7
-        
-    - name: Upload Linux artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: linux-build
-        path: seekbar-timer-linux
-        retention-days: 7
-        
-    - name: Upload macOS artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: macos-build
-        path: seekbar-timer-macos
-        retention-days: 7
+    - name: Note about artifacts
+      run: echo "Use WPF build workflow for current implementation"
