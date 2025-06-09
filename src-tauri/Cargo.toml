@@ -10,16 +10,12 @@ name = "app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2", features = [] }
+tauri-build = { version = "1.0", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = ["devtools"] }
-tauri-plugin-shell = "2"
+tauri = { version = "1.0", features = [ "window-maximize", "window-hide", "window-unminimize", "window-start-dragging", "window-show", "window-unmaximize", "window-close", "window-minimize"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-
-[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri-plugin-updater = "2"
 
 [features]
 default = ["custom-protocol"]
