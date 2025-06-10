@@ -3,6 +3,7 @@
 // </copyright>
 
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -226,9 +227,52 @@ namespace ProgressBarTimerKeeper
         /// </summary>
         private void ShowTimeUpNotification()
         {
-            System.Windows.MessageBox.Show("時間切れです！", "タイマー", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                // Windows 10/11のシステム通知を使用
+                this.ShowWindowsNotification("タイマー", "時間切れです！");
+            }
+            catch
+            {
+                // フォールバックとしてメッセージボックスを表示
+                System.Windows.MessageBox.Show("時間切れです！", "タイマー", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
             this.MainWindowRequested?.Invoke();
             this.Close();
+        }
+
+        /// <summary>
+        /// Shows Windows system notification using shell_notifyicon.
+        /// </summary>
+        /// <param name="title">Notification title.</param>
+        /// <param name="message">Notification message.</param>
+        private void ShowWindowsNotification(string title, string message)
+        {
+            // NotifyIconを使用してシステム通知を表示
+            var notifyIcon = new System.Windows.Forms.NotifyIcon();
+            try
+            {
+                notifyIcon.Icon = System.Drawing.SystemIcons.Information;
+                notifyIcon.Visible = true;
+                notifyIcon.ShowBalloonTip(5000, title, message, System.Windows.Forms.ToolTipIcon.Info);
+
+                // 通知表示後に自動的にアイコンを非表示にする
+                System.Threading.Tasks.Task.Run(async () =>
+                {
+                    await System.Threading.Tasks.Task.Delay(6000);
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        notifyIcon.Visible = false;
+                        notifyIcon.Dispose();
+                    });
+                });
+            }
+            catch
+            {
+                notifyIcon.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
