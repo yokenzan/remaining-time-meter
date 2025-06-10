@@ -3,7 +3,6 @@
 // </copyright>
 
 using System;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -15,7 +14,7 @@ namespace ProgressBarTimerKeeper
     /// <summary>
     /// Interaction logic for TimerWindow.xaml.
     /// </summary>
-    public partial class TimerWindow : Window
+    public partial class TimerWindow : Window, IDisposable
     {
         private readonly DispatcherTimer timer;
         private readonly TimerPosition position;
@@ -23,6 +22,7 @@ namespace ProgressBarTimerKeeper
         private int totalSeconds;
         private int remainingSeconds;
         private bool isPaused = false;
+        private bool disposed = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TimerWindow"/> class.
@@ -54,6 +54,32 @@ namespace ProgressBarTimerKeeper
         /// Event triggered when main window is requested.
         /// </summary>
         public event Action? MainWindowRequested;
+
+        /// <summary>
+        /// Releases all resources used by this instance.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    this.timer?.Stop();
+                }
+
+                this.disposed = true;
+            }
+        }
 
         /// <summary>
         /// Parses position string to TimerPosition enum.
@@ -95,28 +121,28 @@ namespace ProgressBarTimerKeeper
             switch (this.position)
             {
                 case TimerPosition.Right:
-                    this.Width = 20;
-                    this.Height = logicalScreenHeight * 0.8;
-                    this.Left = logicalScreenLeft + logicalScreenWidth - this.Width - 10;
+                    this.Width = Constants.TimerBarWidth;
+                    this.Height = logicalScreenHeight * Constants.ScreenSizeRatio;
+                    this.Left = logicalScreenLeft + logicalScreenWidth - this.Width - Constants.ScreenMargin;
                     this.Top = logicalScreenTop + ((logicalScreenHeight - this.Height) / 2);
                     break;
                 case TimerPosition.Left:
-                    this.Width = 20;
-                    this.Height = logicalScreenHeight * 0.8;
-                    this.Left = logicalScreenLeft + 10;
+                    this.Width = Constants.TimerBarWidth;
+                    this.Height = logicalScreenHeight * Constants.ScreenSizeRatio;
+                    this.Left = logicalScreenLeft + Constants.ScreenMargin;
                     this.Top = logicalScreenTop + ((logicalScreenHeight - this.Height) / 2);
                     break;
                 case TimerPosition.Top:
-                    this.Width = logicalScreenWidth * 0.8;
-                    this.Height = 20;
+                    this.Width = logicalScreenWidth * Constants.ScreenSizeRatio;
+                    this.Height = Constants.TimerBarHeight;
                     this.Left = logicalScreenLeft + ((logicalScreenWidth - this.Width) / 2);
-                    this.Top = logicalScreenTop + 10;
+                    this.Top = logicalScreenTop + Constants.ScreenMargin;
                     break;
                 case TimerPosition.Bottom:
-                    this.Width = logicalScreenWidth * 0.8;
-                    this.Height = 20;
+                    this.Width = logicalScreenWidth * Constants.ScreenSizeRatio;
+                    this.Height = Constants.TimerBarHeight;
                     this.Left = logicalScreenLeft + ((logicalScreenWidth - this.Width) / 2);
-                    this.Top = logicalScreenTop + logicalScreenHeight - this.Height - 50;
+                    this.Top = logicalScreenTop + logicalScreenHeight - this.Height - Constants.BottomMargin;
                     break;
             }
         }
@@ -196,19 +222,19 @@ namespace ProgressBarTimerKeeper
 
             double progress = (double)(this.totalSeconds - this.remainingSeconds) / this.totalSeconds;
 
-            if (progress >= 0.8)
+            if (progress >= Constants.RedThreshold)
             {
                 this.ProgressBar.Fill = new SolidColorBrush(Colors.Red);
 
                 // 点滅効果
-                var animation = new DoubleAnimation(0.3, 1.0, TimeSpan.FromMilliseconds(500))
+                var animation = new DoubleAnimation(Constants.BlinkMinOpacity, Constants.BlinkMaxOpacity, TimeSpan.FromMilliseconds(Constants.BlinkAnimationDuration))
                 {
                     AutoReverse = true,
                     RepeatBehavior = RepeatBehavior.Forever,
                 };
                 this.ProgressBar.BeginAnimation(OpacityProperty, animation);
             }
-            else if (progress >= 0.6)
+            else if (progress >= Constants.OrangeThreshold)
             {
                 this.ProgressBar.Fill = new SolidColorBrush(Colors.Orange);
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
@@ -260,22 +286,24 @@ namespace ProgressBarTimerKeeper
             {
                 notifyIcon.Icon = System.Drawing.SystemIcons.Information;
                 notifyIcon.Visible = true;
-                notifyIcon.ShowBalloonTip(5000, title, message, System.Windows.Forms.ToolTipIcon.Info);
+                notifyIcon.ShowBalloonTip(Constants.NotificationDuration, title, message, System.Windows.Forms.ToolTipIcon.Info);
 
                 // 通知表示後に自動的にアイコンを非表示にする
-                System.Threading.Tasks.Task.Run(async () =>
+                var timer = new DispatcherTimer
                 {
-                    await System.Threading.Tasks.Task.Delay(6000);
-                    this.Dispatcher.Invoke(() =>
-                    {
-                        notifyIcon.Visible = false;
-                        notifyIcon.Dispose();
-                    });
-                });
+                    Interval = TimeSpan.FromMilliseconds(Constants.NotificationCleanupDelay),
+                };
+                timer.Tick += (s, e) =>
+                {
+                    timer.Stop();
+                    notifyIcon.Visible = false;
+                    notifyIcon.Dispose();
+                };
+                timer.Start();
             }
             catch
             {
-                notifyIcon.Dispose();
+                notifyIcon?.Dispose();
                 throw;
             }
         }
@@ -301,30 +329,30 @@ namespace ProgressBarTimerKeeper
             var logicalScreenLeft = screenLeft / dpiScale.DpiScaleX;
             var logicalScreenTop = screenTop / dpiScale.DpiScaleY;
 
-            double expandedWidth = 200;
-            double expandedHeight = 150;
+            double expandedWidth = Constants.ExpandedWidth;
+            double expandedHeight = Constants.ExpandedHeight;
 
             switch (this.position)
             {
                 case TimerPosition.Right:
                     this.Width = expandedWidth;
                     this.Height = Math.Max(this.Height, expandedHeight);
-                    this.Left = logicalScreenLeft + logicalScreenWidth - expandedWidth - 10;
+                    this.Left = logicalScreenLeft + logicalScreenWidth - expandedWidth - Constants.ScreenMargin;
                     break;
                 case TimerPosition.Left:
                     this.Width = expandedWidth;
                     this.Height = Math.Max(this.Height, expandedHeight);
-                    this.Left = logicalScreenLeft + 10;
+                    this.Left = logicalScreenLeft + Constants.ScreenMargin;
                     break;
                 case TimerPosition.Top:
                     this.Width = Math.Max(this.Width, expandedWidth);
                     this.Height = expandedHeight;
-                    this.Top = logicalScreenTop + 10;
+                    this.Top = logicalScreenTop + Constants.ScreenMargin;
                     break;
                 case TimerPosition.Bottom:
                     this.Width = Math.Max(this.Width, expandedWidth);
                     this.Height = expandedHeight;
-                    this.Top = logicalScreenTop + logicalScreenHeight - expandedHeight - 50;
+                    this.Top = logicalScreenTop + logicalScreenHeight - expandedHeight - Constants.BottomMargin;
                     break;
             }
 
