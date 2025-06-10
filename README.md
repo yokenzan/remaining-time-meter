@@ -46,10 +46,20 @@
 ### WPF版 (Windows専用)
 📁 `wpf-progressbar-timerkeeper/`
 
-#### ダウンロード
-GitHub Releasesから実行ファイルをダウンロードできます：
-- Windows x64版
-- Windows x86版
+#### 📥 ダウンロード
+GitHub Releasesから2種類の実行ファイルをダウンロードできます：
+
+##### 🎯 推奨：Framework-dependent版（サイズ小）
+- **ProgressBarTimerKeeper-framework-dependent-win-x64.exe** - 64bit Windows用
+- **ProgressBarTimerKeeper-framework-dependent-win-x86.exe** - 32bit Windows用
+
+**要件**: .NET 8.0 Desktop Runtimeが必要
+- 未インストールの場合、アプリ実行時に自動でダウンロードページに案内されます
+- [.NET 8.0 Desktop Runtime ダウンロード](https://dotnet.microsoft.com/download/dotnet/8.0)
+
+##### 🔧 Self-contained版（サイズ大、ランタイム不要）
+- **ProgressBarTimerKeeper-self-contained-win-x64.exe** - 64bit Windows用
+- **ProgressBarTimerKeeper-self-contained-win-x86.exe** - 32bit Windows用
 
 #### ビルド・実行方法
 
@@ -65,10 +75,16 @@ cd wpf-progressbar-timerkeeper
 dotnet run
 ```
 
-##### 発行（単一実行ファイル作成）
 ```bash
 cd wpf-progressbar-timerkeeper
+# 64bit版(Framework-dependent)
+dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true
+# 32bit版(Framework-dependent)
+dotnet publish -c Release -r win-x86 --self-contained false -p:PublishSingleFile=true
+# 64bit版(Self-contained)
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+# 32bit版(Self-contained)
+dotnet publish -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true
 ```
 
 ## 使い方
