@@ -227,15 +227,20 @@ namespace ProgressBarTimerKeeper
         /// </summary>
         private void ShowTimeUpNotification()
         {
+            // 経過時間を計算
+            int minutes = this.totalSeconds / 60;
+            int seconds = this.totalSeconds % 60;
+            string message = $"時間です！{minutes}分{seconds}秒経過しました！";
+
             try
             {
                 // Windows 10/11のシステム通知を使用
-                this.ShowWindowsNotification("タイマー", "時間切れです！");
+                this.ShowWindowsNotification("タイマー", message);
             }
             catch
             {
                 // フォールバックとしてメッセージボックスを表示
-                System.Windows.MessageBox.Show("時間切れです！", "タイマー", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show(message, "タイマー", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             this.MainWindowRequested?.Invoke();
