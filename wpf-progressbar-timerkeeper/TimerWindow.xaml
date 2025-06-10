@@ -25,7 +25,7 @@
                 <Rectangle x:Name="ProgressBar" 
                           Fill="#4CAF50" 
                           VerticalAlignment="Bottom"
-                          Height="0"/>
+                          HorizontalAlignment="Left"/>
             </Grid>
         </Border>
         
