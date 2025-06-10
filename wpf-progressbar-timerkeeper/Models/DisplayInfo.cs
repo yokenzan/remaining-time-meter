@@ -30,6 +30,16 @@ namespace ProgressBarTimerKeeper.Models
         public int Height { get; set; }
 
         /// <summary>
+        /// Gets or sets the DPI scale factor for the X-axis.
+        /// </summary>
+        public double ScaleX { get; set; } = 1.0;
+
+        /// <summary>
+        /// Gets or sets the DPI scale factor for the Y-axis.
+        /// </summary>
+        public double ScaleY { get; set; } = 1.0;
+
+        /// <summary>
         /// Gets or sets a value indicating whether this display is the primary display.
         /// </summary>
         public bool IsPrimary { get; set; }

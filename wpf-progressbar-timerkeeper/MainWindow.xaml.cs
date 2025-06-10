@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
+using System.Windows.Media;
 using ProgressBarTimerKeeper.Models;
 
 namespace ProgressBarTimerKeeper
@@ -73,12 +75,26 @@ namespace ProgressBarTimerKeeper
 
             foreach (System.Windows.Forms.Screen screen in System.Windows.Forms.Screen.AllScreens)
             {
+                // DPI情報を取得
+                var source = PresentationSource.FromVisual(this);
+                double scaleX = 1.0;
+                double scaleY = 1.0;
+
+                if (source?.CompositionTarget != null)
+                {
+                    var matrix = source.CompositionTarget.TransformToDevice;
+                    scaleX = matrix.M11;
+                    scaleY = matrix.M22;
+                }
+
                 displays.Add(new DisplayInfo
                 {
                     Left = screen.Bounds.Left,
                     Top = screen.Bounds.Top,
                     Width = screen.Bounds.Width,
                     Height = screen.Bounds.Height,
+                    ScaleX = scaleX,
+                    ScaleY = scaleY,
                     IsPrimary = screen.Primary,
                 });
             }

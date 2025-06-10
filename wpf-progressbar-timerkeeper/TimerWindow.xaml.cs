@@ -76,36 +76,46 @@ namespace ProgressBarTimerKeeper
         /// </summary>
         private void SetupWindowPosition()
         {
+            // DPIスケーリングを考慮した座標計算
+            var dpiScale = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+
+            // 物理ピクセルでのスクリーン情報
             var screenWidth = this.targetDisplay.Width;
             var screenHeight = this.targetDisplay.Height;
             var screenLeft = this.targetDisplay.Left;
             var screenTop = this.targetDisplay.Top;
 
+            // WPFのロジカルピクセルに変換
+            var logicalScreenWidth = screenWidth / dpiScale.DpiScaleX;
+            var logicalScreenHeight = screenHeight / dpiScale.DpiScaleY;
+            var logicalScreenLeft = screenLeft / dpiScale.DpiScaleX;
+            var logicalScreenTop = screenTop / dpiScale.DpiScaleY;
+
             switch (this.position)
             {
                 case TimerPosition.Right:
                     this.Width = 20;
-                    this.Height = screenHeight * 0.8;
-                    this.Left = screenLeft + screenWidth - this.Width - 10;
-                    this.Top = screenTop + ((screenHeight - this.Height) / 2);
+                    this.Height = logicalScreenHeight * 0.8;
+                    this.Left = logicalScreenLeft + logicalScreenWidth - this.Width - 10;
+                    this.Top = logicalScreenTop + ((logicalScreenHeight - this.Height) / 2);
                     break;
                 case TimerPosition.Left:
                     this.Width = 20;
-                    this.Height = screenHeight * 0.8;
-                    this.Left = screenLeft + 10;
-                    this.Top = screenTop + ((screenHeight - this.Height) / 2);
+                    this.Height = logicalScreenHeight * 0.8;
+                    this.Left = logicalScreenLeft + 10;
+                    this.Top = logicalScreenTop + ((logicalScreenHeight - this.Height) / 2);
                     break;
                 case TimerPosition.Top:
-                    this.Width = screenWidth * 0.8;
+                    this.Width = logicalScreenWidth * 0.8;
                     this.Height = 20;
-                    this.Left = screenLeft + ((screenWidth - this.Width) / 2);
-                    this.Top = screenTop + 10;
+                    this.Left = logicalScreenLeft + ((logicalScreenWidth - this.Width) / 2);
+                    this.Top = logicalScreenTop + 10;
                     break;
                 case TimerPosition.Bottom:
-                    this.Width = screenWidth * 0.8;
+                    this.Width = logicalScreenWidth * 0.8;
                     this.Height = 20;
-                    this.Left = screenLeft + ((screenWidth - this.Width) / 2);
-                    this.Top = screenTop + screenHeight - this.Height - 50;
+                    this.Left = logicalScreenLeft + ((logicalScreenWidth - this.Width) / 2);
+                    this.Top = logicalScreenTop + logicalScreenHeight - this.Height - 50;
                     break;
             }
         }
@@ -228,10 +238,19 @@ namespace ProgressBarTimerKeeper
         /// <param name="e">The event arguments.</param>
         private void Window_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            // DPIスケーリングを考慮した座標計算
+            var dpiScale = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+
             var screenWidth = this.targetDisplay.Width;
             var screenHeight = this.targetDisplay.Height;
             var screenLeft = this.targetDisplay.Left;
             var screenTop = this.targetDisplay.Top;
+
+            // WPFのロジカルピクセルに変換
+            var logicalScreenWidth = screenWidth / dpiScale.DpiScaleX;
+            var logicalScreenHeight = screenHeight / dpiScale.DpiScaleY;
+            var logicalScreenLeft = screenLeft / dpiScale.DpiScaleX;
+            var logicalScreenTop = screenTop / dpiScale.DpiScaleY;
 
             double expandedWidth = 200;
             double expandedHeight = 150;
@@ -241,22 +260,22 @@ namespace ProgressBarTimerKeeper
                 case TimerPosition.Right:
                     this.Width = expandedWidth;
                     this.Height = Math.Max(this.Height, expandedHeight);
-                    this.Left = screenLeft + screenWidth - expandedWidth - 10;
+                    this.Left = logicalScreenLeft + logicalScreenWidth - expandedWidth - 10;
                     break;
                 case TimerPosition.Left:
                     this.Width = expandedWidth;
                     this.Height = Math.Max(this.Height, expandedHeight);
-                    this.Left = screenLeft + 10;
+                    this.Left = logicalScreenLeft + 10;
                     break;
                 case TimerPosition.Top:
                     this.Width = Math.Max(this.Width, expandedWidth);
                     this.Height = expandedHeight;
-                    this.Top = screenTop + 10;
+                    this.Top = logicalScreenTop + 10;
                     break;
                 case TimerPosition.Bottom:
                     this.Width = Math.Max(this.Width, expandedWidth);
                     this.Height = expandedHeight;
-                    this.Top = screenTop + screenHeight - expandedHeight - 50;
+                    this.Top = logicalScreenTop + logicalScreenHeight - expandedHeight - 50;
                     break;
             }
 
