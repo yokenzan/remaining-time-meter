@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="残り時間メーター" Height="350" Width="400"
         WindowStartupLocation="CenterScreen"
-        Icon="tv_timekeeper.ico">
+        Icon="tv_timekeeper_trimmed.ico">
     <Grid>
         <StackPanel Margin="20" VerticalAlignment="Center">
             <TextBlock Text="Remaining Time Meter" FontSize="24" FontWeight="Bold" 
