@@ -76,6 +76,7 @@ test:
 .PHONY: format
 format:
 	dotnet format $(CSPROJ_FILE)
+	dotnet format whitespace $(CSPROJ_FILE)
 
 # Show help
 .PHONY: help
