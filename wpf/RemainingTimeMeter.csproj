@@ -34,7 +34,6 @@
 
     <ItemGroup>
         <Resource Include="tv_timekeeper_trimmed.ico" />
-        <None Remove="tv_timekeeper.ico" />
     </ItemGroup>
 
     <ItemGroup>
