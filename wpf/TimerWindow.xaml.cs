@@ -1,5 +1,5 @@
 // <copyright file="TimerWindow.xaml.cs" company="RemainingTimeMeter">
-// Copyright (c) RemainingTimeMeter. All rights reserved.
+// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
