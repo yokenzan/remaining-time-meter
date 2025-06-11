@@ -11,9 +11,9 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
                 <TextBlock Text="時間設定: " VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="MinutesTextBox" Width="50" Text="5" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus"/>
+                <TextBox x:Name="MinutesTextBox" Width="50" Text="5" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
                 <TextBlock Text="分" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                <TextBox x:Name="SecondsTextBox" Width="50" Text="00" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus"/>
+                <TextBox x:Name="SecondsTextBox" Width="50" Text="00" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
                 <TextBlock Text="秒" VerticalAlignment="Center" Margin="5,0,0,0"/>
             </StackPanel>
 

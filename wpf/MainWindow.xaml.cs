@@ -240,5 +240,31 @@ namespace RemainingTimeMeter
                 Logger.Error("TextBox_GotFocus failed", ex);
             }
         }
+
+        /// <summary>
+        /// Handles the PreviewMouseLeftButtonDown event for textboxes to ensure proper focus and selection behavior.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void TextBox_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Logger.Debug("TextBox_PreviewMouseLeftButtonDown started");
+            try
+            {
+                if (sender is System.Windows.Controls.TextBox textBox)
+                {
+                    if (!textBox.IsKeyboardFocusWithin)
+                    {
+                        textBox.Focus();
+                        e.Handled = true;
+                        Logger.Debug($"Focused textbox: {textBox.Name}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("TextBox_PreviewMouseLeftButtonDown failed", ex);
+            }
+        }
     }
 }
