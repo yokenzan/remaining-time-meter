@@ -32,22 +32,38 @@ namespace ProgressBarTimerKeeper
         /// <param name="targetDisplay">Target display information.</param>
         public TimerWindow(int totalSeconds, string position, DisplayInfo targetDisplay)
         {
-            this.InitializeComponent();
-            this.totalSeconds = totalSeconds;
-            this.remainingSeconds = totalSeconds;
-            this.position = this.ParsePosition(position);
-            this.targetDisplay = targetDisplay;
-
-            this.timer = new DispatcherTimer
+            Logger.Info($"TimerWindow constructor started - totalSeconds: {totalSeconds}, position: {position}");
+            try
             {
-                Interval = TimeSpan.FromSeconds(1),
-            };
-            this.timer.Tick += this.Timer_Tick;
+                this.InitializeComponent();
+                Logger.Debug("TimerWindow InitializeComponent completed");
+                this.totalSeconds = totalSeconds;
+                this.remainingSeconds = totalSeconds;
+                this.position = this.ParsePosition(position);
+                this.targetDisplay = targetDisplay;
+                Logger.Debug($"TimerWindow properties set - position enum: {this.position}, display: {targetDisplay.Width}x{targetDisplay.Height}");
 
-            this.SetupWindowPosition();
-            this.UpdateTimeDisplay();
-            this.UpdateProgressBar();
-            this.timer.Start();
+                this.timer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(1),
+                };
+                this.timer.Tick += this.Timer_Tick;
+                Logger.Debug("Timer created and configured");
+
+                this.SetupWindowPosition();
+                Logger.Debug("Window position setup completed");
+                this.UpdateTimeDisplay();
+                Logger.Debug("Time display updated");
+                this.UpdateProgressBar();
+                Logger.Debug("Progress bar updated");
+                this.timer.Start();
+                Logger.Info("TimerWindow constructor completed successfully - timer started");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("TimerWindow constructor failed", ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -380,9 +396,18 @@ namespace ProgressBarTimerKeeper
         /// <param name="e">The event arguments.</param>
         private void PauseResumeButton_Click(object sender, RoutedEventArgs e)
         {
-            this.isPaused = !this.isPaused;
-            this.PauseResumeButton.Content = this.isPaused ? "再開" : "一時停止";
-            this.UpdateBarColor(); // 一時停止状態の変更時に色を更新
+            Logger.Info($"PauseResumeButton_Click - current state: isPaused={this.isPaused}");
+            try
+            {
+                this.isPaused = !this.isPaused;
+                this.PauseResumeButton.Content = this.isPaused ? "再開" : "一時停止";
+                this.UpdateBarColor(); // 一時停止状態の変更時に色を更新
+                Logger.Info($"PauseResumeButton_Click completed - new state: isPaused={this.isPaused}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("PauseResumeButton_Click failed", ex);
+            }
         }
 
         /// <summary>
@@ -392,9 +417,20 @@ namespace ProgressBarTimerKeeper
         /// <param name="e">The event arguments.</param>
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            this.timer.Stop();
-            this.MainWindowRequested?.Invoke();
-            this.Close();
+            Logger.Info("StopButton_Click started");
+            try
+            {
+                this.timer.Stop();
+                Logger.Debug("Timer stopped");
+                this.MainWindowRequested?.Invoke();
+                Logger.Debug("MainWindowRequested event invoked");
+                this.Close();
+                Logger.Info("StopButton_Click completed - window closed");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("StopButton_Click failed", ex);
+            }
         }
 
         /// <summary>
@@ -404,9 +440,20 @@ namespace ProgressBarTimerKeeper
         /// <param name="e">The event arguments.</param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            this.timer.Stop();
-            this.MainWindowRequested?.Invoke();
-            this.Close();
+            Logger.Info("CloseButton_Click started");
+            try
+            {
+                this.timer.Stop();
+                Logger.Debug("Timer stopped");
+                this.MainWindowRequested?.Invoke();
+                Logger.Debug("MainWindowRequested event invoked");
+                this.Close();
+                Logger.Info("CloseButton_Click completed - window closed");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("CloseButton_Click failed", ex);
+            }
         }
     }
 }

@@ -43,6 +43,17 @@ publish:
 		--property:PublishSingleFile=true \
 		--property:PublishTrimmed=false
 
+# Publish debug version with logging
+.PHONY: publish-debug
+publish-debug:
+	dotnet publish $(CSPROJ_FILE) \
+		--configuration Debug \
+		--runtime $(RUNTIME) \
+		--self-contained true \
+		--output bin/Debug/$(RUNTIME) \
+		--property:PublishSingleFile=false \
+		--property:PublishTrimmed=false
+
 # Clean build artifacts
 .PHONY: clean
 clean:
@@ -76,6 +87,7 @@ help:
 	@echo "  run       - Build and run in Release mode"
 	@echo "  run-debug - Build and run in Debug mode"
 	@echo "  publish   - Create single executable in publish/ directory"
+	@echo "  publish-debug - Create debug executable with logging in bin/Debug/win-x64/"
 	@echo "  clean     - Remove build artifacts"
 	@echo "  restore   - Restore NuGet packages"
 	@echo "  test      - Run tests"
