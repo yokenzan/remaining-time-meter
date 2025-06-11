@@ -1,7 +1,7 @@
-# Makefile for ProgressBarTimerKeeper WPF Application
+# Makefile for RemainingTimeMeter WPF Application
 
 # Project settings
-PROJECT_NAME = ProgressBarTimerKeeper
+PROJECT_NAME = RemainingTimeMeter
 CSPROJ_FILE = $(PROJECT_NAME).csproj
 OUTPUT_DIR = bin
 PUBLISH_DIR = publish

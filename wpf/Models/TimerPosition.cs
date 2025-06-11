@@ -1,8 +1,8 @@
-// <copyright file="TimerPosition.cs" company="MeterTimeKeeper">
-// Copyright (c) MeterTimeKeeper. All rights reserved.
+// <copyright file="TimerPosition.cs" company="RemainingTimeMeter">
+// Copyright (c) RemainingTimeMeter. All rights reserved.
 // </copyright>
 
-namespace ProgressBarTimerKeeper.Models
+namespace RemainingTimeMeter.Models
 {
     /// <summary>
     /// Represents the position where the timer should be displayed.

@@ -1,8 +1,8 @@
-// <copyright file="Constants.cs" company="MeterTimeKeeper">
-// Copyright (c) MeterTimeKeeper. All rights reserved.
+// <copyright file="Constants.cs" company="RemainingTimeMeter">
+// Copyright (c) RemainingTimeMeter. All rights reserved.
 // </copyright>
 
-namespace ProgressBarTimerKeeper
+namespace RemainingTimeMeter
 {
     /// <summary>
     /// Application constants for UI layout and timing.

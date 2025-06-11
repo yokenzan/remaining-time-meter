@@ -1,12 +1,12 @@
-<Window x:Class="ProgressBarTimerKeeper.MainWindow"
+<Window x:Class="RemainingTimeMeter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ProgressBar TimerKeeper" Height="350" Width="400"
+        Title="Remaining Time Meter" Height="350" Width="400"
         WindowStartupLocation="CenterScreen"
         Icon="tv_timekeeper.ico">
     <Grid>
         <StackPanel Margin="20" VerticalAlignment="Center">
-            <TextBlock Text="ProgressBar TimerKeeper" FontSize="24" FontWeight="Bold" 
+            <TextBlock Text="Remaining Time Meter" FontSize="24" FontWeight="Bold" 
                        HorizontalAlignment="Center" Margin="0,0,0,20"/>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">

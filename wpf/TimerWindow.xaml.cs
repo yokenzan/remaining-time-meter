@@ -1,5 +1,5 @@
-// <copyright file="TimerWindow.xaml.cs" company="MeterTimeKeeper">
-// Copyright (c) MeterTimeKeeper. All rights reserved.
+// <copyright file="TimerWindow.xaml.cs" company="RemainingTimeMeter">
+// Copyright (c) RemainingTimeMeter. All rights reserved.
 // </copyright>
 
 using System;
@@ -7,9 +7,9 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using ProgressBarTimerKeeper.Models;
+using RemainingTimeMeter.Models;
 
-namespace ProgressBarTimerKeeper
+namespace RemainingTimeMeter
 {
     /// <summary>
     /// Interaction logic for TimerWindow.xaml.
