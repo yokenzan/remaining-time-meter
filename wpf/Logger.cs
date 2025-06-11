@@ -22,16 +22,26 @@ namespace RemainingTimeMeter
         /// </summary>
         static Logger()
         {
-            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            LogDirectory = Path.Combine(appDataPath, "RemainingTimeMeter");
-
-            if (!Directory.Exists(LogDirectory))
+            try
             {
-                Directory.CreateDirectory(LogDirectory);
-            }
+                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                LogDirectory = Path.Combine(appDataPath, "RemainingTimeMeter");
 
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            LogFileInternal = Path.Combine(LogDirectory, $"debug_{timestamp}.log");
+                if (!Directory.Exists(LogDirectory))
+                {
+                    Directory.CreateDirectory(LogDirectory);
+                }
+
+                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                LogFileInternal = Path.Combine(LogDirectory, $"debug_{timestamp}.log");
+            }
+            catch (Exception)
+            {
+                // If we can't create the log directory, use temp directory as fallback
+                LogDirectory = Path.GetTempPath();
+                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                LogFileInternal = Path.Combine(LogDirectory, $"RemainingTimeMeter_debug_{timestamp}.log");
+            }
         }
 
         /// <summary>

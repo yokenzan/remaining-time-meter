@@ -16,7 +16,15 @@ namespace RemainingTimeMeter
         /// </summary>
         public App()
         {
-            Logger.Info("Application starting up");
+            try
+            {
+                Logger.Info("Application starting up");
+            }
+            catch
+            {
+                // Ignore logging errors during startup
+            }
+
             this.Startup += this.App_Startup;
             this.Exit += this.App_Exit;
         }
@@ -28,7 +36,14 @@ namespace RemainingTimeMeter
         /// <param name="e">The event arguments.</param>
         private void App_Startup(object sender, StartupEventArgs e)
         {
-            Logger.Info($"Application startup completed. Log file: {Logger.LogFile}");
+            try
+            {
+                Logger.Info($"Application startup completed. Log file: {Logger.LogFile}");
+            }
+            catch
+            {
+                // Ignore logging errors
+            }
         }
 
         /// <summary>
@@ -38,7 +53,14 @@ namespace RemainingTimeMeter
         /// <param name="e">The event arguments.</param>
         private void App_Exit(object sender, ExitEventArgs e)
         {
-            Logger.Info($"Application exiting with code: {e.ApplicationExitCode}");
+            try
+            {
+                Logger.Info($"Application exiting with code: {e.ApplicationExitCode}");
+            }
+            catch
+            {
+                // Ignore logging errors
+            }
         }
     }
 }
