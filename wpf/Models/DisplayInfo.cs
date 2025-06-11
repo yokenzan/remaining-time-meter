@@ -1,8 +1,8 @@
-// <copyright file="DisplayInfo.cs" company="MeterTimeKeeper">
-// Copyright (c) MeterTimeKeeper. All rights reserved.
+// <copyright file="DisplayInfo.cs" company="RemainingTimeMeter">
+// Copyright (c) RemainingTimeMeter. All rights reserved.
 // </copyright>
 
-namespace ProgressBarTimerKeeper.Models
+namespace RemainingTimeMeter.Models
 {
     /// <summary>
     /// Represents display information including position and dimensions.

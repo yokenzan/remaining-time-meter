@@ -1,5 +1,5 @@
-// <copyright file="MainWindow.xaml.cs" company="MeterTimeKeeper">
-// Copyright (c) MeterTimeKeeper. All rights reserved.
+// <copyright file="MainWindow.xaml.cs" company="RemainingTimeMeter">
+// Copyright (c) RemainingTimeMeter. All rights reserved.
 // </copyright>
 
 using System;
@@ -8,9 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
-using ProgressBarTimerKeeper.Models;
+using RemainingTimeMeter.Models;
 
-namespace ProgressBarTimerKeeper
+namespace RemainingTimeMeter
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml.
