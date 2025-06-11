@@ -1,12 +1,12 @@
-// <copyright file="Logger.cs" company="MeterTimeKeeper">
-// Copyright (c) MeterTimeKeeper. All rights reserved.
+// <copyright file="Logger.cs" company="RemainingTimeMeter">
+// Copyright (c) RemainingTimeMeter. All rights reserved.
 // </copyright>
 
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace ProgressBarTimerKeeper
+namespace RemainingTimeMeter
 {
     /// <summary>
     /// Simple logger for debugging purposes.
@@ -23,7 +23,7 @@ namespace ProgressBarTimerKeeper
         static Logger()
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            LogDirectory = Path.Combine(appDataPath, "ProgressBarTimerKeeper");
+            LogDirectory = Path.Combine(appDataPath, "RemainingTimeMeter");
 
             if (!Directory.Exists(LogDirectory))
             {
