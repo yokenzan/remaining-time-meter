@@ -8,7 +8,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
-        <ApplicationIcon>tv_timekeeper.ico</ApplicationIcon>
+        <ApplicationIcon>tv_timekeeper_trimmed.ico</ApplicationIcon>
         <AssemblyTitle>Remaining Time Meter</AssemblyTitle>
         <Product>Remaining Time Meter</Product>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -31,8 +31,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Resource Include="tv_timekeeper.png" />
-        <Resource Include="tv_timekeeper.ico" />
+        <Resource Include="tv_timekeeper_trimmed.ico" />
     </ItemGroup>
 
     <ItemGroup>
