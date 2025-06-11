@@ -218,5 +218,27 @@ namespace RemainingTimeMeter
                 System.Windows.MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        /// <summary>
+        /// Handles the GotFocus event for textboxes to select all text.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Logger.Debug("TextBox_GotFocus started");
+            try
+            {
+                if (sender is System.Windows.Controls.TextBox textBox)
+                {
+                    textBox.SelectAll();
+                    Logger.Debug($"Selected all text in textbox: {textBox.Name}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("TextBox_GotFocus failed", ex);
+            }
+        }
     }
 }
