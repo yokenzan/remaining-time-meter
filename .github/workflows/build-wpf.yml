@@ -34,10 +34,10 @@ jobs:
       
     # Self-contained builds (大きいサイズ、.NETランタイム不要)
     - name: Publish Self-contained Windows x64
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./publish/self-contained/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false --output ./publish/self-contained/win-x64
       
     - name: Publish Self-contained Windows x86
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./publish/self-contained/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false --output ./publish/self-contained/win-x86
       
     # Framework-dependent artifacts
     - name: Upload Framework-dependent Windows x64 artifact
@@ -178,10 +178,10 @@ jobs:
       
     # Self-contained builds for release
     - name: Publish Self-contained Windows x64 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./release/self-contained/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false --output ./release/self-contained/win-x64
       
     - name: Publish Self-contained Windows x86 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./release/self-contained/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false --output ./release/self-contained/win-x86
       
     # Rename files for clarity
     - name: Rename release files
