@@ -33,6 +33,9 @@
         <InvariantGlobalization>false</InvariantGlobalization>
         <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
         <UseSystemResourceKeys>true</UseSystemResourceKeys>
+        
+        <!-- WPFアプリケーション用のネイティブライブラリ自動展開設定 -->
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 
         <!-- Windows Formsとの競合を避けるため、トリミングは条件付きで有効化 -->
         <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
