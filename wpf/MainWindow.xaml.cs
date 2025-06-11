@@ -22,8 +22,20 @@ namespace RemainingTimeMeter
         /// </summary>
         public MainWindow()
         {
-            this.InitializeComponent();
-            this.LoadDisplays();
+            Logger.Info("MainWindow constructor started");
+            try
+            {
+                this.InitializeComponent();
+                Logger.Debug("InitializeComponent completed");
+                this.LoadDisplays();
+                Logger.Debug("LoadDisplays completed");
+                Logger.Info("MainWindow constructor completed successfully");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("MainWindow constructor failed", ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -31,37 +43,53 @@ namespace RemainingTimeMeter
         /// </summary>
         private void LoadDisplays()
         {
-            this.DisplayComboBox.Items.Clear();
-
-            var displayInfos = this.GetDisplayInformation();
-
-            for (int i = 0; i < displayInfos.Count; i++)
+            Logger.Debug("LoadDisplays started");
+            try
             {
-                var display = displayInfos[i];
-                string displayName;
+                this.DisplayComboBox.Items.Clear();
+                Logger.Debug("DisplayComboBox cleared");
 
-                if (display.IsPrimary)
+                var displayInfos = this.GetDisplayInformation();
+                Logger.Debug($"Found {displayInfos.Count} displays");
+
+                for (int i = 0; i < displayInfos.Count; i++)
                 {
-                    displayName = $"ディスプレー {i + 1} (主画面) - {display.Width}x{display.Height}";
+                    var display = displayInfos[i];
+                    string displayName;
+
+                    if (display.IsPrimary)
+                    {
+                        displayName = $"ディスプレー {i + 1} (主画面) - {display.Width}x{display.Height}";
+                        Logger.Debug($"Primary display found: {displayName}");
+                    }
+                    else
+                    {
+                        displayName = $"ディスプレー {i + 1} - {display.Width}x{display.Height}";
+                        Logger.Debug($"Secondary display found: {displayName}");
+                    }
+
+                    var item = new ComboBoxItem
+                    {
+                        Content = displayName,
+                        Tag = display,
+                    };
+
+                    this.DisplayComboBox.Items.Add(item);
+
+                    // 主画面を既定値として選択
+                    if (display.IsPrimary)
+                    {
+                        this.DisplayComboBox.SelectedItem = item;
+                        Logger.Debug("Primary display set as selected");
+                    }
                 }
-                else
-                {
-                    displayName = $"ディスプレー {i + 1} - {display.Width}x{display.Height}";
-                }
 
-                var item = new ComboBoxItem
-                {
-                    Content = displayName,
-                    Tag = display,
-                };
-
-                this.DisplayComboBox.Items.Add(item);
-
-                // 主画面を既定値として選択
-                if (display.IsPrimary)
-                {
-                    this.DisplayComboBox.SelectedItem = item;
-                }
+                Logger.Debug("LoadDisplays completed successfully");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("LoadDisplays failed", ex);
+                throw;
             }
         }
 
@@ -71,23 +99,38 @@ namespace RemainingTimeMeter
         /// <returns>A list of display information.</returns>
         private List<DisplayInfo> GetDisplayInformation()
         {
+            Logger.Debug("GetDisplayInformation started");
             var displays = new List<DisplayInfo>();
 
             foreach (System.Windows.Forms.Screen screen in System.Windows.Forms.Screen.AllScreens)
             {
-                // DPI情報を取得
-                var source = PresentationSource.FromVisual(this);
+                Logger.Debug($"Processing screen: {screen.DeviceName}, Primary: {screen.Primary}, Bounds: {screen.Bounds}");
+
+                // DPI情報を取得 - ウィンドウが完全に初期化されていない場合はデフォルト値を使用
                 double scaleX = 1.0;
                 double scaleY = 1.0;
 
-                if (source?.CompositionTarget != null)
+                try
                 {
-                    var matrix = source.CompositionTarget.TransformToDevice;
-                    scaleX = matrix.M11;
-                    scaleY = matrix.M22;
+                    var source = PresentationSource.FromVisual(this);
+                    if (source?.CompositionTarget != null)
+                    {
+                        var matrix = source.CompositionTarget.TransformToDevice;
+                        scaleX = matrix.M11;
+                        scaleY = matrix.M22;
+                        Logger.Debug($"DPI scale obtained: X={scaleX}, Y={scaleY}");
+                    }
+                    else
+                    {
+                        Logger.Debug("PresentationSource is null or CompositionTarget is null - using default DPI scale");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Debug($"Exception getting DPI scale: {ex.Message} - using default DPI scale");
                 }
 
-                displays.Add(new DisplayInfo
+                var displayInfo = new DisplayInfo
                 {
                     Left = screen.Bounds.Left,
                     Top = screen.Bounds.Top,
@@ -96,9 +139,13 @@ namespace RemainingTimeMeter
                     ScaleX = scaleX,
                     ScaleY = scaleY,
                     IsPrimary = screen.Primary,
-                });
+                };
+
+                displays.Add(displayInfo);
+                Logger.Debug($"Added display: {displayInfo.Width}x{displayInfo.Height} at ({displayInfo.Left}, {displayInfo.Top})");
             }
 
+            Logger.Debug($"GetDisplayInformation completed with {displays.Count} displays");
             return displays;
         }
 
@@ -109,41 +156,67 @@ namespace RemainingTimeMeter
         /// <param name="e">The event arguments.</param>
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            // 入力値の検証
-            if (!int.TryParse(this.MinutesTextBox.Text, out int minutes) || minutes < 0)
+            Logger.Info("StartButton_Click started");
+            try
             {
-                System.Windows.MessageBox.Show("分の値が正しくありません。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+                Logger.Debug($"Input values - Minutes: '{this.MinutesTextBox.Text}', Seconds: '{this.SecondsTextBox.Text}'");
 
-            if (!int.TryParse(this.SecondsTextBox.Text, out int seconds) || seconds < 0 || seconds >= 60)
+                // 入力値の検証
+                if (!int.TryParse(this.MinutesTextBox.Text, out int minutes) || minutes < 0)
+                {
+                    Logger.Debug("Invalid minutes input");
+                    System.Windows.MessageBox.Show("分の値が正しくありません。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (!int.TryParse(this.SecondsTextBox.Text, out int seconds) || seconds < 0 || seconds >= 60)
+                {
+                    Logger.Debug("Invalid seconds input");
+                    System.Windows.MessageBox.Show("秒の値が正しくありません（0-59）。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // 総時間を秒で計算
+                int totalSeconds = (minutes * 60) + seconds;
+                Logger.Debug($"Calculated total seconds: {totalSeconds}");
+                if (totalSeconds <= 0)
+                {
+                    Logger.Debug("Total seconds is zero or negative");
+                    System.Windows.MessageBox.Show("時間を正しく設定してください。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // 配置位置を取得
+                string position = ((ComboBoxItem)this.PositionComboBox.SelectedItem).Content.ToString() ?? "右端";
+                Logger.Debug($"Selected position: {position}");
+
+                // 選択されたディスプレーを取得
+                var selectedDisplayItem = (ComboBoxItem)this.DisplayComboBox.SelectedItem;
+                var selectedDisplay = (DisplayInfo)selectedDisplayItem.Tag;
+                Logger.Debug($"Selected display: {selectedDisplay.Width}x{selectedDisplay.Height} at ({selectedDisplay.Left}, {selectedDisplay.Top}), Primary: {selectedDisplay.IsPrimary}");
+
+                // タイマーウィンドウを作成して表示
+                Logger.Debug("Creating TimerWindow");
+                var timerWindow = new TimerWindow(totalSeconds, position, selectedDisplay);
+                timerWindow.MainWindowRequested += () =>
+                {
+                    Logger.Debug("MainWindow show requested from TimerWindow");
+                    this.Show();
+                };
+                Logger.Debug("Showing TimerWindow");
+                timerWindow.Show();
+
+                // メインウィンドウを非表示
+                Logger.Debug("Hiding MainWindow");
+                this.Hide();
+
+                Logger.Info("StartButton_Click completed successfully");
+            }
+            catch (Exception ex)
             {
-                System.Windows.MessageBox.Show("秒の値が正しくありません（0-59）。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                Logger.Error("StartButton_Click failed", ex);
+                System.Windows.MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            // 総時間を秒で計算
-            int totalSeconds = (minutes * 60) + seconds;
-            if (totalSeconds <= 0)
-            {
-                System.Windows.MessageBox.Show("時間を正しく設定してください。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            // 配置位置を取得
-            string position = ((ComboBoxItem)this.PositionComboBox.SelectedItem).Content.ToString() ?? "右端";
-
-            // 選択されたディスプレーを取得
-            var selectedDisplayItem = (ComboBoxItem)this.DisplayComboBox.SelectedItem;
-            var selectedDisplay = (DisplayInfo)selectedDisplayItem.Tag;
-
-            // タイマーウィンドウを作成して表示
-            var timerWindow = new TimerWindow(totalSeconds, position, selectedDisplay);
-            timerWindow.MainWindowRequested += () => this.Show();
-            timerWindow.Show();
-
-            // メインウィンドウを非表示
-            this.Hide();
         }
     }
 }
