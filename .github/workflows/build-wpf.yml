@@ -27,17 +27,17 @@ jobs:
       
     # Framework-dependent builds (小さいサイズ、.NET 8.0ランタイム必要)
     - name: Publish Framework-dependent Windows x64
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true --output ./publish/framework-dependent/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x64 --self-contained false --output ./publish/framework-dependent/win-x64 --property:PublishSingleFile=true
       
     - name: Publish Framework-dependent Windows x86
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained false -p:PublishSingleFile=true --output ./publish/framework-dependent/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x86 --self-contained false --output ./publish/framework-dependent/win-x86 --property:PublishSingleFile=true
       
     # Self-contained builds (大きいサイズ、.NETランタイム不要)
     - name: Publish Self-contained Windows x64
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false --output ./publish/self-contained/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish/self-contained/win-x64 --property:PublishSingleFile=true --property:PublishTrimmed=false
       
     - name: Publish Self-contained Windows x86
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false --output ./publish/self-contained/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x86 --self-contained true --output ./publish/self-contained/win-x86 --property:PublishSingleFile=true --property:PublishTrimmed=false
       
     # Framework-dependent artifacts
     - name: Upload Framework-dependent Windows x64 artifact
@@ -171,17 +171,17 @@ jobs:
         
     # Framework-dependent builds for release
     - name: Publish Framework-dependent Windows x64 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true --output ./release/framework-dependent/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x64 --self-contained false --output ./release/framework-dependent/win-x64 --property:PublishSingleFile=true
       
     - name: Publish Framework-dependent Windows x86 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained false -p:PublishSingleFile=true --output ./release/framework-dependent/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x86 --self-contained false --output ./release/framework-dependent/win-x86 --property:PublishSingleFile=true
       
     # Self-contained builds for release
     - name: Publish Self-contained Windows x64 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false --output ./release/self-contained/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x64 --self-contained true --output ./release/self-contained/win-x64 --property:PublishSingleFile=true --property:PublishTrimmed=false
       
     - name: Publish Self-contained Windows x86 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false --output ./release/self-contained/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x86 --self-contained true --output ./release/self-contained/win-x86 --property:PublishSingleFile=true --property:PublishTrimmed=false
       
     # Rename files for clarity
     - name: Rename release files
