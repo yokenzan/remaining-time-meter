@@ -11,6 +11,8 @@
         <ApplicationIcon>tv_timekeeper_trimmed.ico</ApplicationIcon>
         <AssemblyTitle>Remaining Time Meter</AssemblyTitle>
         <Product>Remaining Time Meter</Product>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Copyright>Copyright (c) 2025 RemainingTimeMeter</Copyright>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors />
         <WarningsNotAsErrors>NU1701</WarningsNotAsErrors>
