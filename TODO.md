@@ -4,20 +4,26 @@
 
 ### 0. Add by yokenzan
 
-- **about copyright**: this software is OSS, MIT License. Current state:
-  - All .cs files have copyright headers with "All rights reserved" (inconsistent with MIT)
-  - No LICENSE file exists in repository
-  - Only brief mention of "MIT License" in README.md
-  - **Action**: Add LICENSE file and update copyright headers
-- **about line endings**: Mixed CRLF and LF found. .editorconfig specifies CRLF but want LF only.
-  - **Current**: 938 lines with trailing whitespace, mixed line endings in multiple files
-  - **Action**: Update .editorconfig to use LF, then run `make format`
-- **lines whose content are only space character**: Good news - no lines with only spaces found
-  - Trailing whitespace exists but `make format` will remove it
-- **GitHubAction**: No GitHub Actions exist in repository
-  - **Action**: Create .github/workflows/ci.yml for PR checks
-- **When click textboxes**: Auto-select all text on focus for easier input
-  - **Action**: Add GotFocus event handlers to select all text
+- ✅ **about copyright**: this software is OSS, MIT License. **COMPLETED**
+  - LICENSE file exists with proper MIT License
+  - All .cs files have correct copyright headers with MIT License
+  - Consistent licensing across all source files
+- ✅ **about line endings**: **COMPLETED**
+  - .editorconfig is properly configured for LF line endings
+  - `make format` command includes whitespace removal (See PR #19)
+- ✅ **lines whose content are only space character**: **COMPLETED**
+  - No lines with only spaces found
+  - `make format` enhanced to remove all trailing whitespaces (See PR #19)
+- ✅ **GitHubAction**: **COMPLETED**
+  - Comprehensive CI workflow exists (.github/workflows/ci.yml) with PR checks
+  - Build and release workflow exists (.github/workflows/build-wpf.yml)
+  - Automated formatting validation and release management
+- ✅ **When click textboxes**: **COMPLETED**
+  - GotFocus event handlers implemented in MainWindow.xaml.cs
+  - Auto-select functionality working for all textboxes
+- ✅ **Versioning**: **COMPLETED** (See PR #20)
+  - Semantic versioning applied starting from version 0.1.0
+  - Version information embedded in executable binaries
 
 ### 1. Internationalization and Localization (i18n/l10n)
 - **Issue**: Mixed language approach with hardcoded Japanese strings in UI
