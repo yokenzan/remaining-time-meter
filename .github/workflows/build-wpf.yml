@@ -87,7 +87,13 @@ jobs:
         copy "./artifacts/RemainingTimeMeter-self-contained-win-x86/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-self-contained-win-x86.exe"
         
     - name: Delete previous latest release
-      run: gh release delete latest --yes || echo "No previous latest release found"
+      run: |
+        if gh release view latest >/dev/null 2>&1; then
+          echo "Deleting existing latest release..."
+          gh release delete latest --yes --cleanup-tag
+        else
+          echo "No previous latest release found"
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
