@@ -1,11 +1,11 @@
-name: Build and Release ProgressBar TimerKeeper
+name: Build and Release Remaining Time Meter
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
     tags: [ 'v*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -20,52 +20,137 @@ jobs:
         dotnet-version: 8.0.x
         
     - name: Restore dependencies
-      run: dotnet restore wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj
+      run: dotnet restore wpf/RemainingTimeMeter.csproj
       
     - name: Build
-      run: dotnet build wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj --no-restore --configuration Release
+      run: dotnet build wpf/RemainingTimeMeter.csproj --no-restore --configuration Release
       
     # Framework-dependent builds (小さいサイズ、.NET 8.0ランタイム必要)
     - name: Publish Framework-dependent Windows x64
-      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true --output ./publish/framework-dependent/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true --output ./publish/framework-dependent/win-x64
       
     - name: Publish Framework-dependent Windows x86
-      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x86 --self-contained false -p:PublishSingleFile=true --output ./publish/framework-dependent/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained false -p:PublishSingleFile=true --output ./publish/framework-dependent/win-x86
       
     # Self-contained builds (大きいサイズ、.NETランタイム不要)
     - name: Publish Self-contained Windows x64
-      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./publish/self-contained/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./publish/self-contained/win-x64
       
     - name: Publish Self-contained Windows x86
-      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./publish/self-contained/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./publish/self-contained/win-x86
       
     # Framework-dependent artifacts
     - name: Upload Framework-dependent Windows x64 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ProgressBarTimerKeeper-framework-dependent-win-x64
-        path: ./publish/framework-dependent/win-x64/ProgressBarTimerKeeper.exe
+        name: RemainingTimeMeter-framework-dependent-win-x64
+        path: ./publish/framework-dependent/win-x64/RemainingTimeMeter.exe
         
     - name: Upload Framework-dependent Windows x86 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ProgressBarTimerKeeper-framework-dependent-win-x86
-        path: ./publish/framework-dependent/win-x86/ProgressBarTimerKeeper.exe
+        name: RemainingTimeMeter-framework-dependent-win-x86
+        path: ./publish/framework-dependent/win-x86/RemainingTimeMeter.exe
         
     # Self-contained artifacts
     - name: Upload Self-contained Windows x64 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ProgressBarTimerKeeper-self-contained-win-x64
-        path: ./publish/self-contained/win-x64/ProgressBarTimerKeeper.exe
+        name: RemainingTimeMeter-self-contained-win-x64
+        path: ./publish/self-contained/win-x64/RemainingTimeMeter.exe
         
     - name: Upload Self-contained Windows x86 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ProgressBarTimerKeeper-self-contained-win-x86
-        path: ./publish/self-contained/win-x86/ProgressBarTimerKeeper.exe
+        name: RemainingTimeMeter-self-contained-win-x86
+        path: ./publish/self-contained/win-x86/RemainingTimeMeter.exe
 
-  release:
+  release-latest:
+    needs: build
+    runs-on: windows-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./artifacts
+        
+    - name: Create release directory and copy files
+      run: |
+        mkdir release
+        copy "./artifacts/RemainingTimeMeter-framework-dependent-win-x64/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-framework-dependent-win-x64.exe"
+        copy "./artifacts/RemainingTimeMeter-framework-dependent-win-x86/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-framework-dependent-win-x86.exe"
+        copy "./artifacts/RemainingTimeMeter-self-contained-win-x64/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-self-contained-win-x64.exe"
+        copy "./artifacts/RemainingTimeMeter-self-contained-win-x86/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-self-contained-win-x86.exe"
+        
+    - name: Delete previous latest release
+      run: gh release delete latest --yes || echo "No previous latest release found"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Create Latest Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: latest
+        name: "Latest Build"
+        body: |
+          ## Remaining Time Meter - Latest Build
+          
+          🚀 **Automatic build from the latest master branch**
+          
+          プレゼンテーション用のタイムキーパーアプリケーションです。
+          
+          ### 📥 ダウンロード
+          
+          #### 🎯 推奨：Framework-dependent版（小さいサイズ）
+          - **RemainingTimeMeter-framework-dependent-win-x64.exe** - 64bit Windows用（約5-10MB）
+          - **RemainingTimeMeter-framework-dependent-win-x86.exe** - 32bit Windows用（約5-10MB）
+          
+          ⚠️ **要件**: .NET 8.0 Desktop Runtimeが必要です
+          - 未インストールの場合、アプリ実行時に自動でダウンロードページに案内されます
+          - [.NET 8.0 Desktop Runtime ダウンロード](https://dotnet.microsoft.com/download/dotnet/8.0)
+          
+          #### 🔧 Self-contained版（大きいサイズ、ランタイム不要）
+          - **RemainingTimeMeter-self-contained-win-x64.exe** - 64bit Windows用（約80-120MB）
+          - **RemainingTimeMeter-self-contained-win-x86.exe** - 32bit Windows用（約80-120MB）
+          
+          ✅ **.NETランタイム不要** - どのWindows PCでもそのまま実行可能
+          
+          ### ✨ 主要機能
+          - **4つの配置位置**: 右端・左端・上端・下端から選択可能
+          - **マルチディスプレー対応**: 表示するディスプレーを選択可能
+          - **視覚的な進捗表示**: 段階的な色変化（緑→オレンジ→赤色点滅）
+          - **Always on top**: 他のウィンドウの上に常に表示
+          - **ホバーコントロール**: 一時停止・再開・停止機能
+          
+          ### 🚀 使い方
+          1. お使いの環境に適したファイルをダウンロード
+          2. ダウンロードしたexeファイルを実行
+          3. 時間設定、ディスプレー選択、配置位置を設定
+          4. 「開始」ボタンでタイマー開始
+          
+          ### 💻 動作環境
+          - Windows 10/11
+          - Framework-dependent版: .NET 8.0 Desktop Runtime必要
+          - Self-contained版: 追加ソフトウェア不要
+          
+          ---
+          📅 **Build Date**: ${{ github.event.head_commit.timestamp }}  
+          🔗 **Commit**: ${{ github.sha }}
+        files: |
+          ./release/RemainingTimeMeter-framework-dependent-win-x64.exe
+          ./release/RemainingTimeMeter-framework-dependent-win-x86.exe
+          ./release/RemainingTimeMeter-self-contained-win-x64.exe
+          ./release/RemainingTimeMeter-self-contained-win-x86.exe
+        draft: false
+        prerelease: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-tagged:
     needs: build
     runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/v')
@@ -80,53 +165,53 @@ jobs:
         
     # Framework-dependent builds for release
     - name: Publish Framework-dependent Windows x64 for Release
-      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true --output ./release/framework-dependent/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true --output ./release/framework-dependent/win-x64
       
     - name: Publish Framework-dependent Windows x86 for Release
-      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x86 --self-contained false -p:PublishSingleFile=true --output ./release/framework-dependent/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained false -p:PublishSingleFile=true --output ./release/framework-dependent/win-x86
       
     # Self-contained builds for release
     - name: Publish Self-contained Windows x64 for Release
-      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./release/self-contained/win-x64
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true --output ./release/self-contained/win-x64
       
     - name: Publish Self-contained Windows x86 for Release
-      run: dotnet publish wpf-progressbar-timerkeeper/ProgressBarTimerKeeper.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./release/self-contained/win-x86
+      run: dotnet publish wpf/RemainingTimeMeter.csproj -c Release -r win-x86 --self-contained true -p:PublishSingleFile=true --output ./release/self-contained/win-x86
       
     # Rename files for clarity
     - name: Rename release files
       run: |
-        move "./release/framework-dependent/win-x64/ProgressBarTimerKeeper.exe" "./release/ProgressBarTimerKeeper-framework-dependent-win-x64.exe"
-        move "./release/framework-dependent/win-x86/ProgressBarTimerKeeper.exe" "./release/ProgressBarTimerKeeper-framework-dependent-win-x86.exe"
-        move "./release/self-contained/win-x64/ProgressBarTimerKeeper.exe" "./release/ProgressBarTimerKeeper-self-contained-win-x64.exe"
-        move "./release/self-contained/win-x86/ProgressBarTimerKeeper.exe" "./release/ProgressBarTimerKeeper-self-contained-win-x86.exe"
+        move "./release/framework-dependent/win-x64/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-framework-dependent-win-x64.exe"
+        move "./release/framework-dependent/win-x86/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-framework-dependent-win-x86.exe"
+        move "./release/self-contained/win-x64/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-self-contained-win-x64.exe"
+        move "./release/self-contained/win-x86/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-self-contained-win-x86.exe"
       
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          ./release/ProgressBarTimerKeeper-framework-dependent-win-x64.exe
-          ./release/ProgressBarTimerKeeper-framework-dependent-win-x86.exe
-          ./release/ProgressBarTimerKeeper-self-contained-win-x64.exe
-          ./release/ProgressBarTimerKeeper-self-contained-win-x86.exe
-        name: ProgressBar TimerKeeper ${{ github.ref_name }}
+          ./release/RemainingTimeMeter-framework-dependent-win-x64.exe
+          ./release/RemainingTimeMeter-framework-dependent-win-x86.exe
+          ./release/RemainingTimeMeter-self-contained-win-x64.exe
+          ./release/RemainingTimeMeter-self-contained-win-x86.exe
+        name: Remaining Time Meter ${{ github.ref_name }}
         body: |
-          ## ProgressBar TimerKeeper - WPF版
+          ## Remaining Time Meter - WPF版
           
           プレゼンテーション用のタイムキーパーアプリケーションです。
           
           ### 📥 ダウンロード
           
           #### 🎯 推奨：Framework-dependent版（小さいサイズ）
-          - **ProgressBarTimerKeeper-framework-dependent-win-x64.exe** - 64bit Windows用（約5-10MB）
-          - **ProgressBarTimerKeeper-framework-dependent-win-x86.exe** - 32bit Windows用（約5-10MB）
+          - **RemainingTimeMeter-framework-dependent-win-x64.exe** - 64bit Windows用（約5-10MB）
+          - **RemainingTimeMeter-framework-dependent-win-x86.exe** - 32bit Windows用（約5-10MB）
           
           ⚠️ **要件**: .NET 8.0 Desktop Runtimeが必要です
           - 未インストールの場合、アプリ実行時に自動でダウンロードページに案内されます
           - [.NET 8.0 Desktop Runtime ダウンロード](https://dotnet.microsoft.com/download/dotnet/8.0)
           
           #### 🔧 Self-contained版（大きいサイズ、ランタイム不要）
-          - **ProgressBarTimerKeeper-self-contained-win-x64.exe** - 64bit Windows用（約80-120MB）
-          - **ProgressBarTimerKeeper-self-contained-win-x86.exe** - 32bit Windows用（約80-120MB）
+          - **RemainingTimeMeter-self-contained-win-x64.exe** - 64bit Windows用（約80-120MB）
+          - **RemainingTimeMeter-self-contained-win-x86.exe** - 32bit Windows用（約80-120MB）
           
           ✅ **.NETランタイム不要** - どのWindows PCでもそのまま実行可能
           
