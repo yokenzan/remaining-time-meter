@@ -6,7 +6,7 @@
         Icon="tv_timekeeper_trimmed.ico">
     <Grid>
         <StackPanel Margin="20" VerticalAlignment="Center">
-            <TextBlock Text="Remaining Time Meter" FontSize="24" FontWeight="Bold" 
+            <TextBlock Text="残り時間メーター" FontSize="24" FontWeight="Bold" 
                        HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
