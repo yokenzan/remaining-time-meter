@@ -1,10 +1,10 @@
-// <copyright file="App.xaml.cs" company="MeterTimeKeeper">
-// Copyright (c) MeterTimeKeeper. All rights reserved.
+// <copyright file="App.xaml.cs" company="RemainingTimeMeter">
+// Copyright (c) RemainingTimeMeter. All rights reserved.
 // </copyright>
 
 using System.Windows;
 
-namespace ProgressBarTimerKeeper
+namespace RemainingTimeMeter
 {
     /// <summary>
     /// Application entry point.

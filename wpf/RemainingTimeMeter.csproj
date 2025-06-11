@@ -9,6 +9,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
         <ApplicationIcon>tv_timekeeper.ico</ApplicationIcon>
+        <AssemblyTitle>Remaining Time Meter</AssemblyTitle>
+        <Product>Remaining Time Meter</Product>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors />
         <WarningsNotAsErrors>NU1701</WarningsNotAsErrors>
