@@ -6,8 +6,8 @@
         Title="{Binding Source={x:Static properties:Resources.AppTitle}}" Height="350" Width="450"
         WindowStartupLocation="CenterScreen"
         Icon="tv_timekeeper_trimmed.ico"
-        Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}">
+        Background="White"
+        >
     <Grid>
         <StackPanel Margin="24">
             <!-- Enhanced Timer Input Section -->
@@ -18,46 +18,40 @@
                         <TextBox x:Name="TimeInputTextBox" Width="100" Height="40" FontSize="16" FontWeight="Medium" 
                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                  Text="1000" TextChanged="TimeInputTextBox_TextChanged"
-                                 GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"
-                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                 materialDesign:HintAssist.Hint="Seconds"/>
+                                 GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
                         <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Margin="16,0,16,0" 
-                                                Width="24" Height="24" Foreground="{DynamicResource MaterialDesignBodyLight}"/>
+                                                Width="24" Height="24" Foreground="Gray"/>
                         <TextBlock x:Name="TimeDisplayTextBlock" Text="10:00" FontSize="24" FontWeight="Medium" 
-                                   VerticalAlignment="Center" Foreground="{DynamicResource PrimaryHueMidBrush}" MinWidth="80"/>
+                                   VerticalAlignment="Center" Foreground="Purple" MinWidth="80"/>
                     </StackPanel>
                     
                     <!-- Quick Time Buttons -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button x:Name="QuickTime1Button" Width="56" Height="36" Margin="4" Click="QuickTimeButton_Click" Tag="1"
-                                Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                                />
                         <Button x:Name="QuickTime5Button" Width="56" Height="36" Margin="4" Click="QuickTimeButton_Click" Tag="5"
-                                Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                                />
                         <Button x:Name="QuickTime10Button" Width="56" Height="36" Margin="4" Click="QuickTimeButton_Click" Tag="10"
-                                Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                                />
                         <Button x:Name="QuickTime15Button" Width="56" Height="36" Margin="4" Click="QuickTimeButton_Click" Tag="15"
-                                Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                                />
                         <Button x:Name="QuickTime30Button" Width="56" Height="36" Margin="4" Click="QuickTimeButton_Click" Tag="30"
-                                Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                                />
                         <Button x:Name="QuickTime60Button" Width="56" Height="36" Margin="4" Click="QuickTimeButton_Click" Tag="60"
-                                Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                                />
                     </StackPanel>
                 </StackPanel>
             </materialDesign:Card>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,24">
                 <TextBlock Text="{Binding Source={x:Static properties:Resources.DisplayMonitor}}" 
-                          VerticalAlignment="Center" Margin="0,0,16,0" 
-                          Style="{StaticResource MaterialDesignBody1TextBlock}"/>
-                <ComboBox x:Name="DisplayComboBox" Width="220" SelectedIndex="0"
-                         Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                         materialDesign:HintAssist.Hint="Select Display"/>
+                          VerticalAlignment="Center" Margin="0,0,16,0"/>
+                <ComboBox x:Name="DisplayComboBox" Width="220" SelectedIndex="0"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,24">
                 <TextBlock Text="{Binding Source={x:Static properties:Resources.Position}}" 
-                          VerticalAlignment="Center" Margin="0,0,16,0"
-                          Style="{StaticResource MaterialDesignBody1TextBlock}"/>
+                          VerticalAlignment="Center" Margin="0,0,16,0"/>
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="PositionRightLabel" Content="{Binding Source={x:Static properties:Resources.PositionRight}}" 
                             MouseLeftButtonDown="PositionLabel_Click" Tag="Right" 
@@ -66,23 +60,22 @@
                     <Button x:Name="PositionLeftLabel" Content="{Binding Source={x:Static properties:Resources.PositionLeft}}" 
                             MouseLeftButtonDown="PositionLabel_Click" Tag="Left"
                             Width="70" Height="36" Margin="4"
-                            Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                            />
                     <Button x:Name="PositionTopLabel" Content="{Binding Source={x:Static properties:Resources.PositionTop}}" 
                             MouseLeftButtonDown="PositionLabel_Click" Tag="Top"
                             Width="70" Height="36" Margin="4"
-                            Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                            />
                     <Button x:Name="PositionBottomLabel" Content="{Binding Source={x:Static properties:Resources.PositionBottom}}" 
                             MouseLeftButtonDown="PositionLabel_Click" Tag="Bottom"
                             Width="70" Height="36" Margin="4"
-                            Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                            />
                 </StackPanel>
             </StackPanel>
 
             <Button x:Name="StartButton" Content="{Binding Source={x:Static properties:Resources.Start}}" 
                     Width="140" Height="48" 
                     FontSize="16" Click="StartButton_Click"
-                    Style="{StaticResource MaterialDesignRaisedButton}"
-                    materialDesign:ButtonAssist.CornerRadius="24"/>
+                                        />
         </StackPanel>
     </Grid>
 </Window> 

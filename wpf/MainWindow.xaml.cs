@@ -646,7 +646,7 @@ namespace RemainingTimeMeter
                 var selectedLabel = this.GetPositionLabel(position);
                 if (selectedLabel != null)
                 {
-                    selectedLabel.Style = (Style)this.FindResource("MaterialDesignRaisedButton");
+                    selectedLabel.Background = System.Windows.Media.Brushes.LightBlue;
                 }
 
                 this.selectedPosition = position;
@@ -665,10 +665,10 @@ namespace RemainingTimeMeter
         {
             try
             {
-                this.PositionRightLabel.Style = (Style)this.FindResource("MaterialDesignOutlinedButton");
-                this.PositionLeftLabel.Style = (Style)this.FindResource("MaterialDesignOutlinedButton");
-                this.PositionTopLabel.Style = (Style)this.FindResource("MaterialDesignOutlinedButton");
-                this.PositionBottomLabel.Style = (Style)this.FindResource("MaterialDesignOutlinedButton");
+                this.PositionRightLabel.Background = System.Windows.Media.Brushes.LightGray;
+                this.PositionLeftLabel.Background = System.Windows.Media.Brushes.LightGray;
+                this.PositionTopLabel.Background = System.Windows.Media.Brushes.LightGray;
+                this.PositionBottomLabel.Background = System.Windows.Media.Brushes.LightGray;
             }
             catch (Exception ex)
             {

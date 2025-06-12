@@ -17,7 +17,7 @@
     <Grid>
         <!-- タイマーバー -->
         <materialDesign:Card x:Name="TimerBorder" 
-                            Background="{DynamicResource MaterialDesignDarkBackground}" 
+                            Background="#40000000" 
                             Padding="4"
                             UniformCornerRadius="8">
 
@@ -25,17 +25,16 @@
             <Grid>
                 <ProgressBar x:Name="ProgressBar" 
                            Background="Transparent"
-                           Foreground="{DynamicResource PrimaryHueMidBrush}"
+                           Foreground="Green"
                            BorderThickness="0"
                            Height="12"
-                           VerticalAlignment="Center"
-                           Style="{StaticResource MaterialDesignLinearProgressBar}"/>
+                           VerticalAlignment="Center"/>
             </Grid>
         </materialDesign:Card>
 
         <!-- コントロールパネル（ホバー時に表示） -->
         <materialDesign:Card x:Name="ControlPanel" 
-                            Background="{DynamicResource MaterialDesignPaper}" 
+                            Background="#E0FFFFFF" 
                             Padding="16"
                             UniformCornerRadius="8"
                             Visibility="Collapsed">
@@ -47,7 +46,7 @@
                           FontWeight="Medium" 
                           HorizontalAlignment="Center"
                           Margin="0,0,0,16"
-                          Foreground="{DynamicResource MaterialDesignBody}"/>
+                          Foreground="Black"/>
 
                 <StackPanel HorizontalAlignment="Center">
                     <Button x:Name="PauseResumeButton" 
@@ -56,7 +55,7 @@
                             Height="36" 
                             Margin="0,0,0,8"
                             Click="PauseResumeButton_Click"
-                            Style="{StaticResource MaterialDesignRaisedButton}"/>
+/>
 
                     <Button x:Name="StopButton" 
                             Content="{Binding Source={x:Static properties:Resources.Stop}}" 
@@ -64,7 +63,7 @@
                             Height="36" 
                             Margin="0,0,0,0"
                             Click="StopButton_Click"
-                            Style="{StaticResource MaterialDesignOutlinedButton}"/>
+/>
                 </StackPanel>
             </StackPanel>
         </materialDesign:Card>
