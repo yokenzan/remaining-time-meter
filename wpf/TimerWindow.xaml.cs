@@ -227,10 +227,11 @@ namespace RemainingTimeMeter
         /// </summary>
         private void UpdateBarColor()
         {
-            // Set to darkslateblue when paused
+            // Set to paused color when paused
             if (this.isPaused)
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.DarkSlateBlue);
+                var pausedColor = (System.Windows.Media.Color)this.FindResource("PausedColor");
+                this.ProgressBar.Fill = new SolidColorBrush(pausedColor);
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
                 this.ProgressBar.Opacity = 1.0;
                 return;
@@ -240,7 +241,8 @@ namespace RemainingTimeMeter
 
             if (progress >= Constants.RedThreshold)
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.Red);
+                var redColor = (System.Windows.Media.Color)this.FindResource("ProgressRedColor");
+                this.ProgressBar.Fill = new SolidColorBrush(redColor);
 
                 // Blinking effect
                 var animation = new DoubleAnimation(Constants.BlinkMinOpacity, Constants.BlinkMaxOpacity, TimeSpan.FromMilliseconds(Constants.BlinkAnimationDuration))
@@ -252,13 +254,15 @@ namespace RemainingTimeMeter
             }
             else if (progress >= Constants.OrangeThreshold)
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.Orange);
+                var orangeColor = (System.Windows.Media.Color)this.FindResource("ProgressOrangeColor");
+                this.ProgressBar.Fill = new SolidColorBrush(orangeColor);
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
                 this.ProgressBar.Opacity = 1.0;
             }
             else
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.Green);
+                var greenColor = (System.Windows.Media.Color)this.FindResource("ProgressGreenColor");
+                this.ProgressBar.Fill = new SolidColorBrush(greenColor);
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
                 this.ProgressBar.Opacity = 1.0;
             }
