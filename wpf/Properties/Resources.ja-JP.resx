@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <!-- Application Title -->
+  <data name="AppTitle" xml:space="preserve">
+    <value>残り時間メーター</value>
+  </data>
+  <!-- Main Window Labels -->
+  <data name="TimeSetting" xml:space="preserve">
+    <value>時間設定: </value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="DisplayMonitor" xml:space="preserve">
+    <value>表示ディスプレー: </value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>配置位置: </value>
+  </data>
+  <data name="PositionRight" xml:space="preserve">
+    <value>右端</value>
+  </data>
+  <data name="PositionLeft" xml:space="preserve">
+    <value>左端</value>
+  </data>
+  <data name="PositionTop" xml:space="preserve">
+    <value>上端</value>
+  </data>
+  <data name="PositionBottom" xml:space="preserve">
+    <value>下端</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>開始</value>
+  </data>
+  <!-- Display Names -->
+  <data name="DisplayFormatPrimary" xml:space="preserve">
+    <value>ディスプレー {0} (主画面) - {1}x{2}</value>
+  </data>
+  <data name="DisplayFormat" xml:space="preserve">
+    <value>ディスプレー {0} - {1}x{2}</value>
+  </data>
+  <!-- Error Messages -->
+  <data name="Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="InvalidMinutesValue" xml:space="preserve">
+    <value>分の値が正しくありません。</value>
+  </data>
+  <data name="InvalidSecondsValue" xml:space="preserve">
+    <value>秒の値が正しくありません（0-59）。</value>
+  </data>
+  <data name="PleaseSetTimeCorrectly" xml:space="preserve">
+    <value>時間を正しく設定してください。</value>
+  </data>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>エラーが発生しました: {0}</value>
+  </data>
+  <!-- Timer Window -->
+  <data name="Pause" xml:space="preserve">
+    <value>一時停止</value>
+  </data>
+  <data name="Resume" xml:space="preserve">
+    <value>再開</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="Timer" xml:space="preserve">
+    <value>タイマー</value>
+  </data>
+  <data name="TimeUpMessage" xml:space="preserve">
+    <value>時間です！{0}分{1}秒経過しました！</value>
+  </data>
+</root>

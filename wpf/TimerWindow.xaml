@@ -1,6 +1,7 @@
 <Window x:Class="RemainingTimeMeter.TimerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:properties="clr-namespace:RemainingTimeMeter.Properties"
         Title="Timer" 
         WindowStyle="None" 
         AllowsTransparency="True" 
@@ -48,14 +49,14 @@
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="PauseResumeButton" 
-                            Content="一時停止" 
+                            Content="{Binding Source={x:Static properties:Resources.Pause}}" 
                             Width="80" 
                             Height="30" 
                             Margin="0,0,5,0"
                             Click="PauseResumeButton_Click"/>
 
                     <Button x:Name="StopButton" 
-                            Content="停止" 
+                            Content="{Binding Source={x:Static properties:Resources.Stop}}" 
                             Width="60" 
                             Height="30" 
                             Margin="5,0,0,0"
