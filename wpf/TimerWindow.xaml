@@ -57,7 +57,7 @@
 
                     <Button x:Name="StopButton" 
                             Content="{Binding Source={x:Static properties:Resources.Stop}}" 
-                            Width="60" 
+                            Width="80" 
                             Height="30" 
                             Margin="5,0,0,0"
                             Click="StopButton_Click"/>
