@@ -31,9 +31,29 @@ namespace RemainingTimeMeter
                 Logger.Debug("LoadDisplays completed");
                 Logger.Info("MainWindow constructor completed successfully");
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                Logger.Error("MainWindow constructor failed", ex);
+                Logger.Error("MainWindow initialization failed - invalid operation", ex);
+                throw;
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error("MainWindow initialization failed - invalid argument", ex);
+                throw;
+            }
+            catch (System.Windows.Markup.XamlParseException ex)
+            {
+                Logger.Error("MainWindow initialization failed - XAML parse error", ex);
+                throw;
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                Logger.Error("MainWindow initialization failed - Windows API error", ex);
+                throw;
+            }
+            catch (OutOfMemoryException)
+            {
+                // Critical system exception - don't log to avoid potential recursion
                 throw;
             }
         }
@@ -86,10 +106,59 @@ namespace RemainingTimeMeter
 
                 Logger.Debug("LoadDisplays completed successfully");
             }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                Logger.Error("Failed to enumerate displays - Windows API error", ex);
+
+                // Create a default display entry to allow application to continue
+                this.CreateDefaultDisplayEntry();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Logger.Error("Failed to populate display list - invalid operation", ex);
+                this.CreateDefaultDisplayEntry();
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error("Failed to create display entries - invalid argument", ex);
+                this.CreateDefaultDisplayEntry();
+            }
+        }
+
+        /// <summary>
+        /// Creates a default display entry when display enumeration fails.
+        /// </summary>
+        private void CreateDefaultDisplayEntry()
+        {
+            try
+            {
+                // Create a default display based on primary screen
+                var defaultDisplay = new DisplayInfo
+                {
+                    Width = 1920,
+                    Height = 1080,
+                    Left = 0,
+                    Top = 0,
+                    IsPrimary = true,
+                    ScaleX = 1.0,
+                    ScaleY = 1.0,
+                };
+
+                var item = new ComboBoxItem
+                {
+                    Content = "Default Display - 1920x1080",
+                    Tag = defaultDisplay,
+                };
+
+                this.DisplayComboBox.Items.Add(item);
+                this.DisplayComboBox.SelectedIndex = 0;
+                Logger.Info("Created default display entry as fallback");
+            }
             catch (Exception ex)
             {
-                Logger.Error("LoadDisplays failed", ex);
-                throw;
+                Logger.Error("Failed to create default display entry", ex);
+
+                // If even this fails, the application will have to handle it gracefully
             }
         }
 
@@ -212,9 +281,19 @@ namespace RemainingTimeMeter
 
                 Logger.Info("StartButton_Click completed successfully");
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
-                Logger.Error("StartButton_Click failed", ex);
+                Logger.Error("StartButton_Click failed - invalid argument", ex);
+                System.Windows.MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Logger.Error("StartButton_Click failed - invalid operation", ex);
+                System.Windows.MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                Logger.Error("StartButton_Click failed - Windows API error", ex);
                 System.Windows.MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -235,9 +314,13 @@ namespace RemainingTimeMeter
                     Logger.Debug($"Selected all text in textbox: {textBox.Name}");
                 }
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                Logger.Error("TextBox_GotFocus failed", ex);
+                Logger.Error("TextBox_GotFocus failed - invalid operation", ex);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error("TextBox_GotFocus failed - invalid argument", ex);
             }
         }
 
@@ -261,9 +344,13 @@ namespace RemainingTimeMeter
                     }
                 }
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                Logger.Error("TextBox_PreviewMouseLeftButtonDown failed", ex);
+                Logger.Error("TextBox_PreviewMouseLeftButtonDown failed - invalid operation", ex);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error("TextBox_PreviewMouseLeftButtonDown failed - invalid argument", ex);
             }
         }
     }

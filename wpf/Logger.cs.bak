@@ -192,8 +192,7 @@ namespace RemainingTimeMeter
             {
                 string fileName = Path.GetFileName(sourceFilePath);
                 string logMessage = $"[{level}] {fileName}:{sourceLineNumber} {memberName}() - {message}";
-
-                // Write to Windows Event Log - Application log
+\n                // Write to Windows Event Log - Application log
                 System.Diagnostics.EventLog.WriteEntry(
                     "RemainingTimeMeter",
                     logMessage,
