@@ -36,7 +36,7 @@
                 <ComboBox x:Name="DisplayComboBox" Width="200" SelectedIndex="0"/>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
                 <TextBlock Text="{Binding Source={x:Static properties:Resources.Position}}" VerticalAlignment="Center" Margin="0,0,15,0"/>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="PositionRightLabel" Text="{Binding Source={x:Static properties:Resources.PositionRight}}" 
