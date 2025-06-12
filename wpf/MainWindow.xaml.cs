@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -29,6 +30,7 @@ namespace RemainingTimeMeter
                 Logger.Debug("InitializeComponent completed");
                 this.LoadDisplays();
                 Logger.Debug("LoadDisplays completed");
+                this.UpdateTimeDisplay(); // Initialize time display
                 Logger.Info("MainWindow constructor completed successfully");
             }
             catch (InvalidOperationException ex)
@@ -228,22 +230,9 @@ namespace RemainingTimeMeter
             Logger.Info("StartButton_Click started");
             try
             {
-                Logger.Debug($"Input values - Minutes: '{this.MinutesTextBox.Text}', Seconds: '{this.SecondsTextBox.Text}'");
-
-                // Validate input values
-                if (!int.TryParse(this.MinutesTextBox.Text, out int minutes) || minutes < 0)
-                {
-                    Logger.Debug("Invalid minutes input");
-                    System.Windows.MessageBox.Show(Properties.Resources.InvalidMinutesValue, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                if (!int.TryParse(this.SecondsTextBox.Text, out int seconds) || seconds < 0 || seconds >= 60)
-                {
-                    Logger.Debug("Invalid seconds input");
-                    System.Windows.MessageBox.Show(Properties.Resources.InvalidSecondsValue, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+                // Get time from enhanced input
+                var (minutes, seconds) = this.GetCurrentTime();
+                Logger.Debug($"Parsed time values - Minutes: {minutes}, Seconds: {seconds}");
 
                 // Calculate total time in seconds
                 int totalSeconds = (minutes * 60) + seconds;
@@ -351,6 +340,247 @@ namespace RemainingTimeMeter
             catch (ArgumentException ex)
             {
                 Logger.Error("TextBox_PreviewMouseLeftButtonDown failed - invalid argument", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles the TextChanged event for the time input textbox.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void TimeInputTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            this.UpdateTimeDisplay();
+        }
+
+        /// <summary>
+        /// Handles quick time button clicks.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void QuickTimeButton_Click(object sender, RoutedEventArgs e)
+        {
+            Logger.Debug("QuickTimeButton_Click started");
+            try
+            {
+                if (sender is System.Windows.Controls.Button button && button.Tag is int minutes)
+                {
+                    this.SetTime(minutes, 0);
+                    Logger.Debug($"Quick time set to {minutes} minutes");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("QuickTimeButton_Click failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles minute adjustment button clicks.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void AdjustMinutesButton_Click(object sender, RoutedEventArgs e)
+        {
+            Logger.Debug("AdjustMinutesButton_Click started");
+            try
+            {
+                if (sender is System.Windows.Controls.Button button && button.Tag is string tagValue && int.TryParse(tagValue, out int minuteDelta))
+                {
+                    this.AdjustTime(minuteDelta, 0);
+                    Logger.Debug($"Adjusted minutes by {minuteDelta}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("AdjustMinutesButton_Click failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles second adjustment button clicks.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void AdjustSecondsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Logger.Debug("AdjustSecondsButton_Click started");
+            try
+            {
+                if (sender is System.Windows.Controls.Button button && button.Tag is string tagValue && int.TryParse(tagValue, out int secondDelta))
+                {
+                    this.AdjustTime(0, secondDelta);
+                    Logger.Debug($"Adjusted seconds by {secondDelta}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("AdjustSecondsButton_Click failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// Parses time input and returns minutes and seconds.
+        /// </summary>
+        /// <param name="input">The input string to parse.</param>
+        /// <returns>A tuple containing minutes and seconds.</returns>
+        private (int minutes, int seconds) ParseTimeInput(string input)
+        {
+            try
+            {
+                // Remove any non-numeric characters except colon
+                string cleanInput = Regex.Replace(input ?? string.Empty, @"[^\d:]", string.Empty);
+
+                // Handle colon-separated format (MM:SS)
+                if (cleanInput.Contains(":"))
+                {
+                    var parts = cleanInput.Split(':');
+                    if (parts.Length >= 2 &&
+                        int.TryParse(parts[0], out int minutes) &&
+                        int.TryParse(parts[1], out int seconds))
+                    {
+                        return this.ValidateTime(minutes, seconds);
+                    }
+                }
+
+                // Handle numeric-only input
+                if (int.TryParse(cleanInput, out int value))
+                {
+                    if (value <= 99)
+                    {
+                        // Single or double digit - treat as minutes
+                        return this.ValidateTime(value, 0);
+                    }
+                    else if (value <= 9999)
+                    {
+                        // 3-4 digits - treat as MMSS
+                        int minutes = value / 100;
+                        int seconds = value % 100;
+                        return this.ValidateTime(minutes, seconds);
+                    }
+                    else
+                    {
+                        // 5+ digits - treat as total seconds
+                        int totalSeconds = Math.Min(value, (99 * 60) + 99);
+                        return this.ValidateTime(totalSeconds / 60, totalSeconds % 60);
+                    }
+                }
+
+                return (5, 0);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("ParseTimeInput failed", ex);
+                return (5, 0);
+            }
+        }
+
+        /// <summary>
+        /// Validates and normalizes time values.
+        /// </summary>
+        /// <param name="minutes">Input minutes.</param>
+        /// <param name="seconds">Input seconds.</param>
+        /// <returns>Validated time tuple.</returns>
+        private (int minutes, int seconds) ValidateTime(int minutes, int seconds)
+        {
+            // Ensure non-negative values
+            minutes = Math.Max(0, minutes);
+            seconds = Math.Max(0, seconds);
+
+            // Convert excess seconds to minutes
+            if (seconds >= 60)
+            {
+                minutes += seconds / 60;
+                seconds = seconds % 60;
+            }
+
+            // Enforce maximum limits (99:99)
+            if (minutes > 99)
+            {
+                minutes = 99;
+                seconds = 99;
+            }
+            else if (minutes == 99 && seconds > 99)
+            {
+                seconds = 99;
+            }
+
+            return (minutes, seconds);
+        }
+
+        /// <summary>
+        /// Gets the current time from the UI.
+        /// </summary>
+        /// <returns>Current time as minutes and seconds.</returns>
+        private (int minutes, int seconds) GetCurrentTime()
+        {
+            return this.ParseTimeInput(this.TimeInputTextBox.Text);
+        }
+
+        /// <summary>
+        /// Sets the time in the UI.
+        /// </summary>
+        /// <param name="minutes">Minutes to set.</param>
+        /// <param name="seconds">Seconds to set.</param>
+        private void SetTime(int minutes, int seconds)
+        {
+            var (validMinutes, validSeconds) = this.ValidateTime(minutes, seconds);
+
+            // Update input field with MMSS format
+            this.TimeInputTextBox.Text = $"{validMinutes:D2}{validSeconds:D2}";
+
+            // This will trigger TextChanged and update the display
+        }
+
+        /// <summary>
+        /// Adjusts the current time by the specified deltas.
+        /// </summary>
+        /// <param name="minuteDelta">Minutes to add/subtract.</param>
+        /// <param name="secondDelta">Seconds to add/subtract.</param>
+        private void AdjustTime(int minuteDelta, int secondDelta)
+        {
+            var (currentMinutes, currentSeconds) = this.GetCurrentTime();
+
+            int newMinutes = currentMinutes + minuteDelta;
+            int newSeconds = currentSeconds + secondDelta;
+
+            // Handle second overflow/underflow
+            if (newSeconds >= 60)
+            {
+                newMinutes += newSeconds / 60;
+                newSeconds = newSeconds % 60;
+            }
+            else if (newSeconds < 0)
+            {
+                int minutesToBorrow = ((-newSeconds) + 59) / 60;
+                newMinutes -= minutesToBorrow;
+                newSeconds += minutesToBorrow * 60;
+            }
+
+            // Ensure minimum time (don't allow negative)
+            if (newMinutes < 0 || (newMinutes == 0 && newSeconds <= 0))
+            {
+                newMinutes = 0;
+                newSeconds = 1;
+            }
+
+            this.SetTime(newMinutes, newSeconds);
+        }
+
+        /// <summary>
+        /// Updates the time display based on current input.
+        /// </summary>
+        private void UpdateTimeDisplay()
+        {
+            try
+            {
+                var (minutes, seconds) = this.GetCurrentTime();
+                this.TimeDisplayTextBlock.Text = $"{minutes:D2}:{seconds:D2}";
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("UpdateTimeDisplay failed", ex);
+                this.TimeDisplayTextBlock.Text = "05:00"; // Fallback
             }
         }
     }
