@@ -47,19 +47,19 @@
                           HorizontalAlignment="Center"
                           Margin="0,0,0,10"/>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
                     <Button x:Name="PauseResumeButton" 
                             Content="{Binding Source={x:Static properties:Resources.Pause}}" 
                             Width="80" 
                             Height="30" 
-                            Margin="0,0,5,0"
+                            Margin="0,0,0,5"
                             Click="PauseResumeButton_Click"/>
 
                     <Button x:Name="StopButton" 
                             Content="{Binding Source={x:Static properties:Resources.Stop}}" 
                             Width="80" 
                             Height="30" 
-                            Margin="5,0,0,0"
+                            Margin="0,0,0,0"
                             Click="StopButton_Click"/>
                 </StackPanel>
             </StackPanel>
