@@ -56,19 +56,19 @@
                     <Button x:Name="PositionRightLabel" Content="{Binding Source={x:Static properties:Resources.PositionRight}}" 
                             MouseLeftButtonDown="PositionLabel_Click" Tag="Right" 
                             Width="70" Height="36" Margin="4"
-                            Style="{StaticResource MaterialDesignRaisedButton}"/>
+                            Background="LightBlue"/>
                     <Button x:Name="PositionLeftLabel" Content="{Binding Source={x:Static properties:Resources.PositionLeft}}" 
                             MouseLeftButtonDown="PositionLabel_Click" Tag="Left"
                             Width="70" Height="36" Margin="4"
-                            />
+                            Background="LightGray"/>
                     <Button x:Name="PositionTopLabel" Content="{Binding Source={x:Static properties:Resources.PositionTop}}" 
                             MouseLeftButtonDown="PositionLabel_Click" Tag="Top"
                             Width="70" Height="36" Margin="4"
-                            />
+                            Background="LightGray"/>
                     <Button x:Name="PositionBottomLabel" Content="{Binding Source={x:Static properties:Resources.PositionBottom}}" 
                             MouseLeftButtonDown="PositionLabel_Click" Tag="Bottom"
                             Width="70" Height="36" Margin="4"
-                            />
+                            Background="LightGray"/>
                 </StackPanel>
             </StackPanel>
 
