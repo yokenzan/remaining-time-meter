@@ -60,9 +60,29 @@ namespace RemainingTimeMeter
                 this.timer.Start();
                 Logger.Info("TimerWindow constructor completed successfully - timer started");
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                Logger.Error("TimerWindow constructor failed", ex);
+                Logger.Error("TimerWindow initialization failed - invalid operation", ex);
+                throw;
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error("TimerWindow initialization failed - invalid argument", ex);
+                throw;
+            }
+            catch (System.Windows.Markup.XamlParseException ex)
+            {
+                Logger.Error("TimerWindow initialization failed - XAML parse error", ex);
+                throw;
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                Logger.Error("TimerWindow initialization failed - Windows API error", ex);
+                throw;
+            }
+            catch (OutOfMemoryException)
+            {
+                // Critical system exception - don't log to avoid potential recursion
                 throw;
             }
         }
@@ -273,9 +293,19 @@ namespace RemainingTimeMeter
                 // Use Windows 10/11 system notifications
                 this.ShowWindowsNotification(Properties.Resources.Timer, message);
             }
-            catch
+            catch (System.ComponentModel.Win32Exception ex)
             {
-                // Show message box as fallback
+                Logger.Debug($"Notification failed due to Windows API error: {ex.Message} - using message box fallback");
+                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Logger.Debug($"Notification failed due to invalid operation: {ex.Message} - using message box fallback");
+                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Logger.Debug($"Notification failed due to access denied: {ex.Message} - using message box fallback");
                 System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
@@ -311,8 +341,21 @@ namespace RemainingTimeMeter
                 };
                 timer.Start();
             }
-            catch
+            catch (System.ComponentModel.Win32Exception ex)
             {
+                Logger.Error("ShowWindowsNotification failed - Windows API error", ex);
+                notifyIcon?.Dispose();
+                throw;
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error("ShowWindowsNotification failed - invalid argument", ex);
+                notifyIcon?.Dispose();
+                throw;
+            }
+            catch (InvalidOperationException ex)
+            {
+                Logger.Error("ShowWindowsNotification failed - invalid operation", ex);
                 notifyIcon?.Dispose();
                 throw;
             }
@@ -392,9 +435,13 @@ namespace RemainingTimeMeter
                 this.UpdateBarColor(); // Update color when pause state changes
                 Logger.Info($"PauseResumeButton_Click completed - new state: isPaused={this.isPaused}");
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                Logger.Error("PauseResumeButton_Click failed", ex);
+                Logger.Error("PauseResumeButton_Click failed - invalid operation", ex);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error("PauseResumeButton_Click failed - invalid argument", ex);
             }
         }
 
@@ -415,9 +462,13 @@ namespace RemainingTimeMeter
                 this.Close();
                 Logger.Info("StopButton_Click completed - window closed");
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                Logger.Error("StopButton_Click failed", ex);
+                Logger.Error("StopButton_Click failed - invalid operation", ex);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error("StopButton_Click failed - invalid argument", ex);
             }
         }
 
@@ -438,9 +489,13 @@ namespace RemainingTimeMeter
                 this.Close();
                 Logger.Info("CloseButton_Click completed - window closed");
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex)
             {
-                Logger.Error("CloseButton_Click failed", ex);
+                Logger.Error("CloseButton_Click failed - invalid operation", ex);
+            }
+            catch (ArgumentException ex)
+            {
+                Logger.Error("CloseButton_Click failed - invalid argument", ex);
             }
         }
     }
