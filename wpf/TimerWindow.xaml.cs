@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using RemainingTimeMeter.Helpers;
 using RemainingTimeMeter.Models;
 
 namespace RemainingTimeMeter
@@ -120,19 +121,12 @@ namespace RemainingTimeMeter
         private void SetupWindowPosition()
         {
             // DPIスケーリングを考慮した座標計算
-            var dpiScale = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+            var logicalBounds = DisplayHelper.GetLogicalScreenBounds(this.targetDisplay, this);
 
-            // 物理ピクセルでのスクリーン情報
-            var screenWidth = this.targetDisplay.Width;
-            var screenHeight = this.targetDisplay.Height;
-            var screenLeft = this.targetDisplay.Left;
-            var screenTop = this.targetDisplay.Top;
-
-            // WPFのロジカルピクセルに変換
-            var logicalScreenWidth = screenWidth / dpiScale.DpiScaleX;
-            var logicalScreenHeight = screenHeight / dpiScale.DpiScaleY;
-            var logicalScreenLeft = screenLeft / dpiScale.DpiScaleX;
-            var logicalScreenTop = screenTop / dpiScale.DpiScaleY;
+            var logicalScreenWidth = logicalBounds.Width;
+            var logicalScreenHeight = logicalBounds.Height;
+            var logicalScreenLeft = logicalBounds.Left;
+            var logicalScreenTop = logicalBounds.Top;
 
             switch (this.position)
             {
@@ -332,18 +326,12 @@ namespace RemainingTimeMeter
         private void Window_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             // DPIスケーリングを考慮した座標計算
-            var dpiScale = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+            var logicalBounds = DisplayHelper.GetLogicalScreenBounds(this.targetDisplay, this);
 
-            var screenWidth = this.targetDisplay.Width;
-            var screenHeight = this.targetDisplay.Height;
-            var screenLeft = this.targetDisplay.Left;
-            var screenTop = this.targetDisplay.Top;
-
-            // WPFのロジカルピクセルに変換
-            var logicalScreenWidth = screenWidth / dpiScale.DpiScaleX;
-            var logicalScreenHeight = screenHeight / dpiScale.DpiScaleY;
-            var logicalScreenLeft = screenLeft / dpiScale.DpiScaleX;
-            var logicalScreenTop = screenTop / dpiScale.DpiScaleY;
+            var logicalScreenWidth = logicalBounds.Width;
+            var logicalScreenHeight = logicalBounds.Height;
+            var logicalScreenLeft = logicalBounds.Left;
+            var logicalScreenTop = logicalBounds.Top;
 
             double expandedWidth = Constants.ExpandedWidth;
             double expandedHeight = Constants.ExpandedHeight;
