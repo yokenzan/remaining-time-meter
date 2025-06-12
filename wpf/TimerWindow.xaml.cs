@@ -127,6 +127,13 @@ namespace RemainingTimeMeter
         {
             return position switch
             {
+                // Handle simple enum names (from Tag values)
+                "Right" => TimerPosition.Right,
+                "Left" => TimerPosition.Left,
+                "Top" => TimerPosition.Top,
+                "Bottom" => TimerPosition.Bottom,
+
+                // Handle localized resource strings (for backward compatibility)
                 var p when p == Properties.Resources.PositionRight => TimerPosition.Right,
                 var p when p == Properties.Resources.PositionLeft => TimerPosition.Left,
                 var p when p == Properties.Resources.PositionTop => TimerPosition.Top,
