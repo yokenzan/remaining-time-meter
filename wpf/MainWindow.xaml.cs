@@ -19,6 +19,11 @@ namespace RemainingTimeMeter
     public partial class MainWindow : Window
     {
         /// <summary>
+        /// The currently selected position for the timer display.
+        /// </summary>
+        private string selectedPosition = "Right";
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
         /// </summary>
         public MainWindow()
@@ -252,7 +257,7 @@ namespace RemainingTimeMeter
                 }
 
                 // Get position setting
-                string position = ((ComboBoxItem)this.PositionComboBox.SelectedItem).Content.ToString() ?? Properties.Resources.PositionRight;
+                string position = this.selectedPosition;
                 Logger.Debug($"Selected position: {position}");
 
                 // Get selected display
@@ -601,6 +606,111 @@ namespace RemainingTimeMeter
                 this.QuickTime15Button.Content = "15min";
                 this.QuickTime30Button.Content = "30min";
                 this.QuickTime60Button.Content = "60min";
+            }
+        }
+
+        /// <summary>
+        /// Handles position label clicks.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void PositionLabel_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Logger.Debug("PositionLabel_Click started");
+            try
+            {
+                if (sender is System.Windows.Controls.TextBlock label && label.Tag is string position)
+                {
+                    this.UpdateSelectedPosition(position);
+                    Logger.Debug($"Position changed to: {position}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("PositionLabel_Click failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// Updates the selected position and visual feedback.
+        /// </summary>
+        /// <param name="position">The position to select.</param>
+        private void UpdateSelectedPosition(string position)
+        {
+            try
+            {
+                // Reset all labels to normal style
+                this.ResetPositionLabels();
+
+                // Highlight selected label
+                var selectedLabel = this.GetPositionLabel(position);
+                if (selectedLabel != null)
+                {
+                    selectedLabel.TextDecorations = System.Windows.TextDecorations.Underline;
+                    selectedLabel.FontWeight = System.Windows.FontWeights.Bold;
+                    selectedLabel.Foreground = System.Windows.Media.Brushes.Red;
+                }
+
+                this.selectedPosition = position;
+                Logger.Debug($"Updated selected position to: {position}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("UpdateSelectedPosition failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// Resets all position labels to normal style.
+        /// </summary>
+        private void ResetPositionLabels()
+        {
+            try
+            {
+                this.PositionRightLabel.TextDecorations = null;
+                this.PositionRightLabel.FontWeight = System.Windows.FontWeights.Normal;
+                this.PositionRightLabel.Foreground = System.Windows.Media.Brushes.Black;
+
+                this.PositionLeftLabel.TextDecorations = null;
+                this.PositionLeftLabel.FontWeight = System.Windows.FontWeights.Normal;
+                this.PositionLeftLabel.Foreground = System.Windows.Media.Brushes.Black;
+
+                this.PositionTopLabel.TextDecorations = null;
+                this.PositionTopLabel.FontWeight = System.Windows.FontWeights.Normal;
+                this.PositionTopLabel.Foreground = System.Windows.Media.Brushes.Black;
+
+                this.PositionBottomLabel.TextDecorations = null;
+                this.PositionBottomLabel.FontWeight = System.Windows.FontWeights.Normal;
+                this.PositionBottomLabel.Foreground = System.Windows.Media.Brushes.Black;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("ResetPositionLabels failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets the TextBlock for the specified position.
+        /// </summary>
+        /// <param name="position">The position name.</param>
+        /// <returns>The corresponding TextBlock or null if not found.</returns>
+        private System.Windows.Controls.TextBlock? GetPositionLabel(string position)
+        {
+            try
+            {
+                return position switch
+                {
+                    "Right" => this.PositionRightLabel,
+                    "Left" => this.PositionLeftLabel,
+                    "Top" => this.PositionTopLabel,
+                    "Bottom" => this.PositionBottomLabel,
+                    _ => null,
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("GetPositionLabel failed", ex);
+                return null;
             }
         }
     }
