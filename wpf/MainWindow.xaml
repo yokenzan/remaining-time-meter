@@ -43,13 +43,22 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <TextBlock Text="{Binding Source={x:Static properties:Resources.Position}}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox x:Name="PositionComboBox" Width="100" SelectedIndex="0">
-                    <ComboBoxItem Content="{Binding Source={x:Static properties:Resources.PositionRight}}"/>
-                    <ComboBoxItem Content="{Binding Source={x:Static properties:Resources.PositionLeft}}"/>
-                    <ComboBoxItem Content="{Binding Source={x:Static properties:Resources.PositionTop}}"/>
-                    <ComboBoxItem Content="{Binding Source={x:Static properties:Resources.PositionBottom}}"/>
-                </ComboBox>
+                <TextBlock Text="{Binding Source={x:Static properties:Resources.Position}}" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="PositionRightLabel" Text="{Binding Source={x:Static properties:Resources.PositionRight}}" 
+                               MouseLeftButtonDown="PositionLabel_Click" Tag="Right" Cursor="Hand"
+                               TextDecorations="Underline" FontWeight="Bold" Foreground="Red" 
+                               Padding="8,4" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="PositionLeftLabel" Text="{Binding Source={x:Static properties:Resources.PositionLeft}}" 
+                               MouseLeftButtonDown="PositionLabel_Click" Tag="Left" Cursor="Hand" 
+                               Padding="8,4" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="PositionTopLabel" Text="{Binding Source={x:Static properties:Resources.PositionTop}}" 
+                               MouseLeftButtonDown="PositionLabel_Click" Tag="Top" Cursor="Hand" 
+                               Padding="8,4" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="PositionBottomLabel" Text="{Binding Source={x:Static properties:Resources.PositionBottom}}" 
+                               MouseLeftButtonDown="PositionLabel_Click" Tag="Bottom" Cursor="Hand" 
+                               Padding="8,4" VerticalAlignment="Center"/>
+                </StackPanel>
             </StackPanel>
 
             <Button x:Name="StartButton" Content="{Binding Source={x:Static properties:Resources.Start}}" Width="100" Height="40" 
