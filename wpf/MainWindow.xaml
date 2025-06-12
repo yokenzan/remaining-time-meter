@@ -3,17 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="残り時間メーター" Height="350" Width="400"
         WindowStartupLocation="CenterScreen"
-        Icon="tv_timekeeper.ico">
+        Icon="tv_timekeeper_trimmed.ico">
     <Grid>
         <StackPanel Margin="20" VerticalAlignment="Center">
-            <TextBlock Text="Remaining Time Meter" FontSize="24" FontWeight="Bold" 
+            <TextBlock Text="残り時間メーター" FontSize="24" FontWeight="Bold" 
                        HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
                 <TextBlock Text="時間設定: " VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="MinutesTextBox" Width="50" Text="5" HorizontalContentAlignment="Center"/>
+                <TextBox x:Name="MinutesTextBox" Width="50" Text="5" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
                 <TextBlock Text="分" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                <TextBox x:Name="SecondsTextBox" Width="50" Text="00" HorizontalContentAlignment="Center"/>
+                <TextBox x:Name="SecondsTextBox" Width="50" Text="00" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
                 <TextBlock Text="秒" VerticalAlignment="Center" Margin="5,0,0,0"/>
             </StackPanel>
 

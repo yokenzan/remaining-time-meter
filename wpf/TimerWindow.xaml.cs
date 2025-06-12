@@ -200,17 +200,17 @@ namespace RemainingTimeMeter
 
             if (this.position == TimerPosition.Top || this.position == TimerPosition.Bottom)
             {
-                // 横方向の場合は左から右に向かって進捗を表示
+                // For horizontal orientation, show progress from left to right
                 this.ProgressBar.Width = this.Width * progress;
-                this.ProgressBar.Height = this.Height; // 高さは全体に設定
+                this.ProgressBar.Height = this.Height; // Set height to full size
                 this.ProgressBar.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                 this.ProgressBar.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             }
             else
             {
-                // 縦方向の場合は下から上に向かって進捗を表示
+                // For vertical orientation, show progress from bottom to top
                 this.ProgressBar.Height = this.Height * progress;
-                this.ProgressBar.Width = this.Width; // 幅は全体に設定
+                this.ProgressBar.Width = this.Width; // Set width to full size
                 this.ProgressBar.VerticalAlignment = System.Windows.VerticalAlignment.Bottom;
                 this.ProgressBar.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             }
@@ -221,7 +221,7 @@ namespace RemainingTimeMeter
         /// </summary>
         private void UpdateBarColor()
         {
-            // 一時停止中は darkslateblue に設定
+            // Set to darkslateblue when paused
             if (this.isPaused)
             {
                 this.ProgressBar.Fill = new SolidColorBrush(Colors.DarkSlateBlue);
@@ -236,7 +236,7 @@ namespace RemainingTimeMeter
             {
                 this.ProgressBar.Fill = new SolidColorBrush(Colors.Red);
 
-                // 点滅効果
+                // Blinking effect
                 var animation = new DoubleAnimation(Constants.BlinkMinOpacity, Constants.BlinkMaxOpacity, TimeSpan.FromMilliseconds(Constants.BlinkAnimationDuration))
                 {
                     AutoReverse = true,
@@ -263,19 +263,19 @@ namespace RemainingTimeMeter
         /// </summary>
         private void ShowTimeUpNotification()
         {
-            // 経過時間を計算
+            // Calculate elapsed time
             int minutes = this.totalSeconds / 60;
             int seconds = this.totalSeconds % 60;
             string message = $"時間です！{minutes}分{seconds}秒経過しました！";
 
             try
             {
-                // Windows 10/11のシステム通知を使用
+                // Use Windows 10/11 system notifications
                 this.ShowWindowsNotification("タイマー", message);
             }
             catch
             {
-                // フォールバックとしてメッセージボックスを表示
+                // Show message box as fallback
                 System.Windows.MessageBox.Show(message, "タイマー", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
@@ -290,7 +290,7 @@ namespace RemainingTimeMeter
         /// <param name="message">Notification message.</param>
         private void ShowWindowsNotification(string title, string message)
         {
-            // NotifyIconを使用してシステム通知を表示
+            // Show system notification using NotifyIcon
             var notifyIcon = new System.Windows.Forms.NotifyIcon();
             try
             {
@@ -298,7 +298,7 @@ namespace RemainingTimeMeter
                 notifyIcon.Visible = true;
                 notifyIcon.ShowBalloonTip(Constants.NotificationDuration, title, message, System.Windows.Forms.ToolTipIcon.Info);
 
-                // 通知表示後に自動的にアイコンを非表示にする
+                // Automatically hide icon after showing notification
                 var timer = new DispatcherTimer
                 {
                     Interval = TimeSpan.FromMilliseconds(Constants.NotificationCleanupDelay),
@@ -371,7 +371,7 @@ namespace RemainingTimeMeter
         /// <param name="e">The event arguments.</param>
         private void Window_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            // ホバー終了時に元のサイズに戻す
+            // Restore original size when hover ends
             this.SetupWindowPosition();
             this.ControlPanel.Visibility = Visibility.Collapsed;
             this.TimerBorder.Visibility = Visibility.Visible;
@@ -389,7 +389,7 @@ namespace RemainingTimeMeter
             {
                 this.isPaused = !this.isPaused;
                 this.PauseResumeButton.Content = this.isPaused ? "再開" : "一時停止";
-                this.UpdateBarColor(); // 一時停止状態の変更時に色を更新
+                this.UpdateBarColor(); // Update color when pause state changes
                 Logger.Info($"PauseResumeButton_Click completed - new state: isPaused={this.isPaused}");
             }
             catch (Exception ex)

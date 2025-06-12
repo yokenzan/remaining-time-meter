@@ -76,7 +76,7 @@ namespace RemainingTimeMeter
 
                     this.DisplayComboBox.Items.Add(item);
 
-                    // 主画面を既定値として選択
+                    // Select primary display as default
                     if (display.IsPrimary)
                     {
                         this.DisplayComboBox.SelectedItem = item;
@@ -106,7 +106,7 @@ namespace RemainingTimeMeter
             {
                 Logger.Debug($"Processing screen: {screen.DeviceName}, Primary: {screen.Primary}, Bounds: {screen.Bounds}");
 
-                // DPI情報を取得 - ウィンドウが完全に初期化されていない場合はデフォルト値を使用
+                // Get DPI information - use default values if window is not fully initialized
                 double scaleX = 1.0;
                 double scaleY = 1.0;
 
@@ -161,7 +161,7 @@ namespace RemainingTimeMeter
             {
                 Logger.Debug($"Input values - Minutes: '{this.MinutesTextBox.Text}', Seconds: '{this.SecondsTextBox.Text}'");
 
-                // 入力値の検証
+                // Validate input values
                 if (!int.TryParse(this.MinutesTextBox.Text, out int minutes) || minutes < 0)
                 {
                     Logger.Debug("Invalid minutes input");
@@ -176,7 +176,7 @@ namespace RemainingTimeMeter
                     return;
                 }
 
-                // 総時間を秒で計算
+                // Calculate total time in seconds
                 int totalSeconds = (minutes * 60) + seconds;
                 Logger.Debug($"Calculated total seconds: {totalSeconds}");
                 if (totalSeconds <= 0)
@@ -186,16 +186,16 @@ namespace RemainingTimeMeter
                     return;
                 }
 
-                // 配置位置を取得
+                // Get position setting
                 string position = ((ComboBoxItem)this.PositionComboBox.SelectedItem).Content.ToString() ?? "右端";
                 Logger.Debug($"Selected position: {position}");
 
-                // 選択されたディスプレーを取得
+                // Get selected display
                 var selectedDisplayItem = (ComboBoxItem)this.DisplayComboBox.SelectedItem;
                 var selectedDisplay = (DisplayInfo)selectedDisplayItem.Tag;
                 Logger.Debug($"Selected display: {selectedDisplay.Width}x{selectedDisplay.Height} at ({selectedDisplay.Left}, {selectedDisplay.Top}), Primary: {selectedDisplay.IsPrimary}");
 
-                // タイマーウィンドウを作成して表示
+                // Create and show timer window
                 Logger.Debug("Creating TimerWindow");
                 var timerWindow = new TimerWindow(totalSeconds, position, selectedDisplay);
                 timerWindow.MainWindowRequested += () =>
@@ -206,7 +206,7 @@ namespace RemainingTimeMeter
                 Logger.Debug("Showing TimerWindow");
                 timerWindow.Show();
 
-                // メインウィンドウを非表示
+                // Hide main window
                 Logger.Debug("Hiding MainWindow");
                 this.Hide();
 
@@ -216,6 +216,54 @@ namespace RemainingTimeMeter
             {
                 Logger.Error("StartButton_Click failed", ex);
                 System.Windows.MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Handles the GotFocus event for textboxes to select all text.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Logger.Debug("TextBox_GotFocus started");
+            try
+            {
+                if (sender is System.Windows.Controls.TextBox textBox)
+                {
+                    textBox.SelectAll();
+                    Logger.Debug($"Selected all text in textbox: {textBox.Name}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("TextBox_GotFocus failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles the PreviewMouseLeftButtonDown event for textboxes to ensure proper focus and selection behavior.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void TextBox_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Logger.Debug("TextBox_PreviewMouseLeftButtonDown started");
+            try
+            {
+                if (sender is System.Windows.Controls.TextBox textBox)
+                {
+                    if (!textBox.IsKeyboardFocusWithin)
+                    {
+                        textBox.Focus();
+                        e.Handled = true;
+                        Logger.Debug($"Focused textbox: {textBox.Name}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("TextBox_PreviewMouseLeftButtonDown failed", ex);
             }
         }
     }

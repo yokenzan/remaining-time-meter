@@ -41,7 +41,8 @@ publish:
 		--self-contained true \
 		--output $(PUBLISH_DIR) \
 		--property:PublishSingleFile=true \
-		--property:PublishTrimmed=false
+		--property:PublishTrimmed=false \
+		--property:IncludeNativeLibrariesForSelfExtract=true
 
 # Publish debug version with logging
 .PHONY: publish-debug
@@ -76,6 +77,7 @@ test:
 .PHONY: format
 format:
 	dotnet format $(CSPROJ_FILE)
+	dotnet format whitespace $(CSPROJ_FILE)
 
 # Show help
 .PHONY: help
