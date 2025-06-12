@@ -30,7 +30,10 @@ namespace RemainingTimeMeter
                 Logger.Debug("InitializeComponent completed");
                 this.LoadDisplays();
                 Logger.Debug("LoadDisplays completed");
-                this.UpdateTimeDisplay(); // Initialize time display
+
+                // Initialize time display after UI is fully loaded
+                this.Loaded += (s, e) => this.UpdateTimeDisplay();
+
                 Logger.Info("MainWindow constructor completed successfully");
             }
             catch (InvalidOperationException ex)
@@ -350,7 +353,11 @@ namespace RemainingTimeMeter
         /// <param name="e">The event arguments.</param>
         private void TimeInputTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            this.UpdateTimeDisplay();
+            // Only update if the window is fully loaded to avoid initialization issues
+            if (this.IsLoaded)
+            {
+                this.UpdateTimeDisplay();
+            }
         }
 
         /// <summary>
@@ -574,13 +581,23 @@ namespace RemainingTimeMeter
         {
             try
             {
+                // Check if UI elements are initialized
+                if (this.TimeDisplayTextBlock == null || this.TimeInputTextBox == null)
+                {
+                    Logger.Debug("UpdateTimeDisplay called before UI initialization - skipping");
+                    return;
+                }
+
                 var (minutes, seconds) = this.GetCurrentTime();
                 this.TimeDisplayTextBlock.Text = $"{minutes:D2}:{seconds:D2}";
             }
             catch (Exception ex)
             {
                 Logger.Error("UpdateTimeDisplay failed", ex);
-                this.TimeDisplayTextBlock.Text = "05:00"; // Fallback
+                if (this.TimeDisplayTextBlock != null)
+                {
+                    this.TimeDisplayTextBlock.Text = "05:00"; // Fallback
+                }
             }
         }
     }
