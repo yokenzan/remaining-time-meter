@@ -619,7 +619,7 @@ namespace RemainingTimeMeter
             Logger.Debug("PositionLabel_Click started");
             try
             {
-                if (sender is System.Windows.Controls.TextBlock label && label.Tag is string position)
+                if (sender is System.Windows.Controls.Button label && label.Tag is string position)
                 {
                     this.UpdateSelectedPosition(position);
                     Logger.Debug($"Position changed to: {position}");
@@ -646,9 +646,7 @@ namespace RemainingTimeMeter
                 var selectedLabel = this.GetPositionLabel(position);
                 if (selectedLabel != null)
                 {
-                    selectedLabel.TextDecorations = System.Windows.TextDecorations.Underline;
-                    selectedLabel.FontWeight = System.Windows.FontWeights.Bold;
-                    selectedLabel.Foreground = System.Windows.Media.Brushes.Red;
+                    selectedLabel.Style = (Style)this.FindResource("MaterialDesignRaisedButton");
                 }
 
                 this.selectedPosition = position;
@@ -667,21 +665,10 @@ namespace RemainingTimeMeter
         {
             try
             {
-                this.PositionRightLabel.TextDecorations = null;
-                this.PositionRightLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionRightLabel.Foreground = System.Windows.Media.Brushes.Black;
-
-                this.PositionLeftLabel.TextDecorations = null;
-                this.PositionLeftLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionLeftLabel.Foreground = System.Windows.Media.Brushes.Black;
-
-                this.PositionTopLabel.TextDecorations = null;
-                this.PositionTopLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionTopLabel.Foreground = System.Windows.Media.Brushes.Black;
-
-                this.PositionBottomLabel.TextDecorations = null;
-                this.PositionBottomLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionBottomLabel.Foreground = System.Windows.Media.Brushes.Black;
+                this.PositionRightLabel.Style = (Style)this.FindResource("MaterialDesignOutlinedButton");
+                this.PositionLeftLabel.Style = (Style)this.FindResource("MaterialDesignOutlinedButton");
+                this.PositionTopLabel.Style = (Style)this.FindResource("MaterialDesignOutlinedButton");
+                this.PositionBottomLabel.Style = (Style)this.FindResource("MaterialDesignOutlinedButton");
             }
             catch (Exception ex)
             {
@@ -690,11 +677,11 @@ namespace RemainingTimeMeter
         }
 
         /// <summary>
-        /// Gets the TextBlock for the specified position.
+        /// Gets the Button for the specified position.
         /// </summary>
         /// <param name="position">The position name.</param>
-        /// <returns>The corresponding TextBlock or null if not found.</returns>
-        private System.Windows.Controls.TextBlock? GetPositionLabel(string position)
+        /// <returns>The corresponding Button or null if not found.</returns>
+        private System.Windows.Controls.Button? GetPositionLabel(string position)
         {
             try
             {

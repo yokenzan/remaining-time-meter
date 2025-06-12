@@ -58,6 +58,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -87,15 +88,7 @@
             <PublishTrimmed>false</PublishTrimmed>
         </PropertyGroup>
 
-        <MSBuild Projects="$(MSBuildProjectFile)" 
-            Targets="Publish" 
-            Properties="Configuration=$(Configuration);
-            Platform=$(Platform);
-            PublishDir=$(PublishDir);
-            RuntimeIdentifier=$(RuntimeIdentifier);
-            SelfContained=$(SelfContained);
-            PublishSingleFile=$(PublishSingleFile);
-            PublishTrimmed=$(PublishTrimmed)" />
+        <MSBuild Projects="$(MSBuildProjectFile)" Targets="Publish" Properties="Configuration=$(Configuration);&#xA;            Platform=$(Platform);&#xA;            PublishDir=$(PublishDir);&#xA;            RuntimeIdentifier=$(RuntimeIdentifier);&#xA;            SelfContained=$(SelfContained);&#xA;            PublishSingleFile=$(PublishSingleFile);&#xA;            PublishTrimmed=$(PublishTrimmed)" />
 
         <Message Text="EXE file generated in $(PublishDir)" Importance="high" />
     </Target>
