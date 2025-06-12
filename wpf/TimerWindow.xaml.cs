@@ -471,32 +471,5 @@ namespace RemainingTimeMeter
                 Logger.Error("StopButton_Click failed - invalid argument", ex);
             }
         }
-
-        /// <summary>
-        /// Handles close button click event.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event arguments.</param>
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Logger.Info("CloseButton_Click started");
-            try
-            {
-                this.timer.Stop();
-                Logger.Debug("Timer stopped");
-                this.MainWindowRequested?.Invoke();
-                Logger.Debug("MainWindowRequested event invoked");
-                this.Close();
-                Logger.Info("CloseButton_Click completed - window closed");
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.Error("CloseButton_Click failed - invalid operation", ex);
-            }
-            catch (ArgumentException ex)
-            {
-                Logger.Error("CloseButton_Click failed - invalid argument", ex);
-            }
-        }
     }
 }
