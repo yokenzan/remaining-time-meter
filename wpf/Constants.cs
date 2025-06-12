@@ -5,78 +5,174 @@
 namespace RemainingTimeMeter
 {
     /// <summary>
-    /// Application constants for UI layout and timing.
+    /// Application constants organized by functionality.
     /// </summary>
     public static class Constants
     {
-        /// <summary>
-        /// Timer bar width for vertical positioning.
-        /// </summary>
-        public const double TimerBarWidth = 20;
+        // Legacy property accessors for backward compatibility
 
         /// <summary>
-        /// Timer bar height for horizontal positioning.
+        /// Gets the timer bar width for vertical positioning.
         /// </summary>
-        public const double TimerBarHeight = 20;
+        public static double TimerBarWidth => Layout.TimerBarWidth;
 
         /// <summary>
-        /// Screen size ratio for timer bar length.
+        /// Gets the timer bar height for horizontal positioning.
         /// </summary>
-        public const double ScreenSizeRatio = 0.8;
+        public static double TimerBarHeight => Layout.TimerBarHeight;
 
         /// <summary>
-        /// Margin from screen edge.
+        /// Gets the screen size ratio for timer bar length.
         /// </summary>
-        public const double ScreenMargin = 10;
+        public static double ScreenSizeRatio => Layout.ScreenSizeRatio;
 
         /// <summary>
-        /// Bottom margin for bottom positioning.
+        /// Gets the margin from screen edge.
         /// </summary>
-        public const double BottomMargin = 50;
+        public static double ScreenMargin => Layout.ScreenMargin;
 
         /// <summary>
-        /// Expanded width for control panel.
+        /// Gets the bottom margin for bottom positioning.
         /// </summary>
-        public const double ExpandedWidth = 200;
+        public static double BottomMargin => Layout.BottomMargin;
 
         /// <summary>
-        /// Expanded height for control panel.
+        /// Gets the expanded width for control panel.
         /// </summary>
-        public const double ExpandedHeight = 150;
+        public static double ExpandedWidth => Layout.ExpandedWidth;
 
         /// <summary>
-        /// Notification display duration in milliseconds.
+        /// Gets the expanded height for control panel.
         /// </summary>
-        public const int NotificationDuration = 5000;
+        public static double ExpandedHeight => Layout.ExpandedHeight;
 
         /// <summary>
-        /// Notification cleanup delay in milliseconds.
+        /// Gets the notification display duration in milliseconds.
         /// </summary>
-        public const int NotificationCleanupDelay = 6000;
+        public static int NotificationDuration => Notification.Duration;
 
         /// <summary>
-        /// Progress threshold for orange color.
+        /// Gets the notification cleanup delay in milliseconds.
         /// </summary>
-        public const double OrangeThreshold = 0.6;
+        public static int NotificationCleanupDelay => Notification.CleanupDelay;
 
         /// <summary>
-        /// Progress threshold for red color.
+        /// Gets the progress threshold for orange color.
         /// </summary>
-        public const double RedThreshold = 0.8;
+        public static double OrangeThreshold => Colors.OrangeThreshold;
 
         /// <summary>
-        /// Animation duration for blinking effect in milliseconds.
+        /// Gets the progress threshold for red color.
         /// </summary>
-        public const int BlinkAnimationDuration = 500;
+        public static double RedThreshold => Colors.RedThreshold;
 
         /// <summary>
-        /// Minimum opacity for blinking animation.
+        /// Gets the animation duration for blinking effect in milliseconds.
         /// </summary>
-        public const double BlinkMinOpacity = 0.3;
+        public static int BlinkAnimationDuration => Animation.BlinkAnimationDuration;
 
         /// <summary>
-        /// Maximum opacity for blinking animation.
+        /// Gets the minimum opacity for blinking animation.
         /// </summary>
-        public const double BlinkMaxOpacity = 1.0;
+        public static double BlinkMinOpacity => Animation.BlinkMinOpacity;
+
+        /// <summary>
+        /// Gets the maximum opacity for blinking animation.
+        /// </summary>
+        public static double BlinkMaxOpacity => Animation.BlinkMaxOpacity;
+
+        /// <summary>
+        /// Layout and positioning constants.
+        /// </summary>
+        public static class Layout
+        {
+            /// <summary>
+            /// Timer bar width for vertical positioning.
+            /// </summary>
+            public const double TimerBarWidth = 20;
+
+            /// <summary>
+            /// Timer bar height for horizontal positioning.
+            /// </summary>
+            public const double TimerBarHeight = 20;
+
+            /// <summary>
+            /// Screen size ratio for timer bar length.
+            /// </summary>
+            public const double ScreenSizeRatio = 0.8;
+
+            /// <summary>
+            /// Margin from screen edge.
+            /// </summary>
+            public const double ScreenMargin = 10;
+
+            /// <summary>
+            /// Bottom margin for bottom positioning.
+            /// </summary>
+            public const double BottomMargin = 50;
+
+            /// <summary>
+            /// Expanded width for control panel.
+            /// </summary>
+            public const double ExpandedWidth = 200;
+
+            /// <summary>
+            /// Expanded height for control panel.
+            /// </summary>
+            public const double ExpandedHeight = 150;
+        }
+
+        /// <summary>
+        /// Animation and visual effect constants.
+        /// </summary>
+        public static class Animation
+        {
+            /// <summary>
+            /// Animation duration for blinking effect in milliseconds.
+            /// </summary>
+            public const int BlinkAnimationDuration = 500;
+
+            /// <summary>
+            /// Minimum opacity for blinking animation.
+            /// </summary>
+            public const double BlinkMinOpacity = 0.3;
+
+            /// <summary>
+            /// Maximum opacity for blinking animation.
+            /// </summary>
+            public const double BlinkMaxOpacity = 1.0;
+        }
+
+        /// <summary>
+        /// Notification system constants.
+        /// </summary>
+        public static class Notification
+        {
+            /// <summary>
+            /// Notification display duration in milliseconds.
+            /// </summary>
+            public const int Duration = 5000;
+
+            /// <summary>
+            /// Notification cleanup delay in milliseconds.
+            /// </summary>
+            public const int CleanupDelay = 6000;
+        }
+
+        /// <summary>
+        /// Color threshold constants.
+        /// </summary>
+        public static class Colors
+        {
+            /// <summary>
+            /// Progress threshold for orange color.
+            /// </summary>
+            public const double OrangeThreshold = 0.6;
+
+            /// <summary>
+            /// Progress threshold for red color.
+            /// </summary>
+            public const double RedThreshold = 0.8;
+        }
     }
 }
