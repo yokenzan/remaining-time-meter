@@ -6,12 +6,9 @@
         WindowStartupLocation="CenterScreen"
         Icon="tv_timekeeper_trimmed.ico">
     <Grid>
-        <StackPanel Margin="20" VerticalAlignment="Center">
+        <StackPanel Margin="20">
             <!-- Enhanced Timer Input Section -->
             <StackPanel Margin="0,0,0,20">
-                <TextBlock Text="{Binding Source={x:Static properties:Resources.TimeSetting}}" FontSize="14" FontWeight="SemiBold" 
-                           HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                
                 <!-- Time Display and Input -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
                     <TextBox x:Name="TimeInputTextBox" Width="80" Height="32" FontSize="16" FontWeight="Bold" 
@@ -20,7 +17,7 @@
                              GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
                     <TextBlock Text="→" VerticalAlignment="Center" Margin="10,0,10,0" FontSize="16"/>
                     <TextBlock x:Name="TimeDisplayTextBlock" Text="10:00" FontSize="20" FontWeight="Bold" 
-                               VerticalAlignment="Center" Foreground="DarkBlue" MinWidth="60"/>
+                               VerticalAlignment="Center" Foreground="Red" MinWidth="60"/>
                 </StackPanel>
                 
                 <!-- Quick Time Buttons -->
