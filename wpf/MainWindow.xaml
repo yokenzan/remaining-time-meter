@@ -1,38 +1,39 @@
 <Window x:Class="RemainingTimeMeter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="残り時間メーター" Height="350" Width="400"
+                xmlns:properties="clr-namespace:RemainingTimeMeter.Properties"
+        Title="{Binding Source={x:Static properties:Resources.AppTitle}}" Height="350" Width="400"
         WindowStartupLocation="CenterScreen"
         Icon="tv_timekeeper_trimmed.ico">
     <Grid>
         <StackPanel Margin="20" VerticalAlignment="Center">
-            <TextBlock Text="残り時間メーター" FontSize="24" FontWeight="Bold" 
+            <TextBlock Text="{Binding Source={x:Static properties:Resources.AppTitle}}" FontSize="24" FontWeight="Bold" 
                        HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <TextBlock Text="時間設定: " VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Text="{Binding Source={x:Static properties:Resources.TimeSetting}}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                 <TextBox x:Name="MinutesTextBox" Width="50" Text="5" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
-                <TextBlock Text="分" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                <TextBlock Text="{Binding Source={x:Static properties:Resources.Minutes}}" VerticalAlignment="Center" Margin="5,0,5,0"/>
                 <TextBox x:Name="SecondsTextBox" Width="50" Text="00" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
-                <TextBlock Text="秒" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                <TextBlock Text="{Binding Source={x:Static properties:Resources.Seconds}}" VerticalAlignment="Center" Margin="5,0,0,0"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <TextBlock Text="表示ディスプレー: " VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Text="{Binding Source={x:Static properties:Resources.DisplayMonitor}}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                 <ComboBox x:Name="DisplayComboBox" Width="200" SelectedIndex="0"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <TextBlock Text="配置位置: " VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Text="{Binding Source={x:Static properties:Resources.Position}}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                 <ComboBox x:Name="PositionComboBox" Width="100" SelectedIndex="0">
-                    <ComboBoxItem Content="右端"/>
-                    <ComboBoxItem Content="左端"/>
-                    <ComboBoxItem Content="上端"/>
-                    <ComboBoxItem Content="下端"/>
+                    <ComboBoxItem Content="{Binding Source={x:Static properties:Resources.PositionRight}}"/>
+                    <ComboBoxItem Content="{Binding Source={x:Static properties:Resources.PositionLeft}}"/>
+                    <ComboBoxItem Content="{Binding Source={x:Static properties:Resources.PositionTop}}"/>
+                    <ComboBoxItem Content="{Binding Source={x:Static properties:Resources.PositionBottom}}"/>
                 </ComboBox>
             </StackPanel>
 
-            <Button x:Name="StartButton" Content="開始" Width="100" Height="40" 
+            <Button x:Name="StartButton" Content="{Binding Source={x:Static properties:Resources.Start}}" Width="100" Height="40" 
                     FontSize="16" Click="StartButton_Click"/>
         </StackPanel>
     </Grid>

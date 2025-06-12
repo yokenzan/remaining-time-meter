@@ -107,10 +107,10 @@ namespace RemainingTimeMeter
         {
             return position switch
             {
-                "右端" => TimerPosition.Right,
-                "左端" => TimerPosition.Left,
-                "上端" => TimerPosition.Top,
-                "下端" => TimerPosition.Bottom,
+                var p when p == Properties.Resources.PositionRight => TimerPosition.Right,
+                var p when p == Properties.Resources.PositionLeft => TimerPosition.Left,
+                var p when p == Properties.Resources.PositionTop => TimerPosition.Top,
+                var p when p == Properties.Resources.PositionBottom => TimerPosition.Bottom,
                 _ => TimerPosition.Right,
             };
         }
@@ -266,17 +266,17 @@ namespace RemainingTimeMeter
             // Calculate elapsed time
             int minutes = this.totalSeconds / 60;
             int seconds = this.totalSeconds % 60;
-            string message = $"時間です！{minutes}分{seconds}秒経過しました！";
+            string message = string.Format(Properties.Resources.TimeUpMessage, minutes, seconds);
 
             try
             {
                 // Use Windows 10/11 system notifications
-                this.ShowWindowsNotification("タイマー", message);
+                this.ShowWindowsNotification(Properties.Resources.Timer, message);
             }
             catch
             {
                 // Show message box as fallback
-                System.Windows.MessageBox.Show(message, "タイマー", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             this.MainWindowRequested?.Invoke();
@@ -388,7 +388,7 @@ namespace RemainingTimeMeter
             try
             {
                 this.isPaused = !this.isPaused;
-                this.PauseResumeButton.Content = this.isPaused ? "再開" : "一時停止";
+                this.PauseResumeButton.Content = this.isPaused ? Properties.Resources.Resume : Properties.Resources.Pause;
                 this.UpdateBarColor(); // Update color when pause state changes
                 Logger.Info($"PauseResumeButton_Click completed - new state: isPaused={this.isPaused}");
             }
