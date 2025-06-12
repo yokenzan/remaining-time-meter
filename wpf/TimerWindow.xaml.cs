@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using RemainingTimeMeter.Helpers;
 using RemainingTimeMeter.Models;
 
 namespace RemainingTimeMeter
@@ -126,10 +127,10 @@ namespace RemainingTimeMeter
         {
             return position switch
             {
-                "右端" => TimerPosition.Right,
-                "左端" => TimerPosition.Left,
-                "上端" => TimerPosition.Top,
-                "下端" => TimerPosition.Bottom,
+                var p when p == Properties.Resources.PositionRight => TimerPosition.Right,
+                var p when p == Properties.Resources.PositionLeft => TimerPosition.Left,
+                var p when p == Properties.Resources.PositionTop => TimerPosition.Top,
+                var p when p == Properties.Resources.PositionBottom => TimerPosition.Bottom,
                 _ => TimerPosition.Right,
             };
         }
@@ -139,20 +140,13 @@ namespace RemainingTimeMeter
         /// </summary>
         private void SetupWindowPosition()
         {
-            // Calculate coordinates considering DPI scaling
-            var dpiScale = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+            // DPIスケーリングを考慮した座標計算
+            var logicalBounds = DisplayHelper.GetLogicalScreenBounds(this.targetDisplay, this);
 
-            // Screen information in physical pixels
-            var screenWidth = this.targetDisplay.Width;
-            var screenHeight = this.targetDisplay.Height;
-            var screenLeft = this.targetDisplay.Left;
-            var screenTop = this.targetDisplay.Top;
-
-            // Convert to WPF logical pixels
-            var logicalScreenWidth = screenWidth / dpiScale.DpiScaleX;
-            var logicalScreenHeight = screenHeight / dpiScale.DpiScaleY;
-            var logicalScreenLeft = screenLeft / dpiScale.DpiScaleX;
-            var logicalScreenTop = screenTop / dpiScale.DpiScaleY;
+            var logicalScreenWidth = logicalBounds.Width;
+            var logicalScreenHeight = logicalBounds.Height;
+            var logicalScreenLeft = logicalBounds.Left;
+            var logicalScreenTop = logicalBounds.Top;
 
             switch (this.position)
             {
@@ -292,27 +286,27 @@ namespace RemainingTimeMeter
             // Calculate elapsed time
             int minutes = this.totalSeconds / 60;
             int seconds = this.totalSeconds % 60;
-            string message = $"時間です！{minutes}分{seconds}秒経過しました！";
+            string message = string.Format(Properties.Resources.TimeUpMessage, minutes, seconds);
 
             try
             {
                 // Use Windows 10/11 system notifications
-                this.ShowWindowsNotification("タイマー", message);
+                this.ShowWindowsNotification(Properties.Resources.Timer, message);
             }
             catch (System.ComponentModel.Win32Exception ex)
             {
                 Logger.Debug($"Notification failed due to Windows API error: {ex.Message} - using message box fallback");
-                System.Windows.MessageBox.Show(message, "タイマー", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (InvalidOperationException ex)
             {
                 Logger.Debug($"Notification failed due to invalid operation: {ex.Message} - using message box fallback");
-                System.Windows.MessageBox.Show(message, "タイマー", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (UnauthorizedAccessException ex)
             {
                 Logger.Debug($"Notification failed due to access denied: {ex.Message} - using message box fallback");
-                System.Windows.MessageBox.Show(message, "タイマー", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
             this.MainWindowRequested?.Invoke();
@@ -374,19 +368,13 @@ namespace RemainingTimeMeter
         /// <param name="e">The event arguments.</param>
         private void Window_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            // Calculate coordinates considering DPI scaling
-            var dpiScale = System.Windows.Media.VisualTreeHelper.GetDpi(this);
+            // DPIスケーリングを考慮した座標計算
+            var logicalBounds = DisplayHelper.GetLogicalScreenBounds(this.targetDisplay, this);
 
-            var screenWidth = this.targetDisplay.Width;
-            var screenHeight = this.targetDisplay.Height;
-            var screenLeft = this.targetDisplay.Left;
-            var screenTop = this.targetDisplay.Top;
-
-            // Convert to WPF logical pixels
-            var logicalScreenWidth = screenWidth / dpiScale.DpiScaleX;
-            var logicalScreenHeight = screenHeight / dpiScale.DpiScaleY;
-            var logicalScreenLeft = screenLeft / dpiScale.DpiScaleX;
-            var logicalScreenTop = screenTop / dpiScale.DpiScaleY;
+            var logicalScreenWidth = logicalBounds.Width;
+            var logicalScreenHeight = logicalBounds.Height;
+            var logicalScreenLeft = logicalBounds.Left;
+            var logicalScreenTop = logicalBounds.Top;
 
             double expandedWidth = Constants.ExpandedWidth;
             double expandedHeight = Constants.ExpandedHeight;
@@ -443,7 +431,7 @@ namespace RemainingTimeMeter
             try
             {
                 this.isPaused = !this.isPaused;
-                this.PauseResumeButton.Content = this.isPaused ? "再開" : "一時停止";
+                this.PauseResumeButton.Content = this.isPaused ? Properties.Resources.Resume : Properties.Resources.Pause;
                 this.UpdateBarColor(); // Update color when pause state changes
                 Logger.Info($"PauseResumeButton_Click completed - new state: isPaused={this.isPaused}");
             }

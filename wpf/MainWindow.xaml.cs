@@ -79,12 +79,12 @@ namespace RemainingTimeMeter
 
                     if (display.IsPrimary)
                     {
-                        displayName = $"ディスプレー {i + 1} (主画面) - {display.Width}x{display.Height}";
+                        displayName = string.Format(Properties.Resources.DisplayFormatPrimary, i + 1, display.Width, display.Height);
                         Logger.Debug($"Primary display found: {displayName}");
                     }
                     else
                     {
-                        displayName = $"ディスプレー {i + 1} - {display.Width}x{display.Height}";
+                        displayName = string.Format(Properties.Resources.DisplayFormat, i + 1, display.Width, display.Height);
                         Logger.Debug($"Secondary display found: {displayName}");
                     }
 
@@ -234,14 +234,14 @@ namespace RemainingTimeMeter
                 if (!int.TryParse(this.MinutesTextBox.Text, out int minutes) || minutes < 0)
                 {
                     Logger.Debug("Invalid minutes input");
-                    System.Windows.MessageBox.Show("分の値が正しくありません。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    System.Windows.MessageBox.Show(Properties.Resources.InvalidMinutesValue, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 if (!int.TryParse(this.SecondsTextBox.Text, out int seconds) || seconds < 0 || seconds >= 60)
                 {
                     Logger.Debug("Invalid seconds input");
-                    System.Windows.MessageBox.Show("秒の値が正しくありません（0-59）。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    System.Windows.MessageBox.Show(Properties.Resources.InvalidSecondsValue, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -251,12 +251,12 @@ namespace RemainingTimeMeter
                 if (totalSeconds <= 0)
                 {
                     Logger.Debug("Total seconds is zero or negative");
-                    System.Windows.MessageBox.Show("時間を正しく設定してください。", "エラー", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    System.Windows.MessageBox.Show(Properties.Resources.PleaseSetTimeCorrectly, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 // Get position setting
-                string position = ((ComboBoxItem)this.PositionComboBox.SelectedItem).Content.ToString() ?? "右端";
+                string position = ((ComboBoxItem)this.PositionComboBox.SelectedItem).Content.ToString() ?? Properties.Resources.PositionRight;
                 Logger.Debug($"Selected position: {position}");
 
                 // Get selected display
@@ -284,17 +284,17 @@ namespace RemainingTimeMeter
             catch (ArgumentException ex)
             {
                 Logger.Error("StartButton_Click failed - invalid argument", ex);
-                System.Windows.MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show(string.Format(Properties.Resources.ErrorOccurred, ex.Message), Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (InvalidOperationException ex)
             {
                 Logger.Error("StartButton_Click failed - invalid operation", ex);
-                System.Windows.MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show(string.Format(Properties.Resources.ErrorOccurred, ex.Message), Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (System.ComponentModel.Win32Exception ex)
             {
                 Logger.Error("StartButton_Click failed - Windows API error", ex);
-                System.Windows.MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show(string.Format(Properties.Resources.ErrorOccurred, ex.Message), Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
