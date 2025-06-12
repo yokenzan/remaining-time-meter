@@ -19,38 +19,21 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
                     <TextBox x:Name="TimeInputTextBox" Width="80" Height="32" FontSize="16" FontWeight="Bold" 
                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                             Text="0500" TextChanged="TimeInputTextBox_TextChanged"
+                             Text="1000" TextChanged="TimeInputTextBox_TextChanged"
                              GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
                     <TextBlock Text="→" VerticalAlignment="Center" Margin="10,0,10,0" FontSize="16"/>
-                    <TextBlock x:Name="TimeDisplayTextBlock" Text="05:00" FontSize="20" FontWeight="Bold" 
+                    <TextBlock x:Name="TimeDisplayTextBlock" Text="10:00" FontSize="20" FontWeight="Bold" 
                                VerticalAlignment="Center" Foreground="DarkBlue" MinWidth="60"/>
                 </StackPanel>
                 
                 <!-- Quick Time Buttons -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-                    <Button Content="1min" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="1"/>
-                    <Button Content="5min" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="5"/>
-                    <Button Content="10min" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="10"/>
-                    <Button Content="15min" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="15"/>
-                    <Button Content="30min" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="30"/>
-                    <Button Content="60min" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="60"/>
-                </StackPanel>
-                
-                <!-- Fine Adjustment Controls -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
-                    <TextBlock Text="Minutes:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <Button Content="-10" Width="35" Height="25" Margin="1" Click="AdjustMinutesButton_Click" Tag="-10"/>
-                    <Button Content="-1" Width="30" Height="25" Margin="1" Click="AdjustMinutesButton_Click" Tag="-1"/>
-                    <Button Content="+1" Width="30" Height="25" Margin="1" Click="AdjustMinutesButton_Click" Tag="1"/>
-                    <Button Content="+10" Width="35" Height="25" Margin="1" Click="AdjustMinutesButton_Click" Tag="10"/>
-                </StackPanel>
-                
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Text="Seconds:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <Button Content="-30" Width="35" Height="25" Margin="1" Click="AdjustSecondsButton_Click" Tag="-30"/>
-                    <Button Content="-5" Width="30" Height="25" Margin="1" Click="AdjustSecondsButton_Click" Tag="-5"/>
-                    <Button Content="+5" Width="30" Height="25" Margin="1" Click="AdjustSecondsButton_Click" Tag="5"/>
-                    <Button Content="+30" Width="35" Height="25" Margin="1" Click="AdjustSecondsButton_Click" Tag="30"/>
+                    <Button x:Name="QuickTime1Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="1"/>
+                    <Button x:Name="QuickTime5Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="5"/>
+                    <Button x:Name="QuickTime10Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="10"/>
+                    <Button x:Name="QuickTime15Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="15"/>
+                    <Button x:Name="QuickTime30Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="30"/>
+                    <Button x:Name="QuickTime60Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="60"/>
                 </StackPanel>
             </StackPanel>
 

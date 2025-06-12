@@ -32,7 +32,11 @@ namespace RemainingTimeMeter
                 Logger.Debug("LoadDisplays completed");
 
                 // Initialize time display after UI is fully loaded
-                this.Loaded += (s, e) => this.UpdateTimeDisplay();
+                this.Loaded += (s, e) =>
+                {
+                    this.UpdateTimeDisplay();
+                    this.InitializeQuickTimeButtons();
+                };
 
                 Logger.Info("MainWindow constructor completed successfully");
             }
@@ -370,7 +374,7 @@ namespace RemainingTimeMeter
             Logger.Debug("QuickTimeButton_Click started");
             try
             {
-                if (sender is System.Windows.Controls.Button button && button.Tag is int minutes)
+                if (sender is System.Windows.Controls.Button button && button.Tag is string tagValue && int.TryParse(tagValue, out int minutes))
                 {
                     this.SetTime(minutes, 0);
                     Logger.Debug($"Quick time set to {minutes} minutes");
@@ -383,50 +387,6 @@ namespace RemainingTimeMeter
         }
 
         /// <summary>
-        /// Handles minute adjustment button clicks.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event arguments.</param>
-        private void AdjustMinutesButton_Click(object sender, RoutedEventArgs e)
-        {
-            Logger.Debug("AdjustMinutesButton_Click started");
-            try
-            {
-                if (sender is System.Windows.Controls.Button button && button.Tag is string tagValue && int.TryParse(tagValue, out int minuteDelta))
-                {
-                    this.AdjustTime(minuteDelta, 0);
-                    Logger.Debug($"Adjusted minutes by {minuteDelta}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("AdjustMinutesButton_Click failed", ex);
-            }
-        }
-
-        /// <summary>
-        /// Handles second adjustment button clicks.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event arguments.</param>
-        private void AdjustSecondsButton_Click(object sender, RoutedEventArgs e)
-        {
-            Logger.Debug("AdjustSecondsButton_Click started");
-            try
-            {
-                if (sender is System.Windows.Controls.Button button && button.Tag is string tagValue && int.TryParse(tagValue, out int secondDelta))
-                {
-                    this.AdjustTime(0, secondDelta);
-                    Logger.Debug($"Adjusted seconds by {secondDelta}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("AdjustSecondsButton_Click failed", ex);
-            }
-        }
-
-        /// <summary>
         /// Parses time input and returns minutes and seconds.
         /// </summary>
         /// <param name="input">The input string to parse.</param>
@@ -435,8 +395,20 @@ namespace RemainingTimeMeter
         {
             try
             {
+                // Handle empty or null input
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    return (0, 0);
+                }
+
                 // Remove any non-numeric characters except colon
-                string cleanInput = Regex.Replace(input ?? string.Empty, @"[^\d:]", string.Empty);
+                string cleanInput = Regex.Replace(input, @"[^\d:]", string.Empty);
+
+                // Handle empty after cleaning
+                if (string.IsNullOrEmpty(cleanInput))
+                {
+                    return (0, 0);
+                }
 
                 // Handle colon-separated format (MM:SS)
                 if (cleanInput.Contains(":"))
@@ -453,10 +425,15 @@ namespace RemainingTimeMeter
                 // Handle numeric-only input
                 if (int.TryParse(cleanInput, out int value))
                 {
-                    if (value <= 99)
+                    if (value <= 9)
                     {
-                        // Single or double digit - treat as minutes
-                        return this.ValidateTime(value, 0);
+                        // Single digit - treat as seconds
+                        return this.ValidateTime(0, value);
+                    }
+                    else if (value <= 99)
+                    {
+                        // Double digit - treat as seconds
+                        return this.ValidateTime(0, value);
                     }
                     else if (value <= 9999)
                     {
@@ -473,12 +450,12 @@ namespace RemainingTimeMeter
                     }
                 }
 
-                return (5, 0);
+                return (0, 0);
             }
             catch (Exception ex)
             {
                 Logger.Error("ParseTimeInput failed", ex);
-                return (5, 0);
+                return (0, 0);
             }
         }
 
@@ -494,13 +471,6 @@ namespace RemainingTimeMeter
             minutes = Math.Max(0, minutes);
             seconds = Math.Max(0, seconds);
 
-            // Convert excess seconds to minutes
-            if (seconds >= 60)
-            {
-                minutes += seconds / 60;
-                seconds = seconds % 60;
-            }
-
             // Enforce maximum limits (99:99)
             if (minutes > 99)
             {
@@ -508,6 +478,10 @@ namespace RemainingTimeMeter
                 seconds = 99;
             }
             else if (minutes == 99 && seconds > 99)
+            {
+                seconds = 99;
+            }
+            else if (seconds > 99)
             {
                 seconds = 99;
             }
@@ -533,45 +507,17 @@ namespace RemainingTimeMeter
         {
             var (validMinutes, validSeconds) = this.ValidateTime(minutes, seconds);
 
-            // Update input field with MMSS format
-            this.TimeInputTextBox.Text = $"{validMinutes:D2}{validSeconds:D2}";
+            // Update input field - use simple format only for seconds under 100
+            if (validMinutes == 0 && validSeconds < 100)
+            {
+                this.TimeInputTextBox.Text = validSeconds.ToString();
+            }
+            else
+            {
+                this.TimeInputTextBox.Text = $"{validMinutes:D2}{validSeconds:D2}";
+            }
 
             // This will trigger TextChanged and update the display
-        }
-
-        /// <summary>
-        /// Adjusts the current time by the specified deltas.
-        /// </summary>
-        /// <param name="minuteDelta">Minutes to add/subtract.</param>
-        /// <param name="secondDelta">Seconds to add/subtract.</param>
-        private void AdjustTime(int minuteDelta, int secondDelta)
-        {
-            var (currentMinutes, currentSeconds) = this.GetCurrentTime();
-
-            int newMinutes = currentMinutes + minuteDelta;
-            int newSeconds = currentSeconds + secondDelta;
-
-            // Handle second overflow/underflow
-            if (newSeconds >= 60)
-            {
-                newMinutes += newSeconds / 60;
-                newSeconds = newSeconds % 60;
-            }
-            else if (newSeconds < 0)
-            {
-                int minutesToBorrow = ((-newSeconds) + 59) / 60;
-                newMinutes -= minutesToBorrow;
-                newSeconds += minutesToBorrow * 60;
-            }
-
-            // Ensure minimum time (don't allow negative)
-            if (newMinutes < 0 || (newMinutes == 0 && newSeconds <= 0))
-            {
-                newMinutes = 0;
-                newSeconds = 1;
-            }
-
-            this.SetTime(newMinutes, newSeconds);
         }
 
         /// <summary>
@@ -596,8 +542,65 @@ namespace RemainingTimeMeter
                 Logger.Error("UpdateTimeDisplay failed", ex);
                 if (this.TimeDisplayTextBlock != null)
                 {
-                    this.TimeDisplayTextBlock.Text = "05:00"; // Fallback
+                    this.TimeDisplayTextBlock.Text = "00:00"; // Fallback
                 }
+            }
+        }
+
+        /// <summary>
+        /// Initializes quick time button labels with internationalized text.
+        /// </summary>
+        private void InitializeQuickTimeButtons()
+        {
+            try
+            {
+                // Get the minute unit text from resources
+                string minuteUnit = Properties.Resources.Minutes;
+
+                // For Japanese, use short form "分"
+                if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("ja"))
+                {
+                    this.QuickTime1Button.Content = "1分";
+                    this.QuickTime5Button.Content = "5分";
+                    this.QuickTime10Button.Content = "10分";
+                    this.QuickTime15Button.Content = "15分";
+                    this.QuickTime30Button.Content = "30分";
+                    this.QuickTime60Button.Content = "60分";
+                }
+                else if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("zh"))
+                {
+                    // Chinese uses "分钟" for minutes
+                    this.QuickTime1Button.Content = "1分钟";
+                    this.QuickTime5Button.Content = "5分钟";
+                    this.QuickTime10Button.Content = "10分钟";
+                    this.QuickTime15Button.Content = "15分钟";
+                    this.QuickTime30Button.Content = "30分钟";
+                    this.QuickTime60Button.Content = "60分钟";
+                }
+                else
+                {
+                    // English and others use "min"
+                    this.QuickTime1Button.Content = "1min";
+                    this.QuickTime5Button.Content = "5min";
+                    this.QuickTime10Button.Content = "10min";
+                    this.QuickTime15Button.Content = "15min";
+                    this.QuickTime30Button.Content = "30min";
+                    this.QuickTime60Button.Content = "60min";
+                }
+
+                Logger.Debug("Quick time buttons initialized with localized labels");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("InitializeQuickTimeButtons failed", ex);
+
+                // Fallback to English
+                this.QuickTime1Button.Content = "1min";
+                this.QuickTime5Button.Content = "5min";
+                this.QuickTime10Button.Content = "10min";
+                this.QuickTime15Button.Content = "15min";
+                this.QuickTime30Button.Content = "30min";
+                this.QuickTime60Button.Content = "60min";
             }
         }
     }
