@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:properties="clr-namespace:RemainingTimeMeter.Properties"
-        Title="{Binding Source={x:Static properties:Resources.AppTitle}}" Height="350" Width="400"
+        Title="{Binding Source={x:Static properties:Resources.AppTitle}}" Height="450" Width="400"
         WindowStartupLocation="CenterScreen"
         Icon="tv_timekeeper_trimmed.ico">
     <Grid>
@@ -10,12 +10,31 @@
             <TextBlock Text="{Binding Source={x:Static properties:Resources.AppTitle}}" FontSize="24" FontWeight="Bold" 
                        HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <TextBlock Text="{Binding Source={x:Static properties:Resources.TimeSetting}}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <TextBox x:Name="MinutesTextBox" Width="50" Text="5" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
-                <TextBlock Text="{Binding Source={x:Static properties:Resources.Minutes}}" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                <TextBox x:Name="SecondsTextBox" Width="50" Text="00" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
-                <TextBlock Text="{Binding Source={x:Static properties:Resources.Seconds}}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+            <!-- Enhanced Timer Input Section -->
+            <StackPanel Margin="0,0,0,20">
+                <TextBlock Text="{Binding Source={x:Static properties:Resources.TimeSetting}}" FontSize="14" FontWeight="SemiBold" 
+                           HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                
+                <!-- Time Display and Input -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                    <TextBox x:Name="TimeInputTextBox" Width="80" Height="32" FontSize="16" FontWeight="Bold" 
+                             HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                             Text="1000" TextChanged="TimeInputTextBox_TextChanged"
+                             GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
+                    <TextBlock Text="→" VerticalAlignment="Center" Margin="10,0,10,0" FontSize="16"/>
+                    <TextBlock x:Name="TimeDisplayTextBlock" Text="10:00" FontSize="20" FontWeight="Bold" 
+                               VerticalAlignment="Center" Foreground="DarkBlue" MinWidth="60"/>
+                </StackPanel>
+                
+                <!-- Quick Time Buttons -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="QuickTime1Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="1"/>
+                    <Button x:Name="QuickTime5Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="5"/>
+                    <Button x:Name="QuickTime10Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="10"/>
+                    <Button x:Name="QuickTime15Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="15"/>
+                    <Button x:Name="QuickTime30Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="30"/>
+                    <Button x:Name="QuickTime60Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="60"/>
+                </StackPanel>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">

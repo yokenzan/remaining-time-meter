@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -29,6 +30,14 @@ namespace RemainingTimeMeter
                 Logger.Debug("InitializeComponent completed");
                 this.LoadDisplays();
                 Logger.Debug("LoadDisplays completed");
+
+                // Initialize time display after UI is fully loaded
+                this.Loaded += (s, e) =>
+                {
+                    this.UpdateTimeDisplay();
+                    this.InitializeQuickTimeButtons();
+                };
+
                 Logger.Info("MainWindow constructor completed successfully");
             }
             catch (InvalidOperationException ex)
@@ -228,22 +237,9 @@ namespace RemainingTimeMeter
             Logger.Info("StartButton_Click started");
             try
             {
-                Logger.Debug($"Input values - Minutes: '{this.MinutesTextBox.Text}', Seconds: '{this.SecondsTextBox.Text}'");
-
-                // Validate input values
-                if (!int.TryParse(this.MinutesTextBox.Text, out int minutes) || minutes < 0)
-                {
-                    Logger.Debug("Invalid minutes input");
-                    System.Windows.MessageBox.Show(Properties.Resources.InvalidMinutesValue, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                if (!int.TryParse(this.SecondsTextBox.Text, out int seconds) || seconds < 0 || seconds >= 60)
-                {
-                    Logger.Debug("Invalid seconds input");
-                    System.Windows.MessageBox.Show(Properties.Resources.InvalidSecondsValue, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+                // Get time from enhanced input
+                var (minutes, seconds) = this.GetCurrentTime();
+                Logger.Debug($"Parsed time values - Minutes: {minutes}, Seconds: {seconds}");
 
                 // Calculate total time in seconds
                 int totalSeconds = (minutes * 60) + seconds;
@@ -351,6 +347,260 @@ namespace RemainingTimeMeter
             catch (ArgumentException ex)
             {
                 Logger.Error("TextBox_PreviewMouseLeftButtonDown failed - invalid argument", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles the TextChanged event for the time input textbox.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void TimeInputTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            // Only update if the window is fully loaded to avoid initialization issues
+            if (this.IsLoaded)
+            {
+                this.UpdateTimeDisplay();
+            }
+        }
+
+        /// <summary>
+        /// Handles quick time button clicks.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void QuickTimeButton_Click(object sender, RoutedEventArgs e)
+        {
+            Logger.Debug("QuickTimeButton_Click started");
+            try
+            {
+                if (sender is System.Windows.Controls.Button button && button.Tag is string tagValue && int.TryParse(tagValue, out int minutes))
+                {
+                    this.SetTime(minutes, 0);
+                    Logger.Debug($"Quick time set to {minutes} minutes");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("QuickTimeButton_Click failed", ex);
+            }
+        }
+
+        /// <summary>
+        /// Parses time input and returns minutes and seconds.
+        /// </summary>
+        /// <param name="input">The input string to parse.</param>
+        /// <returns>A tuple containing minutes and seconds.</returns>
+        private (int minutes, int seconds) ParseTimeInput(string input)
+        {
+            try
+            {
+                // Handle empty or null input
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    return (0, 0);
+                }
+
+                // Remove any non-numeric characters except colon
+                string cleanInput = Regex.Replace(input, @"[^\d:]", string.Empty);
+
+                // Handle empty after cleaning
+                if (string.IsNullOrEmpty(cleanInput))
+                {
+                    return (0, 0);
+                }
+
+                // Handle colon-separated format (MM:SS)
+                if (cleanInput.Contains(":"))
+                {
+                    var parts = cleanInput.Split(':');
+                    if (parts.Length >= 2 &&
+                        int.TryParse(parts[0], out int minutes) &&
+                        int.TryParse(parts[1], out int seconds))
+                    {
+                        return this.ValidateTime(minutes, seconds);
+                    }
+                }
+
+                // Handle numeric-only input
+                if (int.TryParse(cleanInput, out int value))
+                {
+                    if (value <= 9)
+                    {
+                        // Single digit - treat as seconds
+                        return this.ValidateTime(0, value);
+                    }
+                    else if (value <= 99)
+                    {
+                        // Double digit - treat as seconds
+                        return this.ValidateTime(0, value);
+                    }
+                    else if (value <= 9999)
+                    {
+                        // 3-4 digits - treat as MMSS
+                        int minutes = value / 100;
+                        int seconds = value % 100;
+                        return this.ValidateTime(minutes, seconds);
+                    }
+                    else
+                    {
+                        // 5+ digits - treat as total seconds
+                        int totalSeconds = Math.Min(value, (99 * 60) + 99);
+                        return this.ValidateTime(totalSeconds / 60, totalSeconds % 60);
+                    }
+                }
+
+                return (0, 0);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("ParseTimeInput failed", ex);
+                return (0, 0);
+            }
+        }
+
+        /// <summary>
+        /// Validates and normalizes time values.
+        /// </summary>
+        /// <param name="minutes">Input minutes.</param>
+        /// <param name="seconds">Input seconds.</param>
+        /// <returns>Validated time tuple.</returns>
+        private (int minutes, int seconds) ValidateTime(int minutes, int seconds)
+        {
+            // Ensure non-negative values
+            minutes = Math.Max(0, minutes);
+            seconds = Math.Max(0, seconds);
+
+            // Enforce maximum limits (99:99)
+            if (minutes > 99)
+            {
+                minutes = 99;
+                seconds = 99;
+            }
+            else if (minutes == 99 && seconds > 99)
+            {
+                seconds = 99;
+            }
+            else if (seconds > 99)
+            {
+                seconds = 99;
+            }
+
+            return (minutes, seconds);
+        }
+
+        /// <summary>
+        /// Gets the current time from the UI.
+        /// </summary>
+        /// <returns>Current time as minutes and seconds.</returns>
+        private (int minutes, int seconds) GetCurrentTime()
+        {
+            return this.ParseTimeInput(this.TimeInputTextBox.Text);
+        }
+
+        /// <summary>
+        /// Sets the time in the UI.
+        /// </summary>
+        /// <param name="minutes">Minutes to set.</param>
+        /// <param name="seconds">Seconds to set.</param>
+        private void SetTime(int minutes, int seconds)
+        {
+            var (validMinutes, validSeconds) = this.ValidateTime(minutes, seconds);
+
+            // Update input field - use simple format only for seconds under 100
+            if (validMinutes == 0 && validSeconds < 100)
+            {
+                this.TimeInputTextBox.Text = validSeconds.ToString();
+            }
+            else
+            {
+                this.TimeInputTextBox.Text = $"{validMinutes:D2}{validSeconds:D2}";
+            }
+
+            // This will trigger TextChanged and update the display
+        }
+
+        /// <summary>
+        /// Updates the time display based on current input.
+        /// </summary>
+        private void UpdateTimeDisplay()
+        {
+            try
+            {
+                // Check if UI elements are initialized
+                if (this.TimeDisplayTextBlock == null || this.TimeInputTextBox == null)
+                {
+                    Logger.Debug("UpdateTimeDisplay called before UI initialization - skipping");
+                    return;
+                }
+
+                var (minutes, seconds) = this.GetCurrentTime();
+                this.TimeDisplayTextBlock.Text = $"{minutes:D2}:{seconds:D2}";
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("UpdateTimeDisplay failed", ex);
+                if (this.TimeDisplayTextBlock != null)
+                {
+                    this.TimeDisplayTextBlock.Text = "00:00"; // Fallback
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes quick time button labels with internationalized text.
+        /// </summary>
+        private void InitializeQuickTimeButtons()
+        {
+            try
+            {
+                // Get the minute unit text from resources
+                string minuteUnit = Properties.Resources.Minutes;
+
+                // For Japanese, use short form "分"
+                if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("ja"))
+                {
+                    this.QuickTime1Button.Content = "1分";
+                    this.QuickTime5Button.Content = "5分";
+                    this.QuickTime10Button.Content = "10分";
+                    this.QuickTime15Button.Content = "15分";
+                    this.QuickTime30Button.Content = "30分";
+                    this.QuickTime60Button.Content = "60分";
+                }
+                else if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("zh"))
+                {
+                    // Chinese uses "分钟" for minutes
+                    this.QuickTime1Button.Content = "1分钟";
+                    this.QuickTime5Button.Content = "5分钟";
+                    this.QuickTime10Button.Content = "10分钟";
+                    this.QuickTime15Button.Content = "15分钟";
+                    this.QuickTime30Button.Content = "30分钟";
+                    this.QuickTime60Button.Content = "60分钟";
+                }
+                else
+                {
+                    // English and others use "min"
+                    this.QuickTime1Button.Content = "1min";
+                    this.QuickTime5Button.Content = "5min";
+                    this.QuickTime10Button.Content = "10min";
+                    this.QuickTime15Button.Content = "15min";
+                    this.QuickTime30Button.Content = "30min";
+                    this.QuickTime60Button.Content = "60min";
+                }
+
+                Logger.Debug("Quick time buttons initialized with localized labels");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("InitializeQuickTimeButtons failed", ex);
+
+                // Fallback to English
+                this.QuickTime1Button.Content = "1min";
+                this.QuickTime5Button.Content = "5min";
+                this.QuickTime10Button.Content = "10min";
+                this.QuickTime15Button.Content = "15min";
+                this.QuickTime30Button.Content = "30min";
+                this.QuickTime60Button.Content = "60min";
             }
         }
     }
