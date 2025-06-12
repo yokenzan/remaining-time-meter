@@ -34,7 +34,7 @@
         <Border x:Name="ControlPanel" 
                 Background="#E0FFFFFF" 
                 CornerRadius="5"
-                Padding="10"
+                Padding="5"
                 Visibility="Collapsed"
                 BorderBrush="#CCCCCC" 
                 BorderThickness="1">
@@ -42,7 +42,7 @@
             <StackPanel>
                 <TextBlock x:Name="TimeDisplay" 
                           Text="5:00" 
-                          FontSize="16" 
+                          FontSize="18" 
                           FontWeight="Bold" 
                           HorizontalAlignment="Center"
                           Margin="0,0,0,10"/>
@@ -50,14 +50,14 @@
                 <StackPanel HorizontalAlignment="Center">
                     <Button x:Name="PauseResumeButton" 
                             Content="{Binding Source={x:Static properties:Resources.Pause}}" 
-                            Width="80" 
+                            Width="60" 
                             Height="30" 
                             Margin="0,0,0,5"
                             Click="PauseResumeButton_Click"/>
 
                     <Button x:Name="StopButton" 
                             Content="{Binding Source={x:Static properties:Resources.Stop}}" 
-                            Width="80" 
+                            Width="60" 
                             Height="30" 
                             Margin="0,0,0,0"
                             Click="StopButton_Click"/>
