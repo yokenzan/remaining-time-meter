@@ -13,8 +13,8 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
                     <TextBox x:Name="TimeInputTextBox" Width="80" Height="32" FontSize="16" FontWeight="Bold" 
                              HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                             Text="1000" TextChanged="TimeInputTextBox_TextChanged"
-                             GotFocus="TextBox_GotFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown"/>
+                             Text="1000" TextChanged="OnTimeInputChanged"
+                             GotFocus="OnTextBoxFocusReceived" PreviewMouseLeftButtonDown="OnTextBoxPreviewMouseDown"/>
                     <TextBlock Text="→" VerticalAlignment="Center" Margin="10,0,10,0" FontSize="16"/>
                     <TextBlock x:Name="TimeDisplayTextBlock" Text="10:00" FontSize="20" FontWeight="Bold" 
                                VerticalAlignment="Center" Foreground="Red" MinWidth="60"/>
@@ -22,12 +22,12 @@
                 
                 <!-- Quick Time Buttons -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button x:Name="QuickTime1Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="1"/>
-                    <Button x:Name="QuickTime5Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="5"/>
-                    <Button x:Name="QuickTime10Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="10"/>
-                    <Button x:Name="QuickTime15Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="15"/>
-                    <Button x:Name="QuickTime30Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="30"/>
-                    <Button x:Name="QuickTime60Button" Width="50" Height="30" Margin="2" Click="QuickTimeButton_Click" Tag="60"/>
+                    <Button x:Name="QuickTime1Button" Width="50" Height="30" Margin="2" Click="OnQuickTimeSelected" Tag="1"/>
+                    <Button x:Name="QuickTime5Button" Width="50" Height="30" Margin="2" Click="OnQuickTimeSelected" Tag="5"/>
+                    <Button x:Name="QuickTime10Button" Width="50" Height="30" Margin="2" Click="OnQuickTimeSelected" Tag="10"/>
+                    <Button x:Name="QuickTime15Button" Width="50" Height="30" Margin="2" Click="OnQuickTimeSelected" Tag="15"/>
+                    <Button x:Name="QuickTime30Button" Width="50" Height="30" Margin="2" Click="OnQuickTimeSelected" Tag="30"/>
+                    <Button x:Name="QuickTime60Button" Width="50" Height="30" Margin="2" Click="OnQuickTimeSelected" Tag="60"/>
                 </StackPanel>
             </StackPanel>
 
@@ -40,23 +40,23 @@
                 <TextBlock Text="{Binding Source={x:Static properties:Resources.Position}}" VerticalAlignment="Center" Margin="0,0,15,0"/>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="PositionRightLabel" Text="{Binding Source={x:Static properties:Resources.PositionRight}}" 
-                               MouseLeftButtonDown="PositionLabel_Click" Tag="Right" Cursor="Hand"
+                               MouseLeftButtonDown="OnPositionSelected" Tag="Right" Cursor="Hand"
                                TextDecorations="Underline" FontWeight="Bold" Foreground="Red" 
                                Padding="8,4" Margin="0,0,10,0" VerticalAlignment="Center"/>
                     <TextBlock x:Name="PositionLeftLabel" Text="{Binding Source={x:Static properties:Resources.PositionLeft}}" 
-                               MouseLeftButtonDown="PositionLabel_Click" Tag="Left" Cursor="Hand" 
+                               MouseLeftButtonDown="OnPositionSelected" Tag="Left" Cursor="Hand" 
                                Padding="8,4" Margin="0,0,10,0" VerticalAlignment="Center"/>
                     <TextBlock x:Name="PositionTopLabel" Text="{Binding Source={x:Static properties:Resources.PositionTop}}" 
-                               MouseLeftButtonDown="PositionLabel_Click" Tag="Top" Cursor="Hand" 
+                               MouseLeftButtonDown="OnPositionSelected" Tag="Top" Cursor="Hand" 
                                Padding="8,4" Margin="0,0,10,0" VerticalAlignment="Center"/>
                     <TextBlock x:Name="PositionBottomLabel" Text="{Binding Source={x:Static properties:Resources.PositionBottom}}" 
-                               MouseLeftButtonDown="PositionLabel_Click" Tag="Bottom" Cursor="Hand" 
+                               MouseLeftButtonDown="OnPositionSelected" Tag="Bottom" Cursor="Hand" 
                                Padding="8,4" VerticalAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
 
             <Button x:Name="StartButton" Content="{Binding Source={x:Static properties:Resources.Start}}" Width="100" Height="40" 
-                    FontSize="16" Click="StartButton_Click"/>
+                    FontSize="16" Click="OnStartTimerClicked"/>
         </StackPanel>
     </Grid>
 </Window> 
