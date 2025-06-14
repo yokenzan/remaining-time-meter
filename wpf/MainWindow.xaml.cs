@@ -239,7 +239,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private void OnStartTimerClicked(object sender, RoutedEventArgs e)
         {
             Logger.Info("StartButton_Click started");
             try
@@ -310,7 +310,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        private void OnTextBoxFocusReceived(object sender, RoutedEventArgs e)
         {
             Logger.Debug("TextBox_GotFocus started");
             try
@@ -336,7 +336,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void TextBox_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnTextBoxPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Logger.Debug("TextBox_PreviewMouseLeftButtonDown started");
             try
@@ -366,7 +366,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void TimeInputTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void OnTimeInputChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             // Only update if the window is fully loaded to avoid initialization issues
             if (this.IsLoaded)
@@ -380,9 +380,9 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void QuickTimeButton_Click(object sender, RoutedEventArgs e)
+        private void OnQuickTimeSelected(object sender, RoutedEventArgs e)
         {
-            Logger.Debug("QuickTimeButton_Click started");
+            Logger.Debug("OnQuickTimeSelected started");
             try
             {
                 if (sender is System.Windows.Controls.Button button && button.Tag is string tagValue && int.TryParse(tagValue, out int minutes))
@@ -393,7 +393,7 @@ namespace RemainingTimeMeter
             }
             catch (Exception ex)
             {
-                Logger.Error("QuickTimeButton_Click failed", ex);
+                Logger.Error("OnQuickTimeSelected failed", ex);
             }
         }
 
@@ -507,9 +507,9 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void PositionLabel_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnPositionSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            Logger.Debug("PositionLabel_Click started");
+            Logger.Debug("OnPositionSelected started");
             try
             {
                 if (sender is System.Windows.Controls.TextBlock label && label.Tag is string position)
@@ -520,7 +520,7 @@ namespace RemainingTimeMeter
             }
             catch (Exception ex)
             {
-                Logger.Error("PositionLabel_Click failed", ex);
+                Logger.Error("OnPositionSelected failed", ex);
             }
         }
 

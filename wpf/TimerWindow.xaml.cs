@@ -102,7 +102,7 @@ namespace RemainingTimeMeter
                 {
                     Interval = TimeSpan.FromSeconds(1),
                 };
-                this.timer.Tick += this.Timer_Tick;
+                this.timer.Tick += this.OnTimerTick;
                 Logger.Debug("Timer created and configured");
 
                 this.SetupWindowPosition();
@@ -198,7 +198,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void Timer_Tick(object? sender, EventArgs e)
+        private void OnTimerTick(object? sender, EventArgs e)
         {
             if (this.isPaused)
             {
@@ -382,7 +382,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void Window_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private void OnControlPanelRequested(object sender, System.Windows.Input.MouseEventArgs e)
         {
             // DPIスケーリングを考慮した座標計算
             var logicalBounds = DisplayHelper.GetLogicalScreenBounds(this.targetDisplay, this);
@@ -428,7 +428,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void Window_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        private void OnControlPanelHidden(object sender, System.Windows.Input.MouseEventArgs e)
         {
             // Restore original size when hover ends
             this.SetupWindowPosition();
@@ -441,23 +441,23 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void PauseResumeButton_Click(object sender, RoutedEventArgs e)
+        private void OnPauseResumeToggled(object sender, RoutedEventArgs e)
         {
-            Logger.Info($"PauseResumeButton_Click - current state: isPaused={this.isPaused}");
+            Logger.Info($"OnPauseResumeToggled - current state: isPaused={this.isPaused}");
             try
             {
                 this.isPaused = !this.isPaused;
                 this.PauseResumeButton.Content = this.isPaused ? Properties.Resources.Resume : Properties.Resources.Pause;
                 this.UpdateBarColor(); // Update color when pause state changes
-                Logger.Info($"PauseResumeButton_Click completed - new state: isPaused={this.isPaused}");
+                Logger.Info($"OnPauseResumeToggled completed - new state: isPaused={this.isPaused}");
             }
             catch (InvalidOperationException ex)
             {
-                Logger.Error("PauseResumeButton_Click failed - invalid operation", ex);
+                Logger.Error("OnPauseResumeToggled failed - invalid operation", ex);
             }
             catch (ArgumentException ex)
             {
-                Logger.Error("PauseResumeButton_Click failed - invalid argument", ex);
+                Logger.Error("OnPauseResumeToggled failed - invalid argument", ex);
             }
         }
 
@@ -466,9 +466,9 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void StopButton_Click(object sender, RoutedEventArgs e)
+        private void OnTimerStopped(object sender, RoutedEventArgs e)
         {
-            Logger.Info("StopButton_Click started");
+            Logger.Info("OnTimerStopped started");
             try
             {
                 this.timer.Stop();
@@ -476,15 +476,15 @@ namespace RemainingTimeMeter
                 this.MainWindowRequested?.Invoke();
                 Logger.Debug("MainWindowRequested event invoked");
                 this.Close();
-                Logger.Info("StopButton_Click completed - window closed");
+                Logger.Info("OnTimerStopped completed - window closed");
             }
             catch (InvalidOperationException ex)
             {
-                Logger.Error("StopButton_Click failed - invalid operation", ex);
+                Logger.Error("OnTimerStopped failed - invalid operation", ex);
             }
             catch (ArgumentException ex)
             {
-                Logger.Error("StopButton_Click failed - invalid argument", ex);
+                Logger.Error("OnTimerStopped failed - invalid argument", ex);
             }
         }
     }
