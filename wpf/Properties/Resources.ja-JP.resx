@@ -132,4 +132,8 @@
   <data name="TimeUpMessage" xml:space="preserve">
     <value>時間です！{0}分{1}秒経過しました！</value>
   </data>
+  <!-- Settings -->
+  <data name="RememberMySettings" xml:space="preserve">
+    <value>設定を記憶する</value>
+  </data>
 </root>

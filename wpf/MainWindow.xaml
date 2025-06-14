@@ -56,7 +56,7 @@
             </StackPanel>
 
             <CheckBox x:Name="RememberSettingsCheckBox" 
-                      Content="Remember my settings" 
+                      Content="{Binding Source={x:Static properties:Resources.RememberMySettings}}" 
                       HorizontalAlignment="Center" 
                       Margin="0,0,0,10"
                       IsChecked="True"
