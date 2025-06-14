@@ -542,7 +542,7 @@ namespace RemainingTimeMeter
                 var selectedLabel = this.GetPositionLabel(positionString);
                 if (selectedLabel != null)
                 {
-                    if (position == "Bottom")
+                    if (position == TimerPosition.Bottom)
                     {
                         // PositionBottomLabel needs special handling for margin
                         var selectedStyle = (Style)this.FindResource("SelectedPositionLabelStyle");
