@@ -646,9 +646,18 @@ namespace RemainingTimeMeter
                 var selectedLabel = this.GetPositionLabel(position);
                 if (selectedLabel != null)
                 {
-                    selectedLabel.TextDecorations = System.Windows.TextDecorations.Underline;
-                    selectedLabel.FontWeight = System.Windows.FontWeights.Bold;
-                    selectedLabel.Foreground = System.Windows.Media.Brushes.Red;
+                    if (position == "Bottom")
+                    {
+                        // PositionBottomLabel needs special handling for margin
+                        var selectedStyle = (Style)this.FindResource("SelectedPositionLabelStyle");
+                        var bottomSelectedStyle = new Style(typeof(TextBlock), selectedStyle);
+                        bottomSelectedStyle.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0)));
+                        selectedLabel.Style = bottomSelectedStyle;
+                    }
+                    else
+                    {
+                        selectedLabel.Style = (Style)this.FindResource("SelectedPositionLabelStyle");
+                    }
                 }
 
                 this.selectedPosition = position;
@@ -667,21 +676,15 @@ namespace RemainingTimeMeter
         {
             try
             {
-                this.PositionRightLabel.TextDecorations = null;
-                this.PositionRightLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionRightLabel.Foreground = System.Windows.Media.Brushes.Black;
+                var normalStyle = (Style)this.FindResource("PositionLabelStyle");
+                this.PositionRightLabel.Style = normalStyle;
+                this.PositionLeftLabel.Style = normalStyle;
+                this.PositionTopLabel.Style = normalStyle;
 
-                this.PositionLeftLabel.TextDecorations = null;
-                this.PositionLeftLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionLeftLabel.Foreground = System.Windows.Media.Brushes.Black;
-
-                this.PositionTopLabel.TextDecorations = null;
-                this.PositionTopLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionTopLabel.Foreground = System.Windows.Media.Brushes.Black;
-
-                this.PositionBottomLabel.TextDecorations = null;
-                this.PositionBottomLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionBottomLabel.Foreground = System.Windows.Media.Brushes.Black;
+                // PositionBottomLabel needs special handling for margin
+                var bottomStyle = new Style(typeof(TextBlock), normalStyle);
+                bottomStyle.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0)));
+                this.PositionBottomLabel.Style = bottomStyle;
             }
             catch (Exception ex)
             {
