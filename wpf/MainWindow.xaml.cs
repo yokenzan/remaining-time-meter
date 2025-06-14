@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using RemainingTimeMeter.Models;
+using RemainingTimeMeter.Validation;
 
 namespace RemainingTimeMeter
 {
@@ -242,27 +243,30 @@ namespace RemainingTimeMeter
             Logger.Info("StartButton_Click started");
             try
             {
-                // Get time from enhanced input
-                var (minutes, seconds) = this.GetCurrentTime();
-                Logger.Debug($"Parsed time values - Minutes: {minutes}, Seconds: {seconds}");
+                // Get current input values
+                string timeInput = this.TimeInputTextBox.Text;
+                string position = this.selectedPosition;
+                var selectedDisplayItem = (ComboBoxItem)this.DisplayComboBox.SelectedItem;
+                var selectedDisplay = (DisplayInfo)selectedDisplayItem.Tag;
 
-                // Calculate total time in seconds
-                int totalSeconds = (minutes * 60) + seconds;
-                Logger.Debug($"Calculated total seconds: {totalSeconds}");
-                if (totalSeconds <= 0)
+                // Comprehensive validation using new validator
+                var validationResult = TimerInputValidator.ValidateTimerSetup(timeInput, selectedDisplay, position);
+                if (!validationResult.IsValid)
                 {
-                    Logger.Debug("Total seconds is zero or negative");
-                    System.Windows.MessageBox.Show(Properties.Resources.PleaseSetTimeCorrectly, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    Logger.Debug($"Validation failed: {string.Join(", ", validationResult.ErrorMessages)}");
+                    System.Windows.MessageBox.Show(
+                        validationResult.FirstErrorMessage ?? "Invalid input",
+                        Properties.Resources.Error,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
                     return;
                 }
 
-                // Get position setting
-                string position = this.selectedPosition;
+                // Parse validated time
+                var (minutes, seconds) = TimeInputValidator.ParseTimeInput(timeInput);
+                int totalSeconds = (minutes * 60) + seconds;
+                Logger.Debug($"Validation passed - Minutes: {minutes}, Seconds: {seconds}, Total: {totalSeconds}");
                 Logger.Debug($"Selected position: {position}");
-
-                // Get selected display
-                var selectedDisplayItem = (ComboBoxItem)this.DisplayComboBox.SelectedItem;
-                var selectedDisplay = (DisplayInfo)selectedDisplayItem.Tag;
                 Logger.Debug($"Selected display: {selectedDisplay.Width}x{selectedDisplay.Height} at ({selectedDisplay.Left}, {selectedDisplay.Top}), Primary: {selectedDisplay.IsPrimary}");
 
                 // Create and show timer window
@@ -392,115 +396,12 @@ namespace RemainingTimeMeter
         }
 
         /// <summary>
-        /// Parses time input and returns minutes and seconds.
-        /// </summary>
-        /// <param name="input">The input string to parse.</param>
-        /// <returns>A tuple containing minutes and seconds.</returns>
-        private (int minutes, int seconds) ParseTimeInput(string input)
-        {
-            try
-            {
-                // Handle empty or null input
-                if (string.IsNullOrWhiteSpace(input))
-                {
-                    return (0, 0);
-                }
-
-                // Remove any non-numeric characters except colon
-                string cleanInput = Regex.Replace(input, @"[^\d:]", string.Empty);
-
-                // Handle empty after cleaning
-                if (string.IsNullOrEmpty(cleanInput))
-                {
-                    return (0, 0);
-                }
-
-                // Handle colon-separated format (MM:SS)
-                if (cleanInput.Contains(":"))
-                {
-                    var parts = cleanInput.Split(':');
-                    if (parts.Length >= 2 &&
-                        int.TryParse(parts[0], out int minutes) &&
-                        int.TryParse(parts[1], out int seconds))
-                    {
-                        return this.ValidateTime(minutes, seconds);
-                    }
-                }
-
-                // Handle numeric-only input
-                if (int.TryParse(cleanInput, out int value))
-                {
-                    if (value <= 9)
-                    {
-                        // Single digit - treat as seconds
-                        return this.ValidateTime(0, value);
-                    }
-                    else if (value <= 99)
-                    {
-                        // Double digit - treat as seconds
-                        return this.ValidateTime(0, value);
-                    }
-                    else if (value <= 9999)
-                    {
-                        // 3-4 digits - treat as MMSS
-                        int minutes = value / 100;
-                        int seconds = value % 100;
-                        return this.ValidateTime(minutes, seconds);
-                    }
-                    else
-                    {
-                        // 5+ digits - treat as total seconds
-                        int totalSeconds = Math.Min(value, (99 * 60) + 99);
-                        return this.ValidateTime(totalSeconds / 60, totalSeconds % 60);
-                    }
-                }
-
-                return (0, 0);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("ParseTimeInput failed", ex);
-                return (0, 0);
-            }
-        }
-
-        /// <summary>
-        /// Validates and normalizes time values.
-        /// </summary>
-        /// <param name="minutes">Input minutes.</param>
-        /// <param name="seconds">Input seconds.</param>
-        /// <returns>Validated time tuple.</returns>
-        private (int minutes, int seconds) ValidateTime(int minutes, int seconds)
-        {
-            // Ensure non-negative values
-            minutes = Math.Max(0, minutes);
-            seconds = Math.Max(0, seconds);
-
-            // Enforce maximum limits (99:99)
-            if (minutes > 99)
-            {
-                minutes = 99;
-                seconds = 99;
-            }
-            else if (minutes == 99 && seconds > 99)
-            {
-                seconds = 99;
-            }
-            else if (seconds > 99)
-            {
-                seconds = 99;
-            }
-
-            return (minutes, seconds);
-        }
-
-        /// <summary>
         /// Gets the current time from the UI.
         /// </summary>
         /// <returns>Current time as minutes and seconds.</returns>
         private (int minutes, int seconds) GetCurrentTime()
         {
-            return this.ParseTimeInput(this.TimeInputTextBox.Text);
+            return TimeInputValidator.ParseTimeInput(this.TimeInputTextBox.Text);
         }
 
         /// <summary>
@@ -510,17 +411,7 @@ namespace RemainingTimeMeter
         /// <param name="seconds">Seconds to set.</param>
         private void SetTime(int minutes, int seconds)
         {
-            var (validMinutes, validSeconds) = this.ValidateTime(minutes, seconds);
-
-            // Update input field - use simple format only for seconds under 100
-            if (validMinutes == 0 && validSeconds < 100)
-            {
-                this.TimeInputTextBox.Text = validSeconds.ToString();
-            }
-            else
-            {
-                this.TimeInputTextBox.Text = $"{validMinutes:D2}{validSeconds:D2}";
-            }
+            this.TimeInputTextBox.Text = TimeInputValidator.FormatTimeForInput(minutes, seconds);
 
             // This will trigger TextChanged and update the display
         }
@@ -540,7 +431,7 @@ namespace RemainingTimeMeter
                 }
 
                 var (minutes, seconds) = this.GetCurrentTime();
-                this.TimeDisplayTextBlock.Text = $"{minutes:D2}:{seconds:D2}";
+                this.TimeDisplayTextBlock.Text = TimeInputValidator.FormatTimeForDisplay(minutes, seconds);
             }
             catch (Exception ex)
             {
