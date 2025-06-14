@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -39,6 +41,7 @@ namespace RemainingTimeMeter
                 // Initialize time display after UI is fully loaded
                 this.Loaded += (s, e) =>
                 {
+                    this.InitializeLanguageSelector();
                     this.UpdateTimeDisplay();
                     this.InitializeQuickTimeButtons();
                 };
@@ -711,6 +714,125 @@ namespace RemainingTimeMeter
             {
                 Logger.Error("GetPositionLabel failed", ex);
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Handles language selection change event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (sender is System.Windows.Controls.ComboBox comboBox && comboBox.SelectedItem is ComboBoxItem selectedItem)
+                {
+                    string cultureCode = selectedItem.Tag.ToString() ?? "en-US";
+                    this.ChangeLanguage(cultureCode);
+                    Logger.Debug($"Language changed to: {cultureCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to change language", ex);
+            }
+        }
+
+        /// <summary>
+        /// Changes the application language to the specified culture.
+        /// </summary>
+        /// <param name="cultureCode">The culture code (e.g., "en-US", "ja-JP").</param>
+        private void ChangeLanguage(string cultureCode)
+        {
+            try
+            {
+                // Set the culture for the current thread
+                CultureInfo culture = new CultureInfo(cultureCode);
+                Thread.CurrentThread.CurrentCulture = culture;
+                Thread.CurrentThread.CurrentUICulture = culture;
+
+                // Update the application's culture
+                CultureInfo.DefaultThreadCurrentCulture = culture;
+                CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+                // Clear the resource cache to force reload
+                Properties.Resources.Culture = culture;
+
+                // Refresh the UI by recreating the window
+                this.RefreshUI();
+
+                Logger.Info($"Language successfully changed to: {cultureCode}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Failed to change language to {cultureCode}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the UI to apply the new language.
+        /// </summary>
+        private void RefreshUI()
+        {
+            try
+            {
+                // Save current state
+                string currentTimeInput = this.TimeInputTextBox.Text;
+                int currentDisplayIndex = this.DisplayComboBox.SelectedIndex;
+                string currentPosition = this.selectedPosition;
+                int currentLanguageIndex = this.LanguageComboBox.SelectedIndex;
+
+                // Create new window with updated language
+                var newWindow = new MainWindow();
+
+                // Restore state in the new window
+                newWindow.Loaded += (s, e) =>
+                {
+                    newWindow.TimeInputTextBox.Text = currentTimeInput;
+                    if (currentDisplayIndex >= 0 && currentDisplayIndex < newWindow.DisplayComboBox.Items.Count)
+                    {
+                        newWindow.DisplayComboBox.SelectedIndex = currentDisplayIndex;
+                    }
+
+                    newWindow.UpdateSelectedPosition(currentPosition);
+                    newWindow.LanguageComboBox.SelectedIndex = currentLanguageIndex;
+                };
+
+                // Show new window and close current one
+                newWindow.Show();
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to refresh UI", ex);
+            }
+        }
+
+        /// <summary>
+        /// Initializes the language selector based on current culture.
+        /// </summary>
+        private void InitializeLanguageSelector()
+        {
+            try
+            {
+                string currentCulture = Thread.CurrentThread.CurrentUICulture.Name;
+
+                for (int i = 0; i < this.LanguageComboBox.Items.Count; i++)
+                {
+                    if (this.LanguageComboBox.Items[i] is ComboBoxItem item &&
+                        item.Tag.ToString() == currentCulture)
+                    {
+                        this.LanguageComboBox.SelectedIndex = i;
+                        break;
+                    }
+                }
+
+                Logger.Debug($"Language selector initialized for culture: {currentCulture}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to initialize language selector", ex);
             }
         }
     }
