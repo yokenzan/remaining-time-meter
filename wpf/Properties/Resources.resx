@@ -132,4 +132,8 @@
   <data name="TimeUpMessage" xml:space="preserve">
     <value>Time's up! {0} minutes {1} seconds have passed!</value>
   </data>
+  <!-- Settings -->
+  <data name="RememberMySettings" xml:space="preserve">
+    <value>Remember my settings</value>
+  </data>
 </root>

@@ -314,5 +314,16 @@ namespace RemainingTimeMeter.Properties
                 return ResourceManager.GetString("TimeUpMessage", resourceCulture);
             }
         }
+
+        /// <summary>
+        /// Looks up a localized string similar to Remember my settings.
+        /// </summary>
+        public static string RememberMySettings
+        {
+            get
+            {
+                return ResourceManager.GetString("RememberMySettings", resourceCulture);
+            }
+        }
     }
 }

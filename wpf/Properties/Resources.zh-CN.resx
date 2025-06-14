@@ -132,4 +132,8 @@
   <data name="TimeUpMessage" xml:space="preserve">
     <value>时间到！已过 {0} 分钟 {1} 秒！</value>
   </data>
+  <!-- Settings -->
+  <data name="RememberMySettings" xml:space="preserve">
+    <value>记住我的设置</value>
+  </data>
 </root>
