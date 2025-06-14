@@ -1,5 +1,40 @@
 # Refactoring TODO List
 
+## Architecture & Code Quality Improvements (New)
+
+### Priority 1: Architecture & Testability
+1. **Implement MVVM Pattern**
+   - Create ViewModels for MainWindow and TimerWindow
+   - Move business logic from code-behind to ViewModels
+   - Implement INotifyPropertyChanged for data binding
+
+2. **Add Unit Testing**
+   - Create test project for critical functionality
+   - Test time parsing logic
+   - Test timer accuracy and state management
+
+### Priority 2: Code Organization
+1. **Extract Styling to Resource Dictionaries** (Related to #5 below)
+   - Create App.xaml resource dictionary
+   - Move hardcoded colors/styles from XAML
+   - Implement consistent theming
+
+2. **Refactor Constants.cs** (See #4 below)
+   - Organize into nested classes by category
+   - Remove backward compatibility duplication
+   - Use strongly-typed constants
+
+### Priority 3: Code Quality
+1. **Improve Position Handling** (Related to #7 below)
+   - Replace string-based position with enum
+   - Use data binding with converters
+   - Eliminate duplicate label styling code
+
+2. **Extract Input Validation** (See #6 below)
+   - Create TimeInputValidator class
+   - Simplify ParseTimeInput method
+   - Add comprehensive validation rules
+
 ## High Priority
 
 ### 0. Add by yokenzan
