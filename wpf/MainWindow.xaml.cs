@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using RemainingTimeMeter.Helpers;
 using RemainingTimeMeter.Models;
 using RemainingTimeMeter.Validation;
 
@@ -22,7 +23,7 @@ namespace RemainingTimeMeter
         /// <summary>
         /// The currently selected position for the timer display.
         /// </summary>
-        private string selectedPosition = "Right";
+        private TimerPosition selectedPosition = TimerPosition.Right;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
@@ -245,12 +246,13 @@ namespace RemainingTimeMeter
             {
                 // Get current input values
                 string timeInput = this.TimeInputTextBox.Text;
-                string position = this.selectedPosition;
+                TimerPosition position = this.selectedPosition;
+                string positionString = PositionMapper.PositionToString(position);
                 var selectedDisplayItem = (ComboBoxItem)this.DisplayComboBox.SelectedItem;
                 var selectedDisplay = (DisplayInfo)selectedDisplayItem.Tag;
 
                 // Comprehensive validation using new validator
-                var validationResult = TimerInputValidator.ValidateTimerSetup(timeInput, selectedDisplay, position);
+                var validationResult = TimerInputValidator.ValidateTimerSetup(timeInput, selectedDisplay, positionString);
                 if (!validationResult.IsValid)
                 {
                     Logger.Debug($"Validation failed: {string.Join(", ", validationResult.ErrorMessages)}");
@@ -266,7 +268,7 @@ namespace RemainingTimeMeter
                 var (minutes, seconds) = TimeInputValidator.ParseTimeInput(timeInput);
                 int totalSeconds = (minutes * 60) + seconds;
                 Logger.Debug($"Validation passed - Minutes: {minutes}, Seconds: {seconds}, Total: {totalSeconds}");
-                Logger.Debug($"Selected position: {position}");
+                Logger.Debug($"Selected position: {positionString}");
                 Logger.Debug($"Selected display: {selectedDisplay.Width}x{selectedDisplay.Height} at ({selectedDisplay.Left}, {selectedDisplay.Top}), Primary: {selectedDisplay.IsPrimary}");
 
                 // Create and show timer window
@@ -525,16 +527,19 @@ namespace RemainingTimeMeter
         /// <summary>
         /// Updates the selected position and visual feedback.
         /// </summary>
-        /// <param name="position">The position to select.</param>
-        private void UpdateSelectedPosition(string position)
+        /// <param name="positionString">The position string to select.</param>
+        private void UpdateSelectedPosition(string positionString)
         {
             try
             {
+                // Parse the position string to enum
+                TimerPosition position = PositionMapper.ParsePosition(positionString);
+
                 // Reset all labels to normal style
                 this.ResetPositionLabels();
 
                 // Highlight selected label
-                var selectedLabel = this.GetPositionLabel(position);
+                var selectedLabel = this.GetPositionLabel(positionString);
                 if (selectedLabel != null)
                 {
                     selectedLabel.TextDecorations = System.Windows.TextDecorations.Underline;
@@ -595,6 +600,31 @@ namespace RemainingTimeMeter
                     "Left" => this.PositionLeftLabel,
                     "Top" => this.PositionTopLabel,
                     "Bottom" => this.PositionBottomLabel,
+                    _ => null,
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("GetPositionLabel failed", ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the TextBlock for the specified position enum.
+        /// </summary>
+        /// <param name="position">The TimerPosition enum value.</param>
+        /// <returns>The corresponding TextBlock or null if not found.</returns>
+        private System.Windows.Controls.TextBlock? GetPositionLabel(TimerPosition position)
+        {
+            try
+            {
+                return position switch
+                {
+                    TimerPosition.Right => this.PositionRightLabel,
+                    TimerPosition.Left => this.PositionLeftLabel,
+                    TimerPosition.Top => this.PositionTopLabel,
+                    TimerPosition.Bottom => this.PositionBottomLabel,
                     _ => null,
                 };
             }
