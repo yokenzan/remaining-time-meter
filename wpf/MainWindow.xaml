@@ -55,6 +55,14 @@
                 </StackPanel>
             </StackPanel>
 
+            <CheckBox x:Name="RememberSettingsCheckBox" 
+                      Content="Remember my settings" 
+                      HorizontalAlignment="Center" 
+                      Margin="0,0,0,10"
+                      IsChecked="True"
+                      Checked="RememberSettingsCheckBox_Changed"
+                      Unchecked="RememberSettingsCheckBox_Changed"/>
+
             <Button x:Name="StartButton" Content="{Binding Source={x:Static properties:Resources.Start}}" Width="100" Height="40" 
                     FontSize="16" Click="StartButton_Click"/>
         </StackPanel>
