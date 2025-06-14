@@ -17,9 +17,9 @@ namespace RemainingTimeMeter
     /// </summary>
     public partial class TimerWindow : Window, IDisposable
     {
-        private readonly DispatcherTimer timer;
-        private readonly TimerPosition position;
-        private readonly DisplayInfo targetDisplay;
+        private DispatcherTimer timer = null!;
+        private TimerPosition position;
+        private DisplayInfo targetDisplay = null!;
         private int totalSeconds;
         private int remainingSeconds;
         private bool isPaused = false;
@@ -29,9 +29,63 @@ namespace RemainingTimeMeter
         /// Initializes a new instance of the <see cref="TimerWindow"/> class.
         /// </summary>
         /// <param name="totalSeconds">Total seconds for the timer.</param>
-        /// <param name="position">Position string for the timer.</param>
+        /// <param name="position">Position for the timer.</param>
         /// <param name="targetDisplay">Target display information.</param>
-        public TimerWindow(int totalSeconds, string position, DisplayInfo targetDisplay)
+        public TimerWindow(int totalSeconds, TimerPosition position, DisplayInfo targetDisplay)
+        {
+            this.InitializeTimer(totalSeconds, position, targetDisplay);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimerWindow"/> class.
+        /// </summary>
+        /// <param name="totalSeconds">Total seconds for the timer.</param>
+        /// <param name="positionString">Position string for the timer (for backward compatibility).</param>
+        /// <param name="targetDisplay">Target display information.</param>
+        public TimerWindow(int totalSeconds, string positionString, DisplayInfo targetDisplay)
+        {
+            TimerPosition position = PositionMapper.ParsePosition(positionString);
+            this.InitializeTimer(totalSeconds, position, targetDisplay);
+        }
+
+        /// <summary>
+        /// Event raised when the main window should be shown.
+        /// </summary>
+        public event Action? MainWindowRequested;
+
+        /// <summary>
+        /// Releases all resources used by this instance.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    this.timer?.Stop();
+                }
+
+                this.disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Common initialization logic for both constructors.
+        /// </summary>
+        /// <param name="totalSeconds">Total seconds for the timer.</param>
+        /// <param name="position">Position for the timer.</param>
+        /// <param name="targetDisplay">Target display information.</param>
+        private void InitializeTimer(int totalSeconds, TimerPosition position, DisplayInfo targetDisplay)
         {
             Logger.Info($"TimerWindow constructor started - totalSeconds: {totalSeconds}, position: {position}");
             try
@@ -40,7 +94,7 @@ namespace RemainingTimeMeter
                 Logger.Debug("TimerWindow InitializeComponent completed");
                 this.totalSeconds = totalSeconds;
                 this.remainingSeconds = totalSeconds;
-                this.position = this.ParsePosition(position);
+                this.position = position;
                 this.targetDisplay = targetDisplay;
                 Logger.Debug($"TimerWindow properties set - position enum: {this.position}, display: {targetDisplay.Width}x{targetDisplay.Height}");
 
@@ -88,58 +142,13 @@ namespace RemainingTimeMeter
         }
 
         /// <summary>
-        /// Event triggered when main window is requested.
-        /// </summary>
-        public event Action? MainWindowRequested;
-
-        /// <summary>
-        /// Releases all resources used by this instance.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases the unmanaged resources and optionally releases the managed resources.
-        /// </summary>
-        /// <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    this.timer?.Stop();
-                }
-
-                this.disposed = true;
-            }
-        }
-
-        /// <summary>
-        /// Parses position string to TimerPosition enum.
+        /// Parses position string to TimerPosition enum using the optimized PositionMapper.
         /// </summary>
         /// <param name="position">Position string.</param>
         /// <returns>TimerPosition enum value.</returns>
         private TimerPosition ParsePosition(string position)
         {
-            return position switch
-            {
-                // Handle simple enum names (from Tag values)
-                "Right" => TimerPosition.Right,
-                "Left" => TimerPosition.Left,
-                "Top" => TimerPosition.Top,
-                "Bottom" => TimerPosition.Bottom,
-
-                // Handle localized resource strings (for backward compatibility)
-                var p when p == Properties.Resources.PositionRight => TimerPosition.Right,
-                var p when p == Properties.Resources.PositionLeft => TimerPosition.Left,
-                var p when p == Properties.Resources.PositionTop => TimerPosition.Top,
-                var p when p == Properties.Resources.PositionBottom => TimerPosition.Bottom,
-                _ => TimerPosition.Right,
-            };
+            return PositionMapper.ParsePosition(position);
         }
 
         /// <summary>
@@ -248,10 +257,10 @@ namespace RemainingTimeMeter
         /// </summary>
         private void UpdateBarColor()
         {
-            // Set to darkslateblue when paused
+            // Set to paused color when paused
             if (this.isPaused)
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.DarkSlateBlue);
+                this.ProgressBar.Fill = (SolidColorBrush)this.FindResource("PausedBrush");
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
                 this.ProgressBar.Opacity = 1.0;
                 return;
@@ -261,7 +270,7 @@ namespace RemainingTimeMeter
 
             if (progress >= Constants.RedThreshold)
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.Red);
+                this.ProgressBar.Fill = (SolidColorBrush)this.FindResource("DangerBrush");
 
                 // Blinking effect
                 var animation = new DoubleAnimation(Constants.BlinkMinOpacity, Constants.BlinkMaxOpacity, TimeSpan.FromMilliseconds(Constants.BlinkAnimationDuration))
@@ -273,13 +282,13 @@ namespace RemainingTimeMeter
             }
             else if (progress >= Constants.OrangeThreshold)
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.Orange);
+                this.ProgressBar.Fill = (SolidColorBrush)this.FindResource("WarningBrush");
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
                 this.ProgressBar.Opacity = 1.0;
             }
             else
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.Green);
+                this.ProgressBar.Fill = (SolidColorBrush)this.FindResource("PrimaryBrush");
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
                 this.ProgressBar.Opacity = 1.0;
             }

@@ -15,16 +15,12 @@
 
     <Grid>
         <!-- タイマーバー -->
-        <Border x:Name="TimerBorder" 
-                Background="#40000000" 
-                CornerRadius="2"
-                BorderBrush="#80FFFFFF" 
-                BorderThickness="1">
+        <Border x:Name="TimerBorder" Style="{StaticResource TimerBarStyle}">
 
             <!-- 進捗バー -->
             <Grid>
                 <Rectangle x:Name="ProgressBar" 
-                          Fill="#4CAF50" 
+                          Fill="{StaticResource PrimaryBrush}" 
                           VerticalAlignment="Bottom"
                           HorizontalAlignment="Left"/>
             </Grid>
@@ -32,34 +28,26 @@
 
         <!-- コントロールパネル（ホバー時に表示） -->
         <Border x:Name="ControlPanel" 
-                Background="#E0FFFFFF" 
-                CornerRadius="5"
-                Padding="5"
-                Visibility="Collapsed"
-                BorderBrush="#CCCCCC" 
-                BorderThickness="1">
+                Style="{StaticResource ControlPanelStyle}"
+                Visibility="Collapsed">
 
             <StackPanel>
                 <TextBlock x:Name="TimeDisplay" 
                           Text="5:00" 
-                          FontSize="18" 
-                          FontWeight="Bold" 
-                          HorizontalAlignment="Center"
-                          Margin="0,0,0,10"/>
+                          Style="{StaticResource TimeDisplayStyle}"
+                          FontSize="{StaticResource HeaderFontSize}"
+                          Margin="{StaticResource MediumMargin}"/>
 
                 <StackPanel HorizontalAlignment="Center">
                     <Button x:Name="PauseResumeButton" 
                             Content="{Binding Source={x:Static properties:Resources.Pause}}" 
-                            Width="60" 
-                            Height="30" 
+                            Style="{StaticResource ControlButtonStyle}"
                             Margin="0,0,0,5"
                             Click="OnPauseResumeToggled"/>
 
                     <Button x:Name="StopButton" 
                             Content="{Binding Source={x:Static properties:Resources.Stop}}" 
-                            Width="60" 
-                            Height="30" 
-                            Margin="0,0,0,0"
+                            Style="{StaticResource ControlButtonStyle}"
                             Click="OnTimerStopped"/>
                 </StackPanel>
             </StackPanel>
