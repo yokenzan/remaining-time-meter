@@ -475,15 +475,25 @@ namespace RemainingTimeMeter
                     this.QuickTime30Button.Content = "30分";
                     this.QuickTime60Button.Content = "60分";
                 }
-                else if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("zh"))
+                else if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("zh-CN"))
                 {
-                    // Chinese uses "分钟" for minutes
+                    // Simplified Chinese uses "分钟" for minutes
                     this.QuickTime1Button.Content = "1分钟";
                     this.QuickTime5Button.Content = "5分钟";
                     this.QuickTime10Button.Content = "10分钟";
                     this.QuickTime15Button.Content = "15分钟";
                     this.QuickTime30Button.Content = "30分钟";
                     this.QuickTime60Button.Content = "60分钟";
+                }
+                else if (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("zh-TW"))
+                {
+                    // Traditional Chinese uses "分鐘" for minutes
+                    this.QuickTime1Button.Content = "1分鐘";
+                    this.QuickTime5Button.Content = "5分鐘";
+                    this.QuickTime10Button.Content = "10分鐘";
+                    this.QuickTime15Button.Content = "15分鐘";
+                    this.QuickTime30Button.Content = "30分鐘";
+                    this.QuickTime60Button.Content = "60分鐘";
                 }
                 else
                 {
