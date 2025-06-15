@@ -304,77 +304,11 @@ namespace RemainingTimeMeter
             int seconds = this.totalSeconds % 60;
             string message = string.Format(Properties.Resources.TimeUpMessage, minutes, seconds);
 
-            try
-            {
-                // Use Windows 10/11 system notifications
-                this.ShowWindowsNotification(Properties.Resources.Timer, message);
-            }
-            catch (System.ComponentModel.Win32Exception ex)
-            {
-                Logger.Debug($"Notification failed due to Windows API error: {ex.Message} - using message box fallback");
-                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.Debug($"Notification failed due to invalid operation: {ex.Message} - using message box fallback");
-                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Logger.Debug($"Notification failed due to access denied: {ex.Message} - using message box fallback");
-                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            // Use the new NotificationHelper with automatic resource management
+            NotificationHelper.ShowNotificationWithFallback(Properties.Resources.Timer, message);
 
             this.MainWindowRequested?.Invoke();
             this.Close();
-        }
-
-        /// <summary>
-        /// Shows Windows system notification using shell_notifyicon.
-        /// </summary>
-        /// <param name="title">Notification title.</param>
-        /// <param name="message">Notification message.</param>
-        private void ShowWindowsNotification(string title, string message)
-        {
-            // Show system notification using NotifyIcon
-            var notifyIcon = new System.Windows.Forms.NotifyIcon();
-            try
-            {
-                notifyIcon.Icon = System.Drawing.SystemIcons.Information;
-                notifyIcon.Visible = true;
-                notifyIcon.ShowBalloonTip(Constants.NotificationDuration, title, message, System.Windows.Forms.ToolTipIcon.Info);
-
-                // Automatically hide icon after showing notification
-                var timer = new DispatcherTimer
-                {
-                    Interval = TimeSpan.FromMilliseconds(Constants.NotificationCleanupDelay),
-                };
-                timer.Tick += (s, e) =>
-                {
-                    timer.Stop();
-                    notifyIcon.Visible = false;
-                    notifyIcon.Dispose();
-                };
-                timer.Start();
-            }
-            catch (System.ComponentModel.Win32Exception ex)
-            {
-                Logger.Error("ShowWindowsNotification failed - Windows API error", ex);
-                notifyIcon?.Dispose();
-                throw;
-            }
-            catch (ArgumentException ex)
-            {
-                Logger.Error("ShowWindowsNotification failed - invalid argument", ex);
-                notifyIcon?.Dispose();
-                throw;
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.Error("ShowWindowsNotification failed - invalid operation", ex);
-                notifyIcon?.Dispose();
-                throw;
-            }
         }
 
         /// <summary>
