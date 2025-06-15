@@ -63,7 +63,7 @@
                       Unchecked="RememberSettingsCheckBox_Changed"/>
 
             <Button x:Name="StartButton" Content="{Binding Source={x:Static properties:Resources.Start}}" Style="{StaticResource PrimaryButtonStyle}"
-                    Click="StartButton_Click"/>
+                    Click="OnStartTimerClicked"/>
         </StackPanel>
     </Grid>
 </Window> 

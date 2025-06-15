@@ -624,26 +624,6 @@ namespace RemainingTimeMeter
         }
 
         /// <summary>
-<<<<<<< HEAD
-        /// Handles the RememberSettingsCheckBox changed event.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event arguments.</param>
-        private void RememberSettingsCheckBox_Changed(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Properties.Settings.Default.RememberLastSettings = this.RememberSettingsCheckBox.IsChecked ?? true;
-                Properties.Settings.Default.Save();
-                Logger.Debug($"RememberLastSettings changed to: {Properties.Settings.Default.RememberLastSettings}");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("Failed to save RememberLastSettings preference", ex);
-            }
-        }
-
-        /// <summary>
         /// Loads user settings from application settings.
         /// </summary>
         private void LoadUserSettings()
@@ -717,7 +697,7 @@ namespace RemainingTimeMeter
                 Logger.Debug($"Saved timer duration: {this.TimeInputTextBox.Text}");
 
                 // Save current position
-                Properties.Settings.Default.LastSelectedPosition = this.selectedPosition;
+                Properties.Settings.Default.LastSelectedPosition = this.selectedPosition.ToString();
                 Logger.Debug($"Saved selected position: {this.selectedPosition}");
 
                 // Save current display selection
@@ -747,7 +727,7 @@ namespace RemainingTimeMeter
         {
             try
             {
-                if (sender is CheckBox checkBox)
+                if (sender is System.Windows.Controls.CheckBox checkBox)
                 {
                     Properties.Settings.Default.RememberLastSettings = checkBox.IsChecked ?? false;
                     Properties.Settings.Default.Save();
