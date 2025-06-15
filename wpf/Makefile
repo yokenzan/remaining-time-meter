@@ -73,11 +73,43 @@ restore:
 test:
 	dotnet test $(CSPROJ_FILE)
 
-# Format code
+# Format code (all file types)
 .PHONY: format
-format:
+format: format-dotnet format-prettier
+
+# Format .NET files (C#, XML, project files)
+.PHONY: format-dotnet
+format-dotnet:
 	dotnet format $(CSPROJ_FILE)
 	dotnet format whitespace $(CSPROJ_FILE)
+
+# Format other files (YAML, JSON, MD)
+.PHONY: format-prettier
+format-prettier:
+	@if command -v prettier >/dev/null 2>&1; then \
+		prettier --write "../.github/workflows/*.yml" "*.json" || true; \
+	else \
+		echo "prettier not installed, skipping non-.NET file formatting"; \
+	fi
+
+# Check code formatting (all file types)
+.PHONY: format-check
+format-check: format-check-dotnet format-check-prettier
+
+# Check .NET file formatting
+.PHONY: format-check-dotnet
+format-check-dotnet:
+	dotnet format $(CSPROJ_FILE) --verify-no-changes
+	dotnet format whitespace $(CSPROJ_FILE) --verify-no-changes
+
+# Check other file formatting
+.PHONY: format-check-prettier
+format-check-prettier:
+	@if command -v prettier >/dev/null 2>&1; then \
+		prettier --check "../.github/workflows/*.yml" "*.json" || true; \
+	else \
+		echo "prettier not installed, skipping non-.NET format check"; \
+	fi
 
 # Show help
 .PHONY: help
@@ -93,5 +125,10 @@ help:
 	@echo "  clean     - Remove build artifacts"
 	@echo "  restore   - Restore NuGet packages"
 	@echo "  test      - Run tests"
-	@echo "  format    - Format code"
+	@echo "  format    - Format all files (C#, XML, YAML, JSON)"
+	@echo "  format-dotnet - Format .NET files only"
+	@echo "  format-prettier - Format YAML/JSON files only" 
+	@echo "  format-check - Check all file formatting"
+	@echo "  format-check-dotnet - Check .NET file formatting"
+	@echo "  format-check-prettier - Check YAML/JSON formatting"
 	@echo "  help      - Show this help"
