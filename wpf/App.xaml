@@ -46,9 +46,9 @@
         <System:Double x:Key="TitleFontSize" xmlns:System="clr-namespace:System;assembly=mscorlib">24</System:Double>
         
         <!-- Common Dimensions -->
-        <System:Double x:Key="ButtonWidth" xmlns:System="clr-namespace:System;assembly=mscorlib">60</System:Double>
+        <System:Double x:Key="ButtonWidth" xmlns:System="clr-namespace:System;assembly=mscorlib">75</System:Double>
         <System:Double x:Key="ButtonHeight" xmlns:System="clr-namespace:System;assembly=mscorlib">30</System:Double>
-        <System:Double x:Key="QuickButtonWidth" xmlns:System="clr-namespace:System;assembly=mscorlib">50</System:Double>
+        <System:Double x:Key="QuickButtonWidth" xmlns:System="clr-namespace:System;assembly=mscorlib">55</System:Double>
         <System:Double x:Key="LargeButtonWidth" xmlns:System="clr-namespace:System;assembly=mscorlib">100</System:Double>
         <System:Double x:Key="LargeButtonHeight" xmlns:System="clr-namespace:System;assembly=mscorlib">40</System:Double>
         <CornerRadius x:Key="SmallCornerRadius">2</CornerRadius>
@@ -151,7 +151,7 @@
         
         <!-- ComboBox Style -->
         <Style x:Key="DisplayComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Width" Value="200"/>
+            <Setter Property="MinWidth" Value="200"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         
