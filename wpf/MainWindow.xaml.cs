@@ -41,8 +41,15 @@ namespace RemainingTimeMeter
                 // Initialize time display after UI is fully loaded
                 this.Loaded += (s, e) =>
                 {
+                    this.LoadUserSettings();
                     this.UpdateTimeDisplay();
                     this.InitializeQuickTimeButtons();
+                };
+
+                // Save settings when window is closing
+                this.Closing += (s, e) =>
+                {
+                    this.SaveUserSettings();
                 };
 
                 Logger.Info("MainWindow constructor completed successfully");
@@ -281,6 +288,9 @@ namespace RemainingTimeMeter
                 };
                 Logger.Debug("Showing TimerWindow");
                 timerWindow.Show();
+
+                // Save user settings before hiding window
+                this.SaveUserSettings();
 
                 // Hide main window
                 Logger.Debug("Hiding MainWindow");
@@ -610,6 +620,123 @@ namespace RemainingTimeMeter
             {
                 Logger.Error("GetPositionLabel failed", ex);
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Loads user settings from application settings.
+        /// </summary>
+        private void LoadUserSettings()
+        {
+            try
+            {
+                // Always load the RememberLastSettings preference
+                this.RememberSettingsCheckBox.IsChecked = Properties.Settings.Default.RememberLastSettings;
+
+                if (!Properties.Settings.Default.RememberLastSettings)
+                {
+                    Logger.Debug("RememberLastSettings is disabled - skipping settings load");
+                    return;
+                }
+
+                // Load last timer duration
+                string lastDuration = Properties.Settings.Default.LastTimerDuration;
+                if (!string.IsNullOrWhiteSpace(lastDuration))
+                {
+                    this.TimeInputTextBox.Text = lastDuration;
+                    Logger.Debug($"Loaded last timer duration: {lastDuration}");
+                }
+
+                // Load last selected position
+                string lastPosition = Properties.Settings.Default.LastSelectedPosition;
+                if (!string.IsNullOrWhiteSpace(lastPosition))
+                {
+                    this.UpdateSelectedPosition(lastPosition);
+                    Logger.Debug($"Loaded last selected position: {lastPosition}");
+                }
+
+                // Load last selected display
+                int lastDisplayIndex = Properties.Settings.Default.LastSelectedDisplayIndex;
+                if (lastDisplayIndex >= 0 && lastDisplayIndex < this.DisplayComboBox.Items.Count)
+                {
+                    this.DisplayComboBox.SelectedIndex = lastDisplayIndex;
+                    Logger.Debug($"Loaded last selected display index: {lastDisplayIndex}");
+                }
+
+                Logger.Info("User settings loaded successfully");
+            }
+            catch (System.Configuration.ConfigurationException ex)
+            {
+                Logger.Error("Failed to load user settings - configuration error", ex);
+
+                // Continue with defaults
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to load user settings - unexpected error", ex);
+
+                // Continue with defaults
+            }
+        }
+
+        /// <summary>
+        /// Saves current user settings to application settings.
+        /// </summary>
+        private void SaveUserSettings()
+        {
+            try
+            {
+                if (!Properties.Settings.Default.RememberLastSettings)
+                {
+                    Logger.Debug("RememberLastSettings is disabled - skipping settings save");
+                    return;
+                }
+
+                // Save current timer duration
+                Properties.Settings.Default.LastTimerDuration = this.TimeInputTextBox.Text;
+                Logger.Debug($"Saved timer duration: {this.TimeInputTextBox.Text}");
+
+                // Save current position
+                Properties.Settings.Default.LastSelectedPosition = this.selectedPosition.ToString();
+                Logger.Debug($"Saved selected position: {this.selectedPosition}");
+
+                // Save current display selection
+                Properties.Settings.Default.LastSelectedDisplayIndex = this.DisplayComboBox.SelectedIndex;
+                Logger.Debug($"Saved selected display index: {this.DisplayComboBox.SelectedIndex}");
+
+                // Persist settings to disk
+                Properties.Settings.Default.Save();
+                Logger.Info("User settings saved successfully");
+            }
+            catch (System.Configuration.ConfigurationException ex)
+            {
+                Logger.Error("Failed to save user settings - configuration error", ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to save user settings - unexpected error", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles the checkbox state change event for remembering settings.
+        /// </summary>
+        /// <param name="sender">The checkbox sending the event.</param>
+        /// <param name="e">The event arguments.</param>
+        private void RememberSettingsCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is System.Windows.Controls.CheckBox checkBox)
+                {
+                    Properties.Settings.Default.RememberLastSettings = checkBox.IsChecked ?? false;
+                    Properties.Settings.Default.Save();
+                    Logger.Debug($"RememberLastSettings changed to: {checkBox.IsChecked}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to update RememberLastSettings preference", ex);
             }
         }
 
