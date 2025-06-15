@@ -1,12 +1,12 @@
-// <copyright file="ManagedNotifyIcon.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="ManagedNotifyIcon.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace RemainingTimeMeter.Helpers
+namespace RemMeter.Helpers
 {
     /// <summary>
     /// Manages NotifyIcon resources with proper disposal pattern.

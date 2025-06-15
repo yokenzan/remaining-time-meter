@@ -1,5 +1,5 @@
-// <copyright file="TimerWindow.xaml.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="TimerWindow.xaml.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
@@ -7,10 +7,10 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using RemainingTimeMeter.Helpers;
-using RemainingTimeMeter.Models;
+using RemMeter.Helpers;
+using RemMeter.Models;
 
-namespace RemainingTimeMeter
+namespace RemMeter
 {
     /// <summary>
     /// Interaction logic for TimerWindow.xaml.

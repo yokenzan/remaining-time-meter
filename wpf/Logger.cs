@@ -1,12 +1,12 @@
-// <copyright file="Logger.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="Logger.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace RemainingTimeMeter
+namespace RemMeter
 {
     /// <summary>
     /// Simple logger for debugging purposes.

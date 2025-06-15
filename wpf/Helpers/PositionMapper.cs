@@ -1,14 +1,14 @@
-// <copyright file="PositionMapper.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="PositionMapper.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using RemainingTimeMeter.Models;
+using RemMeter.Models;
 
-namespace RemainingTimeMeter.Helpers
+namespace RemMeter.Helpers
 {
     /// <summary>
     /// Provides efficient position mapping between strings and enum values.
