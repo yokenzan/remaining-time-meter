@@ -1,12 +1,12 @@
-// <copyright file="NotificationHelper.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="NotificationHelper.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace RemainingTimeMeter.Helpers
+namespace RemMeter.Helpers
 {
     /// <summary>
     /// Provides helper methods for system notifications with proper resource management.

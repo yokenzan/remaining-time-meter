@@ -1,14 +1,14 @@
-// <copyright file="PositionMapper.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="PositionMapper.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using RemainingTimeMeter.Models;
+using RemMeter.Models;
 
-namespace RemainingTimeMeter.Helpers
+namespace RemMeter.Helpers
 {
     /// <summary>
     /// Provides efficient position mapping between strings and enum values.
@@ -23,7 +23,7 @@ namespace RemainingTimeMeter.Helpers
         /// <summary>
         /// Static mapping dictionary for fast position lookups.
         /// </summary>
-        private static readonly Dictionary<string, TimerPosition> StringToPosition = new ()
+        private static readonly Dictionary<string, TimerPosition> StringToPosition = new()
         {
             // English enum names (primary)
             { "Right", TimerPosition.Right },
@@ -47,7 +47,7 @@ namespace RemainingTimeMeter.Helpers
         /// <summary>
         /// Reverse mapping for enum to string conversion.
         /// </summary>
-        private static readonly Dictionary<TimerPosition, string> PositionToStringMap = new ()
+        private static readonly Dictionary<TimerPosition, string> PositionToStringMap = new()
         {
             { TimerPosition.Right, "Right" },
             { TimerPosition.Left, "Left" },

@@ -1,4 +1,4 @@
-# 残り時間メーター / Remaining Time Meter
+# 残り目盛り / RemMeter
 
 プレゼンテーション等の際に、直感的に残り時間を把握できるお役立ちタイムキーパーです。
 
@@ -50,16 +50,16 @@
 GitHub Releasesから2種類の実行ファイルをダウンロードできます：
 
 ##### 🎯 推奨：Framework-dependent版（サイズ小）
-- **RemainingTimeMeter-framework-dependent-win-x64.exe** - 64bit Windows用
-- **RemainingTimeMeter-framework-dependent-win-x86.exe** - 32bit Windows用
+- **RemMeter-framework-dependent-win-x64.exe** - 64bit Windows用
+- **RemMeter-framework-dependent-win-x86.exe** - 32bit Windows用
 
 **要件**: .NET 8.0 Desktop Runtimeが必要
 - 未インストールの場合、アプリ実行時に自動でダウンロードページに案内されます
 - [.NET 8.0 Desktop Runtime ダウンロード](https://dotnet.microsoft.com/download/dotnet/8.0)
 
 ##### 🔧 Self-contained版（サイズ大、ランタイム不要）
-- **RemainingTimeMeter-self-contained-win-x64.exe** - 64bit Windows用
-- **RemainingTimeMeter-self-contained-win-x86.exe** - 32bit Windows用
+- **RemMeter-self-contained-win-x64.exe** - 64bit Windows用
+- **RemMeter-self-contained-win-x86.exe** - 32bit Windows用
 
 #### ビルド・実行方法
 
@@ -100,7 +100,7 @@ dotnet publish -c Release -r win-x86 --self-contained true -p:PublishSingleFile=
 ## ファイル構成
 
 ### WPF版
-- `RemainingTimeMeter.csproj` - プロジェクトファイル
+- `RemMeter.csproj` - プロジェクトファイル
 - `App.xaml` / `App.xaml.cs` - アプリケーションエントリポイント
 - `MainWindow.xaml` / `MainWindow.xaml.cs` - メイン設定ウィンドウ
 - `TimerWindow.xaml` / `TimerWindow.xaml.cs` - タイマー表示ウィンドウ

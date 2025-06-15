@@ -9,10 +9,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
         <ApplicationIcon>tv_timekeeper_trimmed.ico</ApplicationIcon>
-        <AssemblyTitle>Remaining Time Meter</AssemblyTitle>
-        <Product>Remaining Time Meter</Product>
+        <AssemblyTitle>RemMeter</AssemblyTitle>
+        <Product>RemMeter</Product>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Copyright>Copyright (c) 2025 RemainingTimeMeter</Copyright>
+        <Copyright>Copyright (c) 2025 RemMeter</Copyright>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors />
         <WarningsNotAsErrors>NU1701</WarningsNotAsErrors>

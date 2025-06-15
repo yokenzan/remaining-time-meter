@@ -1,5 +1,5 @@
-// <copyright file="Settings.Designer.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="Settings.Designer.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 //------------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RemainingTimeMeter.Properties
+namespace RemMeter.Properties
 {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.0.0.0")]

@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
   "settings": {
     "documentationRules": {
-      "companyName": "RemainingTimeMeter",
+      "companyName": "RemMeter",
       "copyrightText": "Copyright (c) 2025 {companyName}. Licensed under the MIT License.",
       "xmlHeader": true,
       "fileNamingConvention": "stylecop"

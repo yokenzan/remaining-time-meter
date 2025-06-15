@@ -1,7 +1,7 @@
-# Makefile for RemainingTimeMeter WPF Application
+# Makefile for RemMeter WPF Application
 
 # Project settings
-PROJECT_NAME = RemainingTimeMeter
+PROJECT_NAME = RemMeter
 CSPROJ_FILE = $(PROJECT_NAME).csproj
 OUTPUT_DIR = bin
 PUBLISH_DIR = publish

@@ -60,7 +60,7 @@
   </resheader>
   <!-- Application Title -->
   <data name="AppTitle" xml:space="preserve">
-    <value>残り時間メーター</value>
+    <value>残り目盛り | RemMeter</value>
   </data>
   <!-- Main Window Labels -->
   <data name="TimeSetting" xml:space="preserve">

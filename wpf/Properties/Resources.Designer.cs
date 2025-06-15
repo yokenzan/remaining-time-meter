@@ -1,8 +1,8 @@
-// <copyright file="Resources.Designer.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="Resources.Designer.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
-namespace RemainingTimeMeter.Properties
+namespace RemMeter.Properties
 {
     using System;
     using System.ComponentModel;
@@ -36,7 +36,7 @@ namespace RemainingTimeMeter.Properties
             {
                 if (object.ReferenceEquals(resourceMan, null))
                 {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RemainingTimeMeter.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RemMeter.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
 

@@ -1,8 +1,8 @@
-// <copyright file="DisplayInfo.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="DisplayInfo.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
-namespace RemainingTimeMeter.Models
+namespace RemMeter.Models
 {
     /// <summary>
     /// Represents display information including position and dimensions.

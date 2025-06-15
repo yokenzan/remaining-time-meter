@@ -1,11 +1,11 @@
-// <copyright file="ValidationResult.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="ValidationResult.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RemainingTimeMeter.Validation
+namespace RemMeter.Validation
 {
     /// <summary>
     /// Represents the result of a validation operation.

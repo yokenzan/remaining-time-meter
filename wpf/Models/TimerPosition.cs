@@ -1,8 +1,8 @@
-// <copyright file="TimerPosition.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="TimerPosition.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
-namespace RemainingTimeMeter.Models
+namespace RemMeter.Models
 {
     /// <summary>
     /// Represents the position where the timer should be displayed.

@@ -1,11 +1,11 @@
-// <copyright file="TimeInputValidator.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="TimeInputValidator.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
 using System.Text.RegularExpressions;
 
-namespace RemainingTimeMeter.Validation
+namespace RemMeter.Validation
 {
     /// <summary>
     /// Provides validation and parsing functionality for timer input.

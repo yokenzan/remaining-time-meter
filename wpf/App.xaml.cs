@@ -1,5 +1,5 @@
-// <copyright file="App.xaml.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="App.xaml.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 
-namespace RemainingTimeMeter
+namespace RemMeter
 {
     /// <summary>
     /// Application entry point.
@@ -101,7 +101,7 @@ namespace RemainingTimeMeter
                 CultureInfo.DefaultThreadCurrentUICulture = culture;
 
                 // Update resources
-                RemainingTimeMeter.Properties.Resources.Culture = culture;
+                RemMeter.Properties.Resources.Culture = culture;
 
                 Logger.Info($"Application language set to: {cultureCode}");
             }

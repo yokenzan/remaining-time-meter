@@ -1,12 +1,12 @@
-// <copyright file="Logger.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="Logger.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace RemainingTimeMeter
+namespace RemMeter
 {
     /// <summary>
     /// Simple logger for debugging purposes.
@@ -25,7 +25,7 @@ namespace RemainingTimeMeter
             try
             {
                 string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                LogDirectory = Path.Combine(appDataPath, "RemainingTimeMeter");
+                LogDirectory = Path.Combine(appDataPath, "RemMeter");
 
                 if (!Directory.Exists(LogDirectory))
                 {
@@ -40,21 +40,21 @@ namespace RemainingTimeMeter
                 // Fallback to temp directory if no access to AppData
                 LogDirectory = Path.GetTempPath();
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                LogFileInternal = Path.Combine(LogDirectory, $"RemainingTimeMeter_debug_{timestamp}.log");
+                LogFileInternal = Path.Combine(LogDirectory, $"RemMeter_debug_{timestamp}.log");
             }
             catch (DirectoryNotFoundException)
             {
                 // Fallback to temp directory if path doesn't exist (more specific than IOException)
                 LogDirectory = Path.GetTempPath();
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                LogFileInternal = Path.Combine(LogDirectory, $"RemainingTimeMeter_debug_{timestamp}.log");
+                LogFileInternal = Path.Combine(LogDirectory, $"RemMeter_debug_{timestamp}.log");
             }
             catch (IOException)
             {
                 // Fallback to temp directory for other I/O issues
                 LogDirectory = Path.GetTempPath();
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                LogFileInternal = Path.Combine(LogDirectory, $"RemainingTimeMeter_debug_{timestamp}.log");
+                LogFileInternal = Path.Combine(LogDirectory, $"RemMeter_debug_{timestamp}.log");
             }
         }
 
@@ -195,7 +195,7 @@ namespace RemainingTimeMeter
 
                 // Write to Windows Event Log - Application log
                 System.Diagnostics.EventLog.WriteEntry(
-                    "RemainingTimeMeter",
+                    "RemMeter",
                     logMessage,
                     level == "ERROR" ? System.Diagnostics.EventLogEntryType.Error : System.Diagnostics.EventLogEntryType.Information);
             }

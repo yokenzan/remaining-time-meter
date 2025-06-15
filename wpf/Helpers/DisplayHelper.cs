@@ -1,12 +1,12 @@
-// <copyright file="DisplayHelper.cs" company="RemainingTimeMeter">
-// Copyright (c) 2025 RemainingTimeMeter. Licensed under the MIT License.
+// <copyright file="DisplayHelper.cs" company="RemMeter">
+// Copyright (c) 2025 RemMeter. Licensed under the MIT License.
 // </copyright>
 
 using System.Windows;
 using System.Windows.Media;
-using RemainingTimeMeter.Models;
+using RemMeter.Models;
 
-namespace RemainingTimeMeter.Helpers
+namespace RemMeter.Helpers
 {
     /// <summary>
     /// Helper class for display and DPI-related calculations.
