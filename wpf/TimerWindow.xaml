@@ -10,8 +10,8 @@
         ShowInTaskbar="False"
         ResizeMode="NoResize"
         Icon="tv_timekeeper_trimmed.ico"
-        MouseEnter="Window_MouseEnter"
-        MouseLeave="Window_MouseLeave">
+        MouseEnter="OnControlPanelRequested"
+        MouseLeave="OnControlPanelHidden">
 
     <Grid>
         <!-- タイマーバー -->
@@ -43,12 +43,12 @@
                             Content="{Binding Source={x:Static properties:Resources.Pause}}" 
                             Style="{StaticResource ControlButtonStyle}"
                             Margin="0,0,0,5"
-                            Click="PauseResumeButton_Click"/>
+                            Click="OnPauseResumeToggled"/>
 
                     <Button x:Name="StopButton" 
                             Content="{Binding Source={x:Static properties:Resources.Stop}}" 
                             Style="{StaticResource ControlButtonStyle}"
-                            Click="StopButton_Click"/>
+                            Click="OnTimerStopped"/>
                 </StackPanel>
             </StackPanel>
         </Border>
