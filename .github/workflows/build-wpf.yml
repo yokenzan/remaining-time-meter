@@ -1,4 +1,4 @@
-name: Build and Release Remaining Time Meter
+name: Build and Release RemMeter
 
 on:
   push:
@@ -20,50 +20,50 @@ jobs:
         dotnet-version: 8.0.x
         
     - name: Restore dependencies
-      run: dotnet restore wpf/RemainingTimeMeter.csproj
+      run: dotnet restore wpf/RemMeter.csproj
       
     - name: Build
-      run: dotnet build wpf/RemainingTimeMeter.csproj --no-restore --configuration Release
+      run: dotnet build wpf/RemMeter.csproj --no-restore --configuration Release
       
     # Framework-dependent builds (小さいサイズ、.NET 8.0ランタイム必要)
     - name: Publish Framework-dependent Windows x64
-      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x64 --self-contained false --output ./publish/framework-dependent/win-x64 --property:PublishSingleFile=true
+      run: dotnet publish wpf/RemMeter.csproj --configuration Release --runtime win-x64 --self-contained false --output ./publish/framework-dependent/win-x64 --property:PublishSingleFile=true
       
     - name: Publish Framework-dependent Windows x86
-      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x86 --self-contained false --output ./publish/framework-dependent/win-x86 --property:PublishSingleFile=true
+      run: dotnet publish wpf/RemMeter.csproj --configuration Release --runtime win-x86 --self-contained false --output ./publish/framework-dependent/win-x86 --property:PublishSingleFile=true
       
     # Self-contained builds (大きいサイズ、.NETランタイム不要)
     - name: Publish Self-contained Windows x64
-      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish/self-contained/win-x64 --property:PublishSingleFile=true --property:PublishTrimmed=false
+      run: dotnet publish wpf/RemMeter.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish/self-contained/win-x64 --property:PublishSingleFile=true --property:PublishTrimmed=false
       
     - name: Publish Self-contained Windows x86
-      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x86 --self-contained true --output ./publish/self-contained/win-x86 --property:PublishSingleFile=true --property:PublishTrimmed=false
+      run: dotnet publish wpf/RemMeter.csproj --configuration Release --runtime win-x86 --self-contained true --output ./publish/self-contained/win-x86 --property:PublishSingleFile=true --property:PublishTrimmed=false
       
     # Framework-dependent artifacts
     - name: Upload Framework-dependent Windows x64 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: RemainingTimeMeter-framework-dependent-win-x64
-        path: ./publish/framework-dependent/win-x64/RemainingTimeMeter.exe
+        name: RemMeter-framework-dependent-win-x64
+        path: ./publish/framework-dependent/win-x64/RemMeter.exe
         
     - name: Upload Framework-dependent Windows x86 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: RemainingTimeMeter-framework-dependent-win-x86
-        path: ./publish/framework-dependent/win-x86/RemainingTimeMeter.exe
+        name: RemMeter-framework-dependent-win-x86
+        path: ./publish/framework-dependent/win-x86/RemMeter.exe
         
     # Self-contained artifacts
     - name: Upload Self-contained Windows x64 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: RemainingTimeMeter-self-contained-win-x64
-        path: ./publish/self-contained/win-x64/RemainingTimeMeter.exe
+        name: RemMeter-self-contained-win-x64
+        path: ./publish/self-contained/win-x64/RemMeter.exe
         
     - name: Upload Self-contained Windows x86 artifact
       uses: actions/upload-artifact@v4
       with:
-        name: RemainingTimeMeter-self-contained-win-x86
-        path: ./publish/self-contained/win-x86/RemainingTimeMeter.exe
+        name: RemMeter-self-contained-win-x86
+        path: ./publish/self-contained/win-x86/RemMeter.exe
 
   release-latest:
     needs: build
@@ -81,10 +81,10 @@ jobs:
     - name: Create release directory and copy files
       run: |
         mkdir -p release
-        cp "./artifacts/RemainingTimeMeter-framework-dependent-win-x64/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-framework-dependent-win-x64.exe"
-        cp "./artifacts/RemainingTimeMeter-framework-dependent-win-x86/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-framework-dependent-win-x86.exe"
-        cp "./artifacts/RemainingTimeMeter-self-contained-win-x64/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-self-contained-win-x64.exe"
-        cp "./artifacts/RemainingTimeMeter-self-contained-win-x86/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-self-contained-win-x86.exe"
+        cp "./artifacts/RemMeter-framework-dependent-win-x64/RemMeter.exe" "./release/RemMeter-framework-dependent-win-x64.exe"
+        cp "./artifacts/RemMeter-framework-dependent-win-x86/RemMeter.exe" "./release/RemMeter-framework-dependent-win-x86.exe"
+        cp "./artifacts/RemMeter-self-contained-win-x64/RemMeter.exe" "./release/RemMeter-self-contained-win-x64.exe"
+        cp "./artifacts/RemMeter-self-contained-win-x86/RemMeter.exe" "./release/RemMeter-self-contained-win-x86.exe"
         
     - name: Delete previous latest release
       run: |
@@ -103,7 +103,7 @@ jobs:
         tag_name: latest
         name: "Latest Build"
         body: |
-          ## Remaining Time Meter - Latest Build
+          ## RemMeter - Latest Build
           
           🚀 **Automatic build from the latest master branch**
           
@@ -112,16 +112,16 @@ jobs:
           ### 📥 ダウンロード
           
           #### 🎯 推奨：Framework-dependent版（小さいサイズ）
-          - **RemainingTimeMeter-framework-dependent-win-x64.exe** - 64bit Windows用（約5-10MB）
-          - **RemainingTimeMeter-framework-dependent-win-x86.exe** - 32bit Windows用（約5-10MB）
+          - **RemMeter-framework-dependent-win-x64.exe** - 64bit Windows用（約5-10MB）
+          - **RemMeter-framework-dependent-win-x86.exe** - 32bit Windows用（約5-10MB）
           
           ⚠️ **要件**: .NET 8.0 Desktop Runtimeが必要です
           - 未インストールの場合、アプリ実行時に自動でダウンロードページに案内されます
           - [.NET 8.0 Desktop Runtime ダウンロード](https://dotnet.microsoft.com/download/dotnet/8.0)
           
           #### 🔧 Self-contained版（大きいサイズ、ランタイム不要）
-          - **RemainingTimeMeter-self-contained-win-x64.exe** - 64bit Windows用（約80-120MB）
-          - **RemainingTimeMeter-self-contained-win-x86.exe** - 32bit Windows用（約80-120MB）
+          - **RemMeter-self-contained-win-x64.exe** - 64bit Windows用（約80-120MB）
+          - **RemMeter-self-contained-win-x86.exe** - 32bit Windows用（約80-120MB）
           
           ✅ **.NETランタイム不要** - どのWindows PCでもそのまま実行可能
           
@@ -147,10 +147,10 @@ jobs:
           📅 **Build Date**: ${{ github.event.head_commit.timestamp }}  
           🔗 **Commit**: ${{ github.sha }}
         files: |
-          ./release/RemainingTimeMeter-framework-dependent-win-x64.exe
-          ./release/RemainingTimeMeter-framework-dependent-win-x86.exe
-          ./release/RemainingTimeMeter-self-contained-win-x64.exe
-          ./release/RemainingTimeMeter-self-contained-win-x86.exe
+          ./release/RemMeter-framework-dependent-win-x64.exe
+          ./release/RemMeter-framework-dependent-win-x86.exe
+          ./release/RemMeter-self-contained-win-x64.exe
+          ./release/RemMeter-self-contained-win-x86.exe
         draft: false
         prerelease: true
       env:
@@ -171,53 +171,53 @@ jobs:
         
     # Framework-dependent builds for release
     - name: Publish Framework-dependent Windows x64 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x64 --self-contained false --output ./release/framework-dependent/win-x64 --property:PublishSingleFile=true
+      run: dotnet publish wpf/RemMeter.csproj --configuration Release --runtime win-x64 --self-contained false --output ./release/framework-dependent/win-x64 --property:PublishSingleFile=true
       
     - name: Publish Framework-dependent Windows x86 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x86 --self-contained false --output ./release/framework-dependent/win-x86 --property:PublishSingleFile=true
+      run: dotnet publish wpf/RemMeter.csproj --configuration Release --runtime win-x86 --self-contained false --output ./release/framework-dependent/win-x86 --property:PublishSingleFile=true
       
     # Self-contained builds for release
     - name: Publish Self-contained Windows x64 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x64 --self-contained true --output ./release/self-contained/win-x64 --property:PublishSingleFile=true --property:PublishTrimmed=false
+      run: dotnet publish wpf/RemMeter.csproj --configuration Release --runtime win-x64 --self-contained true --output ./release/self-contained/win-x64 --property:PublishSingleFile=true --property:PublishTrimmed=false
       
     - name: Publish Self-contained Windows x86 for Release
-      run: dotnet publish wpf/RemainingTimeMeter.csproj --configuration Release --runtime win-x86 --self-contained true --output ./release/self-contained/win-x86 --property:PublishSingleFile=true --property:PublishTrimmed=false
+      run: dotnet publish wpf/RemMeter.csproj --configuration Release --runtime win-x86 --self-contained true --output ./release/self-contained/win-x86 --property:PublishSingleFile=true --property:PublishTrimmed=false
       
     # Rename files for clarity
     - name: Rename release files
       run: |
-        mv "./release/framework-dependent/win-x64/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-framework-dependent-win-x64.exe"
-        mv "./release/framework-dependent/win-x86/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-framework-dependent-win-x86.exe"
-        mv "./release/self-contained/win-x64/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-self-contained-win-x64.exe"
-        mv "./release/self-contained/win-x86/RemainingTimeMeter.exe" "./release/RemainingTimeMeter-self-contained-win-x86.exe"
+        mv "./release/framework-dependent/win-x64/RemMeter.exe" "./release/RemMeter-framework-dependent-win-x64.exe"
+        mv "./release/framework-dependent/win-x86/RemMeter.exe" "./release/RemMeter-framework-dependent-win-x86.exe"
+        mv "./release/self-contained/win-x64/RemMeter.exe" "./release/RemMeter-self-contained-win-x64.exe"
+        mv "./release/self-contained/win-x86/RemMeter.exe" "./release/RemMeter-self-contained-win-x86.exe"
       
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          ./release/RemainingTimeMeter-framework-dependent-win-x64.exe
-          ./release/RemainingTimeMeter-framework-dependent-win-x86.exe
-          ./release/RemainingTimeMeter-self-contained-win-x64.exe
-          ./release/RemainingTimeMeter-self-contained-win-x86.exe
-        name: Remaining Time Meter ${{ github.ref_name }}
+          ./release/RemMeter-framework-dependent-win-x64.exe
+          ./release/RemMeter-framework-dependent-win-x86.exe
+          ./release/RemMeter-self-contained-win-x64.exe
+          ./release/RemMeter-self-contained-win-x86.exe
+        name: RemMeter ${{ github.ref_name }}
         body: |
-          ## Remaining Time Meter - WPF版
+          ## RemMeter - WPF版
           
           プレゼンテーション用のタイムキーパーアプリケーションです。
           
           ### 📥 ダウンロード
           
           #### 🎯 推奨：Framework-dependent版（小さいサイズ）
-          - **RemainingTimeMeter-framework-dependent-win-x64.exe** - 64bit Windows用（約5-10MB）
-          - **RemainingTimeMeter-framework-dependent-win-x86.exe** - 32bit Windows用（約5-10MB）
+          - **RemMeter-framework-dependent-win-x64.exe** - 64bit Windows用（約5-10MB）
+          - **RemMeter-framework-dependent-win-x86.exe** - 32bit Windows用（約5-10MB）
           
           ⚠️ **要件**: .NET 8.0 Desktop Runtimeが必要です
           - 未インストールの場合、アプリ実行時に自動でダウンロードページに案内されます
           - [.NET 8.0 Desktop Runtime ダウンロード](https://dotnet.microsoft.com/download/dotnet/8.0)
           
           #### 🔧 Self-contained版（大きいサイズ、ランタイム不要）
-          - **RemainingTimeMeter-self-contained-win-x64.exe** - 64bit Windows用（約80-120MB）
-          - **RemainingTimeMeter-self-contained-win-x86.exe** - 32bit Windows用（約80-120MB）
+          - **RemMeter-self-contained-win-x64.exe** - 64bit Windows用（約80-120MB）
+          - **RemMeter-self-contained-win-x86.exe** - 32bit Windows用（約80-120MB）
           
           ✅ **.NETランタイム不要** - どのWindows PCでもそのまま実行可能
           

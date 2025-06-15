@@ -25,7 +25,7 @@ namespace RemMeter
             try
             {
                 string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                LogDirectory = Path.Combine(appDataPath, "RemainingTimeMeter");
+                LogDirectory = Path.Combine(appDataPath, "RemMeter");
 
                 if (!Directory.Exists(LogDirectory))
                 {
@@ -40,21 +40,21 @@ namespace RemMeter
                 // Fallback to temp directory if no access to AppData
                 LogDirectory = Path.GetTempPath();
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                LogFileInternal = Path.Combine(LogDirectory, $"RemainingTimeMeter_debug_{timestamp}.log");
+                LogFileInternal = Path.Combine(LogDirectory, $"RemMeter_debug_{timestamp}.log");
             }
             catch (DirectoryNotFoundException)
             {
                 // Fallback to temp directory if path doesn't exist (more specific than IOException)
                 LogDirectory = Path.GetTempPath();
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                LogFileInternal = Path.Combine(LogDirectory, $"RemainingTimeMeter_debug_{timestamp}.log");
+                LogFileInternal = Path.Combine(LogDirectory, $"RemMeter_debug_{timestamp}.log");
             }
             catch (IOException)
             {
                 // Fallback to temp directory for other I/O issues
                 LogDirectory = Path.GetTempPath();
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                LogFileInternal = Path.Combine(LogDirectory, $"RemainingTimeMeter_debug_{timestamp}.log");
+                LogFileInternal = Path.Combine(LogDirectory, $"RemMeter_debug_{timestamp}.log");
             }
         }
 
@@ -195,7 +195,7 @@ namespace RemMeter
 
                 // Write to Windows Event Log - Application log
                 System.Diagnostics.EventLog.WriteEntry(
-                    "RemainingTimeMeter",
+                    "RemMeter",
                     logMessage,
                     level == "ERROR" ? System.Diagnostics.EventLogEntryType.Error : System.Diagnostics.EventLogEntryType.Information);
             }
