@@ -23,7 +23,7 @@ namespace RemMeter.Helpers
         /// <summary>
         /// Static mapping dictionary for fast position lookups.
         /// </summary>
-        private static readonly Dictionary<string, TimerPosition> StringToPosition = new ()
+        private static readonly Dictionary<string, TimerPosition> StringToPosition = new()
         {
             // English enum names (primary)
             { "Right", TimerPosition.Right },
@@ -47,7 +47,7 @@ namespace RemMeter.Helpers
         /// <summary>
         /// Reverse mapping for enum to string conversion.
         /// </summary>
-        private static readonly Dictionary<TimerPosition, string> PositionToStringMap = new ()
+        private static readonly Dictionary<TimerPosition, string> PositionToStringMap = new()
         {
             { TimerPosition.Right, "Right" },
             { TimerPosition.Left, "Left" },
