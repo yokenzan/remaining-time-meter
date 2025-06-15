@@ -17,9 +17,9 @@ namespace RemainingTimeMeter
     /// </summary>
     public partial class TimerWindow : Window, IDisposable
     {
-        private readonly DispatcherTimer timer;
-        private readonly TimerPosition position;
-        private readonly DisplayInfo targetDisplay;
+        private DispatcherTimer timer = null!;
+        private TimerPosition position;
+        private DisplayInfo targetDisplay = null!;
         private int totalSeconds;
         private int remainingSeconds;
         private bool isPaused = false;
@@ -29,9 +29,63 @@ namespace RemainingTimeMeter
         /// Initializes a new instance of the <see cref="TimerWindow"/> class.
         /// </summary>
         /// <param name="totalSeconds">Total seconds for the timer.</param>
-        /// <param name="position">Position string for the timer.</param>
+        /// <param name="position">Position for the timer.</param>
         /// <param name="targetDisplay">Target display information.</param>
-        public TimerWindow(int totalSeconds, string position, DisplayInfo targetDisplay)
+        public TimerWindow(int totalSeconds, TimerPosition position, DisplayInfo targetDisplay)
+        {
+            this.InitializeTimer(totalSeconds, position, targetDisplay);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimerWindow"/> class.
+        /// </summary>
+        /// <param name="totalSeconds">Total seconds for the timer.</param>
+        /// <param name="positionString">Position string for the timer (for backward compatibility).</param>
+        /// <param name="targetDisplay">Target display information.</param>
+        public TimerWindow(int totalSeconds, string positionString, DisplayInfo targetDisplay)
+        {
+            TimerPosition position = PositionMapper.ParsePosition(positionString);
+            this.InitializeTimer(totalSeconds, position, targetDisplay);
+        }
+
+        /// <summary>
+        /// Event raised when the main window should be shown.
+        /// </summary>
+        public event Action? MainWindowRequested;
+
+        /// <summary>
+        /// Releases all resources used by this instance.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    this.timer?.Stop();
+                }
+
+                this.disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Common initialization logic for both constructors.
+        /// </summary>
+        /// <param name="totalSeconds">Total seconds for the timer.</param>
+        /// <param name="position">Position for the timer.</param>
+        /// <param name="targetDisplay">Target display information.</param>
+        private void InitializeTimer(int totalSeconds, TimerPosition position, DisplayInfo targetDisplay)
         {
             Logger.Info($"TimerWindow constructor started - totalSeconds: {totalSeconds}, position: {position}");
             try
@@ -40,7 +94,7 @@ namespace RemainingTimeMeter
                 Logger.Debug("TimerWindow InitializeComponent completed");
                 this.totalSeconds = totalSeconds;
                 this.remainingSeconds = totalSeconds;
-                this.position = this.ParsePosition(position);
+                this.position = position;
                 this.targetDisplay = targetDisplay;
                 Logger.Debug($"TimerWindow properties set - position enum: {this.position}, display: {targetDisplay.Width}x{targetDisplay.Height}");
 
@@ -48,7 +102,7 @@ namespace RemainingTimeMeter
                 {
                     Interval = TimeSpan.FromSeconds(1),
                 };
-                this.timer.Tick += this.Timer_Tick;
+                this.timer.Tick += this.OnTimerTick;
                 Logger.Debug("Timer created and configured");
 
                 this.SetupWindowPosition();
@@ -88,58 +142,13 @@ namespace RemainingTimeMeter
         }
 
         /// <summary>
-        /// Event triggered when main window is requested.
-        /// </summary>
-        public event Action? MainWindowRequested;
-
-        /// <summary>
-        /// Releases all resources used by this instance.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases the unmanaged resources and optionally releases the managed resources.
-        /// </summary>
-        /// <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    this.timer?.Stop();
-                }
-
-                this.disposed = true;
-            }
-        }
-
-        /// <summary>
-        /// Parses position string to TimerPosition enum.
+        /// Parses position string to TimerPosition enum using the optimized PositionMapper.
         /// </summary>
         /// <param name="position">Position string.</param>
         /// <returns>TimerPosition enum value.</returns>
         private TimerPosition ParsePosition(string position)
         {
-            return position switch
-            {
-                // Handle simple enum names (from Tag values)
-                "Right" => TimerPosition.Right,
-                "Left" => TimerPosition.Left,
-                "Top" => TimerPosition.Top,
-                "Bottom" => TimerPosition.Bottom,
-
-                // Handle localized resource strings (for backward compatibility)
-                var p when p == Properties.Resources.PositionRight => TimerPosition.Right,
-                var p when p == Properties.Resources.PositionLeft => TimerPosition.Left,
-                var p when p == Properties.Resources.PositionTop => TimerPosition.Top,
-                var p when p == Properties.Resources.PositionBottom => TimerPosition.Bottom,
-                _ => TimerPosition.Right,
-            };
+            return PositionMapper.ParsePosition(position);
         }
 
         /// <summary>
@@ -189,7 +198,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void Timer_Tick(object? sender, EventArgs e)
+        private void OnTimerTick(object? sender, EventArgs e)
         {
             if (this.isPaused)
             {
@@ -248,10 +257,10 @@ namespace RemainingTimeMeter
         /// </summary>
         private void UpdateBarColor()
         {
-            // Set to darkslateblue when paused
+            // Set to paused color when paused
             if (this.isPaused)
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.DarkSlateBlue);
+                this.ProgressBar.Fill = (SolidColorBrush)this.FindResource("PausedBrush");
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
                 this.ProgressBar.Opacity = 1.0;
                 return;
@@ -261,7 +270,7 @@ namespace RemainingTimeMeter
 
             if (progress >= Constants.RedThreshold)
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.Red);
+                this.ProgressBar.Fill = (SolidColorBrush)this.FindResource("DangerBrush");
 
                 // Blinking effect
                 var animation = new DoubleAnimation(Constants.BlinkMinOpacity, Constants.BlinkMaxOpacity, TimeSpan.FromMilliseconds(Constants.BlinkAnimationDuration))
@@ -273,13 +282,13 @@ namespace RemainingTimeMeter
             }
             else if (progress >= Constants.OrangeThreshold)
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.Orange);
+                this.ProgressBar.Fill = (SolidColorBrush)this.FindResource("WarningBrush");
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
                 this.ProgressBar.Opacity = 1.0;
             }
             else
             {
-                this.ProgressBar.Fill = new SolidColorBrush(Colors.Green);
+                this.ProgressBar.Fill = (SolidColorBrush)this.FindResource("PrimaryBrush");
                 this.ProgressBar.BeginAnimation(OpacityProperty, null);
                 this.ProgressBar.Opacity = 1.0;
             }
@@ -295,77 +304,11 @@ namespace RemainingTimeMeter
             int seconds = this.totalSeconds % 60;
             string message = string.Format(Properties.Resources.TimeUpMessage, minutes, seconds);
 
-            try
-            {
-                // Use Windows 10/11 system notifications
-                this.ShowWindowsNotification(Properties.Resources.Timer, message);
-            }
-            catch (System.ComponentModel.Win32Exception ex)
-            {
-                Logger.Debug($"Notification failed due to Windows API error: {ex.Message} - using message box fallback");
-                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.Debug($"Notification failed due to invalid operation: {ex.Message} - using message box fallback");
-                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Logger.Debug($"Notification failed due to access denied: {ex.Message} - using message box fallback");
-                System.Windows.MessageBox.Show(message, Properties.Resources.Timer, MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+            // Use the new NotificationHelper with automatic resource management
+            NotificationHelper.ShowNotificationWithFallback(Properties.Resources.Timer, message);
 
             this.MainWindowRequested?.Invoke();
             this.Close();
-        }
-
-        /// <summary>
-        /// Shows Windows system notification using shell_notifyicon.
-        /// </summary>
-        /// <param name="title">Notification title.</param>
-        /// <param name="message">Notification message.</param>
-        private void ShowWindowsNotification(string title, string message)
-        {
-            // Show system notification using NotifyIcon
-            var notifyIcon = new System.Windows.Forms.NotifyIcon();
-            try
-            {
-                notifyIcon.Icon = System.Drawing.SystemIcons.Information;
-                notifyIcon.Visible = true;
-                notifyIcon.ShowBalloonTip(Constants.NotificationDuration, title, message, System.Windows.Forms.ToolTipIcon.Info);
-
-                // Automatically hide icon after showing notification
-                var timer = new DispatcherTimer
-                {
-                    Interval = TimeSpan.FromMilliseconds(Constants.NotificationCleanupDelay),
-                };
-                timer.Tick += (s, e) =>
-                {
-                    timer.Stop();
-                    notifyIcon.Visible = false;
-                    notifyIcon.Dispose();
-                };
-                timer.Start();
-            }
-            catch (System.ComponentModel.Win32Exception ex)
-            {
-                Logger.Error("ShowWindowsNotification failed - Windows API error", ex);
-                notifyIcon?.Dispose();
-                throw;
-            }
-            catch (ArgumentException ex)
-            {
-                Logger.Error("ShowWindowsNotification failed - invalid argument", ex);
-                notifyIcon?.Dispose();
-                throw;
-            }
-            catch (InvalidOperationException ex)
-            {
-                Logger.Error("ShowWindowsNotification failed - invalid operation", ex);
-                notifyIcon?.Dispose();
-                throw;
-            }
         }
 
         /// <summary>
@@ -373,7 +316,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void Window_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private void OnControlPanelRequested(object sender, System.Windows.Input.MouseEventArgs e)
         {
             // DPIスケーリングを考慮した座標計算
             var logicalBounds = DisplayHelper.GetLogicalScreenBounds(this.targetDisplay, this);
@@ -419,7 +362,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void Window_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        private void OnControlPanelHidden(object sender, System.Windows.Input.MouseEventArgs e)
         {
             // Restore original size when hover ends
             this.SetupWindowPosition();
@@ -432,23 +375,23 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void PauseResumeButton_Click(object sender, RoutedEventArgs e)
+        private void OnPauseResumeToggled(object sender, RoutedEventArgs e)
         {
-            Logger.Info($"PauseResumeButton_Click - current state: isPaused={this.isPaused}");
+            Logger.Info($"OnPauseResumeToggled - current state: isPaused={this.isPaused}");
             try
             {
                 this.isPaused = !this.isPaused;
                 this.PauseResumeButton.Content = this.isPaused ? Properties.Resources.Resume : Properties.Resources.Pause;
                 this.UpdateBarColor(); // Update color when pause state changes
-                Logger.Info($"PauseResumeButton_Click completed - new state: isPaused={this.isPaused}");
+                Logger.Info($"OnPauseResumeToggled completed - new state: isPaused={this.isPaused}");
             }
             catch (InvalidOperationException ex)
             {
-                Logger.Error("PauseResumeButton_Click failed - invalid operation", ex);
+                Logger.Error("OnPauseResumeToggled failed - invalid operation", ex);
             }
             catch (ArgumentException ex)
             {
-                Logger.Error("PauseResumeButton_Click failed - invalid argument", ex);
+                Logger.Error("OnPauseResumeToggled failed - invalid argument", ex);
             }
         }
 
@@ -457,9 +400,9 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void StopButton_Click(object sender, RoutedEventArgs e)
+        private void OnTimerStopped(object sender, RoutedEventArgs e)
         {
-            Logger.Info("StopButton_Click started");
+            Logger.Info("OnTimerStopped started");
             try
             {
                 this.timer.Stop();
@@ -467,15 +410,15 @@ namespace RemainingTimeMeter
                 this.MainWindowRequested?.Invoke();
                 Logger.Debug("MainWindowRequested event invoked");
                 this.Close();
-                Logger.Info("StopButton_Click completed - window closed");
+                Logger.Info("OnTimerStopped completed - window closed");
             }
             catch (InvalidOperationException ex)
             {
-                Logger.Error("StopButton_Click failed - invalid operation", ex);
+                Logger.Error("OnTimerStopped failed - invalid operation", ex);
             }
             catch (ArgumentException ex)
             {
-                Logger.Error("StopButton_Click failed - invalid argument", ex);
+                Logger.Error("OnTimerStopped failed - invalid argument", ex);
             }
         }
     }

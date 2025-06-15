@@ -21,8 +21,8 @@ namespace RemainingTimeMeter
         public App()
         {
             Logger.Info("Application starting up");
-            this.Startup += this.App_Startup;
-            this.Exit += this.App_Exit;
+            this.Startup += this.OnApplicationStartup;
+            this.Exit += this.OnApplicationExit;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void App_Startup(object sender, StartupEventArgs e)
+        private void OnApplicationStartup(object sender, StartupEventArgs e)
         {
             Logger.Info($"Application startup completed. Log file: {Logger.LogFile}");
 
@@ -116,7 +116,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void App_Exit(object sender, ExitEventArgs e)
+        private void OnApplicationExit(object sender, ExitEventArgs e)
         {
             Logger.Info($"Application exiting with code: {e.ApplicationExitCode}");
         }
