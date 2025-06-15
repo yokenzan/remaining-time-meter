@@ -68,10 +68,10 @@ clean:
 restore:
 	dotnet restore $(CSPROJ_FILE)
 
-# Run tests (if any exist)
+# Run tests
 .PHONY: test
 test:
-	dotnet test $(CSPROJ_FILE)
+	dotnet test ../tests/RemainingTimeMeter.Tests.csproj
 
 # Format code
 .PHONY: format

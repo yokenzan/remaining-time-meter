@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build-and-test:
@@ -10,27 +10,36 @@ jobs:
     defaults:
       run:
         working-directory: wpf
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-        
-    - name: Restore dependencies
-      run: dotnet restore RemainingTimeMeter.csproj
-      
-    - name: Build
-      run: dotnet build RemainingTimeMeter.csproj --no-restore --configuration Release
-      
-    - name: Check code style
-      run: dotnet format style RemainingTimeMeter.csproj --verify-no-changes --verbosity normal
-      
-    - name: Check analyzers
-      run: dotnet format analyzers RemainingTimeMeter.csproj --verify-no-changes --verbosity normal
-      
-    - name: Run tests (if any)
-      run: dotnet test RemainingTimeMeter.csproj --no-build --configuration Release --verbosity normal
-      continue-on-error: true  # Continue even if no tests are found
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore RemainingTimeMeter.csproj
+
+      - name: Build
+        run: dotnet build RemainingTimeMeter.csproj --no-restore --configuration Release
+
+      - name: Setup Node.js (for prettier)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install prettier
+        run: npm install -g prettier
+
+      - name: Check formatting (all files)
+        run: make format-check
+
+      - name: Check code style & analyzers
+        run: |
+          dotnet format style RemainingTimeMeter.csproj --verify-no-changes --verbosity normal
+          dotnet format analyzers RemainingTimeMeter.csproj --verify-no-changes --verbosity normal
+
+      - name: Run tests
+        run: dotnet test ../tests/RemainingTimeMeter.Tests.csproj --configuration Release --verbosity normal
