@@ -119,7 +119,7 @@ namespace RemainingTimeMeter
             /// <summary>
             /// Expanded height for control panel.
             /// </summary>
-            public const double ExpandedHeight = 120;
+            public const double ExpandedHeight = 140;
         }
 
         /// <summary>

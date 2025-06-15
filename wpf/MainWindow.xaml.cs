@@ -9,7 +9,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using RemainingTimeMeter.Helpers;
 using RemainingTimeMeter.Models;
+using RemainingTimeMeter.Validation;
 
 namespace RemainingTimeMeter
 {
@@ -21,7 +23,7 @@ namespace RemainingTimeMeter
         /// <summary>
         /// The currently selected position for the timer display.
         /// </summary>
-        private string selectedPosition = "Right";
+        private TimerPosition selectedPosition = TimerPosition.Right;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
@@ -244,32 +246,36 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private void OnStartTimerClicked(object sender, RoutedEventArgs e)
         {
             Logger.Info("StartButton_Click started");
             try
             {
-                // Get time from enhanced input
-                var (minutes, seconds) = this.GetCurrentTime();
-                Logger.Debug($"Parsed time values - Minutes: {minutes}, Seconds: {seconds}");
+                // Get current input values
+                string timeInput = this.TimeInputTextBox.Text;
+                TimerPosition position = this.selectedPosition;
+                string positionString = PositionMapper.PositionToString(position);
+                var selectedDisplayItem = (ComboBoxItem)this.DisplayComboBox.SelectedItem;
+                var selectedDisplay = (DisplayInfo)selectedDisplayItem.Tag;
 
-                // Calculate total time in seconds
-                int totalSeconds = (minutes * 60) + seconds;
-                Logger.Debug($"Calculated total seconds: {totalSeconds}");
-                if (totalSeconds <= 0)
+                // Comprehensive validation using new validator
+                var validationResult = TimerInputValidator.ValidateTimerSetup(timeInput, selectedDisplay, positionString);
+                if (!validationResult.IsValid)
                 {
-                    Logger.Debug("Total seconds is zero or negative");
-                    System.Windows.MessageBox.Show(Properties.Resources.PleaseSetTimeCorrectly, Properties.Resources.Error, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    Logger.Debug($"Validation failed: {string.Join(", ", validationResult.ErrorMessages)}");
+                    System.Windows.MessageBox.Show(
+                        validationResult.FirstErrorMessage ?? "Invalid input",
+                        Properties.Resources.Error,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
                     return;
                 }
 
-                // Get position setting
-                string position = this.selectedPosition;
-                Logger.Debug($"Selected position: {position}");
-
-                // Get selected display
-                var selectedDisplayItem = (ComboBoxItem)this.DisplayComboBox.SelectedItem;
-                var selectedDisplay = (DisplayInfo)selectedDisplayItem.Tag;
+                // Parse validated time
+                var (minutes, seconds) = TimeInputValidator.ParseTimeInput(timeInput);
+                int totalSeconds = (minutes * 60) + seconds;
+                Logger.Debug($"Validation passed - Minutes: {minutes}, Seconds: {seconds}, Total: {totalSeconds}");
+                Logger.Debug($"Selected position: {positionString}");
                 Logger.Debug($"Selected display: {selectedDisplay.Width}x{selectedDisplay.Height} at ({selectedDisplay.Left}, {selectedDisplay.Top}), Primary: {selectedDisplay.IsPrimary}");
 
                 // Create and show timer window
@@ -314,7 +320,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        private void OnTextBoxFocusReceived(object sender, RoutedEventArgs e)
         {
             Logger.Debug("TextBox_GotFocus started");
             try
@@ -340,7 +346,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void TextBox_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnTextBoxPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Logger.Debug("TextBox_PreviewMouseLeftButtonDown started");
             try
@@ -370,7 +376,7 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void TimeInputTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void OnTimeInputChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             // Only update if the window is fully loaded to avoid initialization issues
             if (this.IsLoaded)
@@ -384,9 +390,9 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void QuickTimeButton_Click(object sender, RoutedEventArgs e)
+        private void OnQuickTimeSelected(object sender, RoutedEventArgs e)
         {
-            Logger.Debug("QuickTimeButton_Click started");
+            Logger.Debug("OnQuickTimeSelected started");
             try
             {
                 if (sender is System.Windows.Controls.Button button && button.Tag is string tagValue && int.TryParse(tagValue, out int minutes))
@@ -397,111 +403,8 @@ namespace RemainingTimeMeter
             }
             catch (Exception ex)
             {
-                Logger.Error("QuickTimeButton_Click failed", ex);
+                Logger.Error("OnQuickTimeSelected failed", ex);
             }
-        }
-
-        /// <summary>
-        /// Parses time input and returns minutes and seconds.
-        /// </summary>
-        /// <param name="input">The input string to parse.</param>
-        /// <returns>A tuple containing minutes and seconds.</returns>
-        private (int minutes, int seconds) ParseTimeInput(string input)
-        {
-            try
-            {
-                // Handle empty or null input
-                if (string.IsNullOrWhiteSpace(input))
-                {
-                    return (0, 0);
-                }
-
-                // Remove any non-numeric characters except colon
-                string cleanInput = Regex.Replace(input, @"[^\d:]", string.Empty);
-
-                // Handle empty after cleaning
-                if (string.IsNullOrEmpty(cleanInput))
-                {
-                    return (0, 0);
-                }
-
-                // Handle colon-separated format (MM:SS)
-                if (cleanInput.Contains(":"))
-                {
-                    var parts = cleanInput.Split(':');
-                    if (parts.Length >= 2 &&
-                        int.TryParse(parts[0], out int minutes) &&
-                        int.TryParse(parts[1], out int seconds))
-                    {
-                        return this.ValidateTime(minutes, seconds);
-                    }
-                }
-
-                // Handle numeric-only input
-                if (int.TryParse(cleanInput, out int value))
-                {
-                    if (value <= 9)
-                    {
-                        // Single digit - treat as seconds
-                        return this.ValidateTime(0, value);
-                    }
-                    else if (value <= 99)
-                    {
-                        // Double digit - treat as seconds
-                        return this.ValidateTime(0, value);
-                    }
-                    else if (value <= 9999)
-                    {
-                        // 3-4 digits - treat as MMSS
-                        int minutes = value / 100;
-                        int seconds = value % 100;
-                        return this.ValidateTime(minutes, seconds);
-                    }
-                    else
-                    {
-                        // 5+ digits - treat as total seconds
-                        int totalSeconds = Math.Min(value, (99 * 60) + 99);
-                        return this.ValidateTime(totalSeconds / 60, totalSeconds % 60);
-                    }
-                }
-
-                return (0, 0);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("ParseTimeInput failed", ex);
-                return (0, 0);
-            }
-        }
-
-        /// <summary>
-        /// Validates and normalizes time values.
-        /// </summary>
-        /// <param name="minutes">Input minutes.</param>
-        /// <param name="seconds">Input seconds.</param>
-        /// <returns>Validated time tuple.</returns>
-        private (int minutes, int seconds) ValidateTime(int minutes, int seconds)
-        {
-            // Ensure non-negative values
-            minutes = Math.Max(0, minutes);
-            seconds = Math.Max(0, seconds);
-
-            // Enforce maximum limits (99:99)
-            if (minutes > 99)
-            {
-                minutes = 99;
-                seconds = 99;
-            }
-            else if (minutes == 99 && seconds > 99)
-            {
-                seconds = 99;
-            }
-            else if (seconds > 99)
-            {
-                seconds = 99;
-            }
-
-            return (minutes, seconds);
         }
 
         /// <summary>
@@ -510,7 +413,7 @@ namespace RemainingTimeMeter
         /// <returns>Current time as minutes and seconds.</returns>
         private (int minutes, int seconds) GetCurrentTime()
         {
-            return this.ParseTimeInput(this.TimeInputTextBox.Text);
+            return TimeInputValidator.ParseTimeInput(this.TimeInputTextBox.Text);
         }
 
         /// <summary>
@@ -520,17 +423,7 @@ namespace RemainingTimeMeter
         /// <param name="seconds">Seconds to set.</param>
         private void SetTime(int minutes, int seconds)
         {
-            var (validMinutes, validSeconds) = this.ValidateTime(minutes, seconds);
-
-            // Update input field - use simple format only for seconds under 100
-            if (validMinutes == 0 && validSeconds < 100)
-            {
-                this.TimeInputTextBox.Text = validSeconds.ToString();
-            }
-            else
-            {
-                this.TimeInputTextBox.Text = $"{validMinutes:D2}{validSeconds:D2}";
-            }
+            this.TimeInputTextBox.Text = TimeInputValidator.FormatTimeForInput(minutes, seconds);
 
             // This will trigger TextChanged and update the display
         }
@@ -550,7 +443,7 @@ namespace RemainingTimeMeter
                 }
 
                 var (minutes, seconds) = this.GetCurrentTime();
-                this.TimeDisplayTextBlock.Text = $"{minutes:D2}:{seconds:D2}";
+                this.TimeDisplayTextBlock.Text = TimeInputValidator.FormatTimeForDisplay(minutes, seconds);
             }
             catch (Exception ex)
             {
@@ -624,9 +517,9 @@ namespace RemainingTimeMeter
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event arguments.</param>
-        private void PositionLabel_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void OnPositionSelected(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            Logger.Debug("PositionLabel_Click started");
+            Logger.Debug("OnPositionSelected started");
             try
             {
                 if (sender is System.Windows.Controls.TextBlock label && label.Tag is string position)
@@ -637,28 +530,40 @@ namespace RemainingTimeMeter
             }
             catch (Exception ex)
             {
-                Logger.Error("PositionLabel_Click failed", ex);
+                Logger.Error("OnPositionSelected failed", ex);
             }
         }
 
         /// <summary>
         /// Updates the selected position and visual feedback.
         /// </summary>
-        /// <param name="position">The position to select.</param>
-        private void UpdateSelectedPosition(string position)
+        /// <param name="positionString">The position string to select.</param>
+        private void UpdateSelectedPosition(string positionString)
         {
             try
             {
+                // Parse the position string to enum
+                TimerPosition position = PositionMapper.ParsePosition(positionString);
+
                 // Reset all labels to normal style
                 this.ResetPositionLabels();
 
                 // Highlight selected label
-                var selectedLabel = this.GetPositionLabel(position);
+                var selectedLabel = this.GetPositionLabel(positionString);
                 if (selectedLabel != null)
                 {
-                    selectedLabel.TextDecorations = System.Windows.TextDecorations.Underline;
-                    selectedLabel.FontWeight = System.Windows.FontWeights.Bold;
-                    selectedLabel.Foreground = System.Windows.Media.Brushes.Red;
+                    if (position == TimerPosition.Bottom)
+                    {
+                        // PositionBottomLabel needs special handling for margin
+                        var selectedStyle = (Style)this.FindResource("SelectedPositionLabelStyle");
+                        var bottomSelectedStyle = new Style(typeof(TextBlock), selectedStyle);
+                        bottomSelectedStyle.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0)));
+                        selectedLabel.Style = bottomSelectedStyle;
+                    }
+                    else
+                    {
+                        selectedLabel.Style = (Style)this.FindResource("SelectedPositionLabelStyle");
+                    }
                 }
 
                 this.selectedPosition = position;
@@ -677,21 +582,15 @@ namespace RemainingTimeMeter
         {
             try
             {
-                this.PositionRightLabel.TextDecorations = null;
-                this.PositionRightLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionRightLabel.Foreground = System.Windows.Media.Brushes.Black;
+                var normalStyle = (Style)this.FindResource("PositionLabelStyle");
+                this.PositionRightLabel.Style = normalStyle;
+                this.PositionLeftLabel.Style = normalStyle;
+                this.PositionTopLabel.Style = normalStyle;
 
-                this.PositionLeftLabel.TextDecorations = null;
-                this.PositionLeftLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionLeftLabel.Foreground = System.Windows.Media.Brushes.Black;
-
-                this.PositionTopLabel.TextDecorations = null;
-                this.PositionTopLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionTopLabel.Foreground = System.Windows.Media.Brushes.Black;
-
-                this.PositionBottomLabel.TextDecorations = null;
-                this.PositionBottomLabel.FontWeight = System.Windows.FontWeights.Normal;
-                this.PositionBottomLabel.Foreground = System.Windows.Media.Brushes.Black;
+                // PositionBottomLabel needs special handling for margin
+                var bottomStyle = new Style(typeof(TextBlock), normalStyle);
+                bottomStyle.Setters.Add(new Setter(TextBlock.MarginProperty, new Thickness(0)));
+                this.PositionBottomLabel.Style = bottomStyle;
             }
             catch (Exception ex)
             {
@@ -725,6 +624,7 @@ namespace RemainingTimeMeter
         }
 
         /// <summary>
+<<<<<<< HEAD
         /// Handles the RememberSettingsCheckBox changed event.
         /// </summary>
         /// <param name="sender">The event sender.</param>
@@ -835,6 +735,53 @@ namespace RemainingTimeMeter
             catch (Exception ex)
             {
                 Logger.Error("Failed to save user settings - unexpected error", ex);
+            }
+        }
+
+        /// <summary>
+        /// Handles the checkbox state change event for remembering settings.
+        /// </summary>
+        /// <param name="sender">The checkbox sending the event.</param>
+        /// <param name="e">The event arguments.</param>
+        private void RememberSettingsCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is CheckBox checkBox)
+                {
+                    Properties.Settings.Default.RememberLastSettings = checkBox.IsChecked ?? false;
+                    Properties.Settings.Default.Save();
+                    Logger.Debug($"RememberLastSettings changed to: {checkBox.IsChecked}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Failed to update RememberLastSettings preference", ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets the TextBlock for the specified position enum.
+        /// </summary>
+        /// <param name="position">The TimerPosition enum value.</param>
+        /// <returns>The corresponding TextBlock or null if not found.</returns>
+        private System.Windows.Controls.TextBlock? GetPositionLabel(TimerPosition position)
+        {
+            try
+            {
+                return position switch
+                {
+                    TimerPosition.Right => this.PositionRightLabel,
+                    TimerPosition.Left => this.PositionLeftLabel,
+                    TimerPosition.Top => this.PositionTopLabel,
+                    TimerPosition.Bottom => this.PositionBottomLabel,
+                    _ => null,
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("GetPositionLabel failed", ex);
+                return null;
             }
         }
     }

@@ -3,6 +3,173 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-
+        <!-- Color Definitions -->
+        <Color x:Key="PrimaryColor">#4CAF50</Color>
+        <Color x:Key="AccentColor">#FF4444</Color>
+        <Color x:Key="WarningColor">#FFA500</Color>
+        <Color x:Key="DangerColor">#FF0000</Color>
+        <Color x:Key="PausedColor">#483D8B</Color>
+        <Color x:Key="BackgroundColor">#FFFFFF</Color>
+        <Color x:Key="OverlayBackgroundColor">#E0FFFFFF</Color>
+        <Color x:Key="BorderColor">#CCCCCC</Color>
+        <Color x:Key="SemiTransparentBlack">#40000000</Color>
+        <Color x:Key="SemiTransparentWhite">#80FFFFFF</Color>
+        
+        <!-- Brush Definitions -->
+        <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}"/>
+        <SolidColorBrush x:Key="PausedBrush" Color="{StaticResource PausedColor}"/>
+        <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
+        <SolidColorBrush x:Key="OverlayBackgroundBrush" Color="{StaticResource OverlayBackgroundColor}"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+        <SolidColorBrush x:Key="TimerBarBackgroundBrush" Color="{StaticResource SemiTransparentBlack}"/>
+        <SolidColorBrush x:Key="TimerBarBorderBrush" Color="{StaticResource SemiTransparentWhite}"/>
+        
+        <!-- Spacing Constants -->
+        <Thickness x:Key="SmallMargin">5</Thickness>
+        <Thickness x:Key="MediumMargin">10</Thickness>
+        <Thickness x:Key="LargeMargin">20</Thickness>
+        <Thickness x:Key="SmallPadding">5</Thickness>
+        <Thickness x:Key="MediumPadding">10</Thickness>
+        <Thickness x:Key="ButtonMargin">2</Thickness>
+        <Thickness x:Key="LabelMargin">0,0,10,0</Thickness>
+        <Thickness x:Key="SectionMargin">0,0,0,20</Thickness>
+        <Thickness x:Key="PositionLabelPadding">8,4</Thickness>
+        
+        <!-- Typography -->
+        <System:Double x:Key="NormalFontSize" xmlns:System="clr-namespace:System;assembly=mscorlib">14</System:Double>
+        <System:Double x:Key="LargeFontSize" xmlns:System="clr-namespace:System;assembly=mscorlib">16</System:Double>
+        <System:Double x:Key="HeaderFontSize" xmlns:System="clr-namespace:System;assembly=mscorlib">18</System:Double>
+        <System:Double x:Key="DisplayFontSize" xmlns:System="clr-namespace:System;assembly=mscorlib">20</System:Double>
+        <System:Double x:Key="TitleFontSize" xmlns:System="clr-namespace:System;assembly=mscorlib">24</System:Double>
+        
+        <!-- Common Dimensions -->
+        <System:Double x:Key="ButtonWidth" xmlns:System="clr-namespace:System;assembly=mscorlib">60</System:Double>
+        <System:Double x:Key="ButtonHeight" xmlns:System="clr-namespace:System;assembly=mscorlib">30</System:Double>
+        <System:Double x:Key="QuickButtonWidth" xmlns:System="clr-namespace:System;assembly=mscorlib">50</System:Double>
+        <System:Double x:Key="LargeButtonWidth" xmlns:System="clr-namespace:System;assembly=mscorlib">100</System:Double>
+        <System:Double x:Key="LargeButtonHeight" xmlns:System="clr-namespace:System;assembly=mscorlib">40</System:Double>
+        <CornerRadius x:Key="SmallCornerRadius">2</CornerRadius>
+        <CornerRadius x:Key="MediumCornerRadius">5</CornerRadius>
+        
+        <!-- Base Button Style -->
+        <Style x:Key="BaseButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="{StaticResource NormalFontSize}"/>
+            <Setter Property="Padding" Value="{StaticResource SmallPadding}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{StaticResource SmallCornerRadius}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.8"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Quick Time Button Style -->
+        <Style x:Key="QuickTimeButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Width" Value="{StaticResource QuickButtonWidth}"/>
+            <Setter Property="Height" Value="{StaticResource ButtonHeight}"/>
+            <Setter Property="Margin" Value="{StaticResource ButtonMargin}"/>
+        </Style>
+        
+        <!-- Control Button Style -->
+        <Style x:Key="ControlButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Width" Value="{StaticResource ButtonWidth}"/>
+            <Setter Property="Height" Value="{StaticResource ButtonHeight}"/>
+        </Style>
+        
+        <!-- Primary Button Style -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Width" Value="{StaticResource LargeButtonWidth}"/>
+            <Setter Property="Height" Value="{StaticResource LargeButtonHeight}"/>
+            <Setter Property="FontSize" Value="{StaticResource LargeFontSize}"/>
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        
+        <!-- Position Label Style -->
+        <Style x:Key="PositionLabelStyle" TargetType="TextBlock">
+            <Setter Property="Padding" Value="{StaticResource PositionLabelPadding}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="{StaticResource LabelMargin}"/>
+        </Style>
+        
+        <!-- Selected Position Label Style -->
+        <Style x:Key="SelectedPositionLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource PositionLabelStyle}">
+            <Setter Property="TextDecorations" Value="Underline"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+        </Style>
+        
+        <!-- TextBox Input Style -->
+        <Style x:Key="TimeInputStyle" TargetType="TextBox">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="{StaticResource LargeFontSize}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        
+        <!-- Time Display Style -->
+        <Style x:Key="TimeDisplayStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{StaticResource DisplayFontSize}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        
+        <!-- Header Text Style -->
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{StaticResource TitleFontSize}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="{StaticResource SectionMargin}"/>
+        </Style>
+        
+        <!-- Label Text Style -->
+        <Style x:Key="LabelTextStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="{StaticResource LabelMargin}"/>
+        </Style>
+        
+        <!-- ComboBox Style -->
+        <Style x:Key="DisplayComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        
+        <!-- Timer Control Panel Style -->
+        <Style x:Key="ControlPanelStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource OverlayBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="{StaticResource MediumCornerRadius}"/>
+            <Setter Property="Padding" Value="{StaticResource SmallPadding}"/>
+        </Style>
+        
+        <!-- Timer Bar Style -->
+        <Style x:Key="TimerBarStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource TimerBarBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TimerBarBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="{StaticResource SmallCornerRadius}"/>
+        </Style>
     </Application.Resources>
 </Application> 
